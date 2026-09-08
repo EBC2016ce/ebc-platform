@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import { supabase } from '@/lib/supabase'
+
 
 const PROJECT_TYPES = [
   'New home', 'Knockdown & rebuild', 'Kitchen renovation', 'Bathroom renovation',
@@ -20,25 +20,26 @@ export default function Register() {
     setStatus('saving')
     setErrorMessage('')
 
-    const { error } = await supabase.from('customers').insert([
-      {
-        first_name: form.firstName,
-        last_name: form.lastName,
-        email: form.email,
-        mobile: form.mobile,
-        address: form.address,
-        project_type: form.projectType,
-        consent_given: form.consent,
-      },
-    ])
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const result = await res.json()
 
-    if (error) {
+      if (!res.ok) {
+        setStatus('error')
+        setErrorMessage(result.error || 'Unknown error')
+      } else {
+        setStatus('success')
+      }
+    } catch (err) {
       setStatus('error')
-      setErrorMessage(error.message)
-    } else {
-      setStatus('success')
+      setErrorMessage('Could not reach the server: ' + err.message)
     }
   }
+  
 
   const field = (key, value) => setForm({ ...form, [key]: value })
 
