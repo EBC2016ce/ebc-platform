@@ -13,6 +13,10 @@ export async function POST(request) {
         address: body.address,
         project_type: body.projectType,
         consent_given: body.consent,
+        utm_source: body.utmSource || null,
+        utm_medium: body.utmMedium || null,
+        utm_campaign: body.utmCampaign || null,
+        utm_content: body.utmContent || null,
       },
     ])
 
