@@ -34,12 +34,17 @@ export async function POST(request) {
       return Response.json({ error: error.message }, { status: 400 })
     }
 
-        await resend.emails.send({
+        const { error: emailError } = await resend.emails.send({
       from: 'EBC <onboarding@resend.dev>',
       to: body.email,
-      subject: 'Verify your email — Easy Building & Construction Pty Ltd.',
+      subject: 'Verify your email — Easy Building & Construction',
       html: verificationEmailHtml({ firstName: body.firstName, code, projectType: body.projectType }),
     })
+
+    if (emailError) {
+      console.error('Resend send failed:', emailError)
+      return Response.json({ error: 'Registration saved, but the email failed to send: ' + emailError.message }, { status: 500 })
+    }
 
     return Response.json({ success: true, customerId: data.id })
   } catch (err) {
