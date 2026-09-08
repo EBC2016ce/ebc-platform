@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import Image from 'next/image'
 
-
 const PROJECT_TYPES = [
   'New home', 'Knockdown & rebuild', 'Kitchen renovation', 'Bathroom renovation',
   'Laundry renovation', 'Full renovation', 'Extension', 'Townhouse', 'Luxury home', 'Other',
@@ -12,8 +11,14 @@ export default function Register() {
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', mobile: '', address: '', projectType: '', consent: false
   })
-  const [status, setStatus] = useState('idle')
+  const [status, setStatus] = useState('idle') // idle | saving | verifying | success | error
   const [errorMessage, setErrorMessage] = useState('')
+  const [customerId, setCustomerId] = useState(null)
+  const [code, setCode] = useState('')
+  const [verifyBusy, setVerifyBusy] = useState(false)
+  const [verifyError, setVerifyError] = useState('')
+
+  const field = (key, value) => setForm({ ...form, [key]: value })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,36 +36,98 @@ export default function Register() {
       if (!res.ok) {
         setStatus('error')
         setErrorMessage(result.error || 'Unknown error')
-      } else {
-        setStatus('success')
+           } else {
+        if (typeof window !== 'undefined' && window.fbq) {
+          window.fbq('track', 'Lead')
+        }
+        setCustomerId(result.customerId)
+        setStatus('verifying')
       }
     } catch (err) {
       setStatus('error')
       setErrorMessage('Could not reach the server: ' + err.message)
     }
   }
-  
 
-  const field = (key, value) => setForm({ ...form, [key]: value })
+  const handleVerify = async (e) => {
+    e.preventDefault()
+    setVerifyBusy(true)
+    setVerifyError('')
 
+    try {
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId, code }),
+      })
+      const result = await res.json()
+
+           if (!res.ok) {
+        setVerifyError(result.error || 'Unknown error')
+      } else {
+        if (typeof window !== 'undefined' && window.fbq) {
+          window.fbq('track', 'CompleteRegistration')
+        }
+        setStatus('success')
+      }
+    } catch (err) {
+      setVerifyError('Could not reach the server: ' + err.message)
+    }
+    setVerifyBusy(false)
+  }
   if (status === 'success') {
     return (
       <main className="min-h-screen flex items-center justify-center px-6 py-16">
         <div className="max-w-md w-full text-center">
-          <div className="w-12 h-12 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center mx-auto text-xl">
-            ✓
-          </div>
+          <div className="w-12 h-12 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center mx-auto text-xl">✓</div>
           <h1 className="mt-6 text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
             Thanks, {form.firstName}
           </h1>
           <p className="mt-3 text-[#5A5E66]">
-            We've received your details and will be in touch shortly to talk through your project.
+            Your email is verified. We've received your details and will be in touch shortly to talk through your project.
           </p>
         </div>
       </main>
     )
   }
-   return (
+
+  if (status === 'verifying') {
+    return (
+      <main className="min-h-screen flex items-center justify-center px-6 py-16">
+        <div className="max-w-md w-full">
+          <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+            Check your email
+          </h1>
+          <p className="mt-2 text-sm text-[#5A5E66]">
+            We've sent a 6-digit code to {form.email}. Enter it below to confirm your details.
+          </p>
+
+          <form onSubmit={handleVerify} className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-5">
+            <div>
+              <label htmlFor="code" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Verification code</label>
+              <input id="code" value={code} onChange={(e) => setCode(e.target.value)}
+                required placeholder="123456" maxLength={6}
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+
+            {verifyError && (
+              <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">
+                {verifyError}
+              </div>
+            )}
+
+            <button type="submit" disabled={verifyBusy}
+              className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+              style={{ fontFamily: 'var(--font-heading)' }}>
+              {verifyBusy ? 'Verifying...' : 'Verify'}
+            </button>
+          </form>
+        </div>
+      </main>
+    )
+  }
+
+  return (
     <main className="min-h-screen flex flex-col items-center px-6 py-16">
       <div className="flex flex-col items-center text-center mb-10">
         <Image src="/logo.png" alt="EBC logo" width={72} height={72} />

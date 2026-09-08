@@ -1,10 +1,18 @@
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { resend } from '@/lib/resend'
+import { verificationEmailHtml } from '@/lib/emailTemplates'
+
+function generateCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
 
 export async function POST(request) {
   try {
     const body = await request.json()
+    const code = generateCode()
+    const expires = new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 minutes
 
-    const { error } = await supabaseAdmin.from('customers').insert([
+    const { data, error } = await supabaseAdmin.from('customers').insert([
       {
         first_name: body.firstName,
         last_name: body.lastName,
@@ -17,13 +25,23 @@ export async function POST(request) {
         utm_medium: body.utmMedium || null,
         utm_campaign: body.utmCampaign || null,
         utm_content: body.utmContent || null,
+        verification_code: code,
+        verification_expires: expires,
       },
-    ])
+    ]).select().single()
 
     if (error) {
       return Response.json({ error: error.message }, { status: 400 })
     }
-    return Response.json({ success: true })
+
+        await resend.emails.send({
+      from: 'EBC <onboarding@resend.dev>',
+      to: body.email,
+      subject: 'Verify your email — Easy Building & Construction Pty Ltd.',
+      html: verificationEmailHtml({ firstName: body.firstName, code, projectType: body.projectType }),
+    })
+
+    return Response.json({ success: true, customerId: data.id })
   } catch (err) {
     return Response.json({ error: 'Server error: ' + err.message }, { status: 500 })
   }
