@@ -135,6 +135,23 @@ function DesignPageContent() {
     return <p className="text-[#5A5E66]">Loading your design brief...</p>
   }
 
+  if (steps.length === 0) {
+    return (
+      <div className="max-w-lg w-full text-center">
+        <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+          Thanks for registering
+        </h1>
+        <p className="mt-3 text-[#5A5E66]">
+          We don't have a detailed design brief for this project type just yet - one of our team will contact you directly to discuss it. In the meantime, let's book you a time to chat.
+        </p>
+        <a href={'/book?customerId=' + customerId}
+          className="inline-block mt-6 bg-[#E1601F] text-white font-medium rounded px-6 py-2.5 hover:opacity-90">
+          Book a consultation
+        </a>
+      </div>
+    )
+  }
+
   const step = steps[stepIndex]
   const isLastStep = stepIndex === steps.length - 1
 

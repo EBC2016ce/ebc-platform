@@ -12,6 +12,19 @@ export async function POST(request) {
     const code = generateCode()
     const expires = new Date(Date.now() + 15 * 60 * 1000).toISOString() // 15 minutes
 
+        const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email: body.email,
+      password: body.password,
+      email_confirm: true,
+    })
+
+        if (authError) {
+      if (authError.message.includes('already been registered')) {
+        return Response.json({ error: 'An account with this email already exists. Please log in instead.' }, { status: 400 })
+      }
+      return Response.json({ error: 'Could not create your account: ' + authError.message }, { status: 400 })
+    }
+
     const { data, error } = await supabaseAdmin.from('customers').insert([
       {
         first_name: body.firstName,
@@ -27,6 +40,7 @@ export async function POST(request) {
         utm_content: body.utmContent || null,
         verification_code: code,
         verification_expires: expires,
+        auth_user_id: authUser.user.id,
       },
     ]).select().single()
 
@@ -35,7 +49,7 @@ export async function POST(request) {
     }
 
         const { error: emailError } = await resend.emails.send({
-      from: 'EBC <onboarding@resend.dev>',
+      from: 'EBC <noreply@mail.ebc33.com.au>',
       to: body.email,
       subject: 'Verify your email — Easy Building & Construction',
       html: verificationEmailHtml({ firstName: body.firstName, code, projectType: body.projectType }),

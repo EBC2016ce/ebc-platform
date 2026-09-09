@@ -8,8 +8,8 @@ const PROJECT_TYPES = [
 ]
 
 export default function Register() {
-  const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', mobile: '', address: '', projectType: '', consent: false
+    const [form, setForm] = useState({
+    firstName: '', lastName: '', email: '', mobile: '', address: '', projectType: '', consent: false, password: ''
   })
   const [status, setStatus] = useState('idle') // idle | saving | verifying | success | error
   const [errorMessage, setErrorMessage] = useState('')
@@ -180,6 +180,12 @@ export default function Register() {
               required placeholder="20 Stuart Street, The Basin VIC 3154"
               className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
           </div>
+                  <div>
+          <label htmlFor="password" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Create a password</label>
+          <input id="password" type="password" value={form.password} onChange={(e) => field('password', e.target.value)}
+            required minLength={8} placeholder="At least 8 characters"
+            className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+        </div>
 
           <div>
             <label htmlFor="projectType" className="block text-sm font-medium text-[#4A4E56] mb-1.5">What are you planning?</label>
