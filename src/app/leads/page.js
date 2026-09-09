@@ -1,5 +1,6 @@
-import { createClient } from '@/lib/supabase-server'
+﻿import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 export default async function Leads() {
   const supabase = await createClient()
@@ -24,18 +25,22 @@ export default async function Leads() {
             <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Name</th>
             <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Email</th>
             <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Mobile</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Address</th>
             <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Project Type</th>
+            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Status</th>
           </tr>
         </thead>
         <tbody>
           {data && data.map((c) => (
             <tr key={c.id}>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.first_name} {c.last_name}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
+                <Link href={'/admin/lead?customerId=' + c.id} style={{ color: '#1B2A4A', fontWeight: 600 }}>
+                  {c.first_name} {c.last_name}
+                </Link>
+              </td>
               <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.email}</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.mobile}</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.address}</td>
               <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.project_type}</td>
+              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.lead_status || 'New'}</td>
             </tr>
           ))}
         </tbody>
