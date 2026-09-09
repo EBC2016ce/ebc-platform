@@ -4,6 +4,8 @@ import { useSearchParams } from 'next/navigation'
 
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
 const QUOTE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected', 'Expired']
+const PROJECT_STAGES = ['Won / Converted', 'Contract Signed', 'Pre-Construction', 'Construction Started', 'Practical Completion', 'Handover', 'Warranty', 'Completed']
+const MILESTONES = ['Site preparation', 'Slab', 'Frame', 'Roof', 'Lock-up', 'Rough-in', 'Plaster', 'Fixing', 'Painting', 'Flooring', 'Final inspections', 'Handover']
 
 function LeadDetailContent() {
   const searchParams = useSearchParams()
@@ -17,6 +19,8 @@ function LeadDetailContent() {
   const [quoteAmount, setQuoteAmount] = useState('')
   const [quoteDescription, setQuoteDescription] = useState('')
   const [creatingQuote, setCreatingQuote] = useState(false)
+  const [updateText, setUpdateText] = useState('')
+  const [addingUpdate, setAddingUpdate] = useState(false)
 
   const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
@@ -76,11 +80,42 @@ function LeadDetailContent() {
     load()
   }
 
+  const changeStage = async (stage) => {
+    await fetch('/api/admin/project', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'updateStage', customerId, stage }),
+    })
+    load()
+  }
+
+  const toggleMilestone = async (milestone) => {
+    await fetch('/api/admin/project', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'toggleMilestone', customerId, milestone }),
+    })
+    load()
+  }
+
+  const addUpdate = async () => {
+    if (!updateText.trim()) return
+    setAddingUpdate(true)
+    await fetch('/api/admin/project', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'addUpdate', customerId, updateText }),
+    })
+    setUpdateText('')
+    load()
+    setAddingUpdate(false)
+  }
+
   if (!customerId) return <p className="text-[#A23B2E]">Missing customer reference.</p>
   if (loading) return <p className="text-[#5A5E66]">Loading...</p>
   if (!data?.customer) return <p className="text-[#A23B2E]">Lead not found.</p>
 
-  const { customer, design, bookings, notes, quotes } = data
+  const { customer, design, bookings, notes, quotes, project, updates } = data
 
   return (
     <div className="max-w-2xl w-full">
@@ -99,6 +134,53 @@ function LeadDetailContent() {
           {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
+
+      {project && (
+        <div className="mt-8 bg-white border-2 border-[#2E7D4F] rounded-md p-6">
+          <div className="flex justify-between items-center">
+            <h2 className="font-semibold text-[#2E7D4F]" style={{ fontFamily: 'var(--font-heading)' }}>Project (Won)</h2>
+            <select value={project.stage} onChange={(e) => changeStage(e.target.value)}
+              className="border border-[#D9D6CD] rounded px-3 py-2 text-sm">
+              {PROJECT_STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-sm font-medium text-[#4A4E56] mb-2">Construction milestones</p>
+            <div className="flex flex-wrap gap-2">
+              {MILESTONES.map((m) => {
+                const done = !!(project.milestones || {})[m]
+                return (
+                  <button key={m} onClick={() => toggleMilestone(m)}
+                    className={`px-3 py-1.5 rounded border text-xs ${done ? 'bg-[#2E7D4F] text-white border-[#2E7D4F]' : 'bg-white border-[#D9D6CD]'}`}>
+                    {done ? '✓ ' : ''}{m}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p className="text-sm font-medium text-[#4A4E56] mb-2">Progress updates</p>
+            <div className="flex gap-2">
+              <input value={updateText} onChange={(e) => setUpdateText(e.target.value)} placeholder="e.g. Framing complete, roof next"
+                className="flex-1 border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
+              <button onClick={addUpdate} disabled={addingUpdate}
+                className="bg-[#2E7D4F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
+                Post
+              </button>
+            </div>
+            <div className="mt-3 flex flex-col gap-2">
+              {(updates || []).map((u) => (
+                <div key={u.id} className="text-sm border-b border-[#EEE] pb-2">
+                  <p>{u.update_text}</p>
+                  <p className="text-xs text-[#8B8D89] mt-1">{new Date(u.created_at).toLocaleString('en-AU')}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6">
         <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Design Brief</h2>

@@ -11,9 +11,16 @@ export async function POST(request) {
   try {
     const { customerId, action, status, note } = await request.json()
 
-    if (action === 'updateStatus') {
+        if (action === 'updateStatus') {
       const { error } = await supabaseAdmin.from('customers').update({ lead_status: status }).eq('id', customerId)
       if (error) return Response.json({ error: error.message }, { status: 400 })
+
+      if (status === 'Won') {
+        const { data: existing } = await supabaseAdmin.from('projects').select('id').eq('customer_id', customerId).maybeSingle()
+        if (!existing) {
+          await supabaseAdmin.from('projects').insert([{ customer_id: customerId }])
+        }
+      }
     }
 
     if (action === 'addNote') {
