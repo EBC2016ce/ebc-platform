@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
 const QUOTE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected', 'Expired']
 const PROJECT_STAGES = ['Won / Converted', 'Contract Signed', 'Pre-Construction', 'Construction Started', 'Practical Completion', 'Handover', 'Warranty', 'Completed']
-const MILESTONES = ['Site preparation', 'Slab', 'Frame', 'Roof', 'Lock-up', 'Rough-in', 'Plaster', 'Fixing', 'Painting', 'Flooring', 'Final inspections', 'Handover']
+
 
 function LeadDetailContent() {
   const searchParams = useSearchParams()
@@ -21,13 +21,19 @@ function LeadDetailContent() {
   const [creatingQuote, setCreatingQuote] = useState(false)
   const [updateText, setUpdateText] = useState('')
   const [addingUpdate, setAddingUpdate] = useState(false)
+    const [milestonesList, setMilestonesList] = useState([])
 
-  const load = () => {
+    const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
       .then((res) => res.json())
       .then((result) => {
         setData(result)
         setLoading(false)
+        if (result.customer?.project_type) {
+          fetch('/api/admin/project?projectType=' + encodeURIComponent(result.customer.project_type))
+            .then((res) => res.json())
+            .then((r) => setMilestonesList(r.milestonesList || []))
+        }
       })
   }
 
@@ -147,8 +153,8 @@ function LeadDetailContent() {
 
           <div className="mt-4">
             <p className="text-sm font-medium text-[#4A4E56] mb-2">Construction milestones</p>
-            <div className="flex flex-wrap gap-2">
-              {MILESTONES.map((m) => {
+                        <div className="flex flex-wrap gap-2">
+              {milestonesList.map((m) => {
                 const done = !!(project.milestones || {})[m]
                 return (
                   <button key={m} onClick={() => toggleMilestone(m)}

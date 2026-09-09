@@ -1,7 +1,12 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
 import { createClient } from '@/lib/supabase-server'
 
-const MILESTONES = ["Site preparation", "Slab", "Frame", "Roof", "Lock-up", "Rough-in", "Plaster", "Fixing", "Painting", "Flooring", "Final inspections", "Handover"]
+const MILESTONES_BY_TYPE = {
+  "New home": ["Site preparation", "Slab", "Frame", "Roof", "Lock-up", "Rough-in", "Plaster", "Fixing", "Painting", "Flooring", "Final inspections", "Handover"],
+  "Kitchen renovation": ["Demolition", "Plumbing rough-in", "Electrical rough-in", "Cabinetry installed", "Benchtop installed", "Splashback/tiling", "Appliances installed", "Final clean & handover"],
+  "Bathroom renovation": ["Demolition", "Plumbing rough-in", "Electrical rough-in", "Waterproofing", "Tiling", "Vanity & fixtures installed", "Shower screen installed", "Final clean & handover"],
+  "Laundry renovation": ["Demolition", "Plumbing rough-in", "Electrical rough-in", "Waterproofing", "Tiling", "Joinery & trough installed", "Final clean & handover"],
+}
 
 export async function POST(request) {
   const supabase = await createClient()
@@ -31,12 +36,14 @@ export async function POST(request) {
       if (error) return Response.json({ error: error.message }, { status: 400 })
     }
 
-    return Response.json({ success: true, milestonesList: MILESTONES })
+    return Response.json({ success: true })
   } catch (err) {
     return Response.json({ error: 'Server error: ' + err.message }, { status: 500 })
   }
 }
 
-export async function GET() {
-  return Response.json({ milestonesList: MILESTONES })
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
+  const projectType = searchParams.get('projectType')
+  return Response.json({ milestonesList: MILESTONES_BY_TYPE[projectType] || [] })
 }
