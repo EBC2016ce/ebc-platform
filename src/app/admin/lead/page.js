@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
+const QUOTE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected', 'Expired']
 
 function LeadDetailContent() {
   const searchParams = useSearchParams()
@@ -13,6 +14,9 @@ function LeadDetailContent() {
   const [statusSaving, setStatusSaving] = useState(false)
   const [noteText, setNoteText] = useState('')
   const [addingNote, setAddingNote] = useState(false)
+  const [quoteAmount, setQuoteAmount] = useState('')
+  const [quoteDescription, setQuoteDescription] = useState('')
+  const [creatingQuote, setCreatingQuote] = useState(false)
 
   const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
@@ -49,11 +53,34 @@ function LeadDetailContent() {
     setAddingNote(false)
   }
 
+  const createQuote = async () => {
+    if (!quoteAmount) return
+    setCreatingQuote(true)
+    await fetch('/api/admin/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'create', customerId, amount: Number(quoteAmount), description: quoteDescription }),
+    })
+    setQuoteAmount('')
+    setQuoteDescription('')
+    load()
+    setCreatingQuote(false)
+  }
+
+  const changeQuoteStatus = async (quoteId, status) => {
+    await fetch('/api/admin/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'updateStatus', quoteId, status }),
+    })
+    load()
+  }
+
   if (!customerId) return <p className="text-[#A23B2E]">Missing customer reference.</p>
   if (loading) return <p className="text-[#5A5E66]">Loading...</p>
   if (!data?.customer) return <p className="text-[#A23B2E]">Lead not found.</p>
 
-  const { customer, design, bookings, notes } = data
+  const { customer, design, bookings, notes, quotes } = data
 
   return (
     <div className="max-w-2xl w-full">
@@ -105,6 +132,35 @@ function LeadDetailContent() {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
+        <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Quotes</h2>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <input type="number" value={quoteAmount} onChange={(e) => setQuoteAmount(e.target.value)} placeholder="Amount ($)"
+            className="border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
+          <input value={quoteDescription} onChange={(e) => setQuoteDescription(e.target.value)} placeholder="Description"
+            className="border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
+          <button onClick={createQuote} disabled={creatingQuote}
+            className="bg-[#E1601F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
+            New Quote
+          </button>
+        </div>
+        <div className="mt-4 flex flex-col gap-3">
+          {(quotes || []).map((q) => (
+            <div key={q.id} className="flex justify-between items-center text-sm border-b border-[#EEE] pb-2">
+              <div>
+                <span className="font-semibold">{q.reference}</span> — ${Number(q.amount).toLocaleString()}
+                {q.description && <span className="text-[#8B8D89]"> · {q.description}</span>}
+              </div>
+              <select value={q.status} onChange={(e) => changeQuoteStatus(q.id, e.target.value)}
+                className="border border-[#D9D6CD] rounded px-2 py-1 text-xs">
+                {QUOTE_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+          ))}
+          {(!quotes || quotes.length === 0) && <p className="text-sm text-[#8B8D89]">No quotes yet.</p>}
+        </div>
       </div>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">

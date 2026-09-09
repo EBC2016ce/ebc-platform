@@ -15,6 +15,7 @@ export async function GET(request) {
   const { data: design } = await supabaseAdmin.from('designs').select('*').eq('customer_id', customerId).maybeSingle()
   const { data: bookings } = await supabaseAdmin.from('bookings').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
   const { data: notes } = await supabaseAdmin.from('lead_notes').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
+  const { data: quotes } = await supabaseAdmin.from('quotes').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
 
-  return Response.json({ customer, design, bookings, notes })
+    return Response.json({ customer, design, bookings, notes, quotes })
 }
