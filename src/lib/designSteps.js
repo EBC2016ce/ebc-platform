@@ -1,4 +1,4 @@
-﻿export const PROJECT_TYPES = ["New home", "Kitchen renovation", "Bathroom renovation", "Laundry renovation"]
+﻿export const PROJECT_TYPES = ["New home", "Kitchen renovation", "Bathroom renovation", "Laundry renovation", "Extension", "Other"]
 
 export const STEPS_BY_TYPE = {
   "New home": [
@@ -211,6 +211,63 @@ export const STEPS_BY_TYPE = {
       id: "budget", title: "Budget & Timing",
       fields: [
         { key: "budgetRange", label: "Budget range", type: "select", options: ["$10k-$20k", "$20k-$35k", "$35k-$50k", "$50k-$65k", "$65k-$80k"] },
+      ],
+    },
+  ],
+
+  "Extension": [
+    {
+      id: "project", title: "Project",
+      fields: [
+        { key: "timeframe", label: "Timeframe to start", type: "select", options: ["0-3 months", "3-6 months", "6-12 months", "12+ months"] },
+        { key: "existingHomeAge", label: "Approximate age of the existing home", type: "select", options: ["Under 10 years", "10-30 years", "30-60 years", "60+ years", "Not sure"] },
+        { key: "extensionType", label: "What are you extending?", type: "select", options: ["Second storey addition", "Ground floor extension", "Alfresco / outdoor extension", "Garage extension"] },
+      ],
+    },
+    {
+      id: "connection", title: "How It Connects",
+      fields: [
+        { key: "roofConnection", label: "Roof connection style", type: "select", options: ["Matching existing roofline", "Flat roof connection", "Skillion roof", "Not sure - EBC to advise"] },
+        { key: "structuralChanges", label: "Expecting structural changes to the existing home (removing walls etc.)?", type: "radio", options: ["Yes", "No", "Not sure"] },
+        { key: "matchExisting", label: "Match the existing home's external materials/style?", type: "radio", options: ["Yes, match existing", "No, different style is fine", "Not sure"] },
+      ],
+    },
+    {
+      id: "rooms", title: "What's Being Added",
+      fields: [
+        { key: "extensionWidth", label: "Approximate extension width (m)", type: "number" },
+        { key: "extensionLength", label: "Approximate extension length (m)", type: "number" },
+        { key: "roomsAdded", label: "Rooms/spaces being added", type: "multiselect", options: ["Bedroom", "Bathroom", "Living area", "Kitchen", "Home office", "Garage"] },
+      ],
+    },
+    {
+      id: "materials", title: "Style & Materials",
+      fields: [
+        { key: "externalMaterials", label: "External materials", type: "multiselect", options: ["Brick", "Render", "Timber cladding", "Weatherboard"] },
+      ],
+    },
+    {
+      id: "compliance", title: "Compliance & Finishing",
+      fields: [
+        { key: "complianceCertificates", label: "Compliance certificates needed", type: "multiselect", options: ["Plumbing compliance certificate", "Electrical compliance certificate", "Building permit", "Not sure - EBC to advise"] },
+        { key: "finishingTrades", label: "Finishing trades to arrange", type: "multiselect", options: ["Painting", "Plastering", "Flooring", "None - I'll arrange myself"] },
+      ],
+    },
+    {
+      id: "budget", title: "Budget & Timing",
+      fields: [
+        { key: "budgetRange", label: "Budget range", type: "select", options: ["$50k-$100k", "$100k-$200k", "$200k-$300k", "$300k-$400k", "$400k+"] },
+      ],
+    },
+  ],
+
+  "Other": [
+    {
+      id: "project", title: "Tell Us About Your Project",
+      fields: [
+        { key: "timeframe", label: "Timeframe to start", type: "select", options: ["0-3 months", "3-6 months", "6-12 months", "12+ months"] },
+        { key: "description", label: "Describe what you're planning", type: "textarea" },
+        { key: "budgetRange", label: "Approximate budget", type: "select", options: ["Under $20k", "$20k-$50k", "$50k-$100k", "$100k-$400k", "$400k+", "Not sure yet"] },
       ],
     },
   ],
