@@ -8,8 +8,13 @@ export async function GET() {
     return Response.json({ error: 'Not authorized' }, { status: 401 })
   }
 
-  const { data: customers } = await supabaseAdmin.from('customers').select('id, lead_status, project_type, created_at')
+    const { data: customers } = await supabaseAdmin.from('customers').select('id, first_name, last_name, email, lead_status, project_type, created_at, reminded_design, reminded_booking')
   const { data: quotes } = await supabaseAdmin.from('quotes').select('amount, status')
+
+  const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+  const needsFollowUp = (customers || []).filter((c) =>
+    !['Won', 'Lost'].includes(c.lead_status) && (c.reminded_design || c.reminded_booking) && c.created_at < threeDaysAgo
+  )
 
   const statusCounts = {}
   const typeCounts = {}
@@ -27,12 +32,13 @@ export async function GET() {
   const acceptedValue = (quotes || []).filter((q) => q.status === 'Accepted').reduce((sum, q) => sum + Number(q.amount), 0)
   const pipelineValue = (quotes || []).filter((q) => ['Draft', 'Sent'].includes(q.status)).reduce((sum, q) => sum + Number(q.amount), 0)
 
-  return Response.json({
+    return Response.json({
     totalLeads,
     statusCounts,
     typeCounts,
     conversionRate,
     acceptedValue,
     pipelineValue,
+    needsFollowUp,
   })
 }
