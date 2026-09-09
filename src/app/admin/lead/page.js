@@ -23,6 +23,15 @@ function LeadDetailContent() {
   const [files, setFiles] = useState([])
   const [filesLoading, setFilesLoading] = useState(true)
   const [milestonesList, setMilestonesList] = useState([])
+  const [messages, setMessages] = useState([])
+  const [messageInput, setMessageInput] = useState('')
+  const [sendingMessage, setSendingMessage] = useState(false)
+
+  const loadMessages = () => {
+    fetch('/api/admin/messages?customerId=' + customerId)
+      .then((res) => res.json())
+      .then((r) => setMessages(r.messages || []))
+  }
 
   const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
@@ -42,6 +51,7 @@ function LeadDetailContent() {
         setFiles(result.files || [])
         setFilesLoading(false)
       })
+    loadMessages()
   }
 
   useEffect(() => { load() }, [customerId]) // eslint-disable-line
@@ -124,6 +134,19 @@ function LeadDetailContent() {
     setAddingUpdate(false)
   }
 
+  const sendMessage = async () => {
+    if (!messageInput.trim()) return
+    setSendingMessage(true)
+    await fetch('/api/admin/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId, body: messageInput }),
+    })
+    setMessageInput('')
+    loadMessages()
+    setSendingMessage(false)
+  }
+
   if (!customerId) return <p className="text-[#A23B2E]">Missing customer reference.</p>
   if (loading) return <p className="text-[#5A5E66]">Loading...</p>
   if (!data?.customer) return <p className="text-[#A23B2E]">Lead not found.</p>
@@ -196,6 +219,29 @@ function LeadDetailContent() {
       )}
 
       <div className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6">
+        <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Messages</h2>
+        <div className="mt-3 flex flex-col gap-3 max-h-80 overflow-y-auto">
+          {messages.map((m) => (
+            <div key={m.id} className={`text-sm p-3 rounded-md max-w-[80%] ${m.sender === 'staff' ? 'bg-[#1B2A4A] text-white self-end' : 'bg-[#F6F5F1] text-[#171A1F] self-start'}`}>
+              {m.body}
+              <p className={`text-xs mt-1 ${m.sender === 'staff' ? 'text-[#C9D2E3]' : 'text-[#8B8D89]'}`}>
+                {m.sender === 'staff' ? 'You' : customer.first_name} · {new Date(m.created_at).toLocaleString('en-AU')}
+              </p>
+            </div>
+          ))}
+          {messages.length === 0 && <p className="text-sm text-[#8B8D89]">No messages yet.</p>}
+        </div>
+        <div className="flex gap-2 mt-4">
+          <input value={messageInput} onChange={(e) => setMessageInput(e.target.value)} placeholder="Reply to customer..."
+            className="flex-1 border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
+          <button onClick={sendMessage} disabled={sendingMessage}
+            className="bg-[#E1601F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
+            Send
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
         <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Uploaded Plans</h2>
         {filesLoading ? (
           <p className="text-sm text-[#5A5E66] mt-2">Loading files...</p>

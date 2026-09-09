@@ -3,12 +3,35 @@ import { useState, useEffect } from 'react'
 
 export default function Portal() {
   const [data, setData] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [messageInput, setMessageInput] = useState('')
+  const [sending, setSending] = useState(false)
+
+    const loadMessages = () => {
+    fetch('/api/portal-messages')
+      .then((res) => res.json())
+      .then((r) => setMessages(r.messages || []))
+  }
 
   useEffect(() => {
     fetch('/api/portal')
       .then((res) => res.json())
       .then(setData)
+    loadMessages()
   }, [])
+
+  const sendMessage = async () => {
+    if (!messageInput.trim()) return
+    setSending(true)
+    await fetch('/api/portal-messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body: messageInput }),
+    })
+    setMessageInput('')
+    loadMessages()
+    setSending(false)
+  }
 
   if (!data) return <main className="min-h-screen flex items-center justify-center"><p className="text-[#5A5E66]">Loading...</p></main>
   if (data.error) return <main className="min-h-screen flex items-center justify-center px-6"><p className="text-[#A23B2E]">{data.error}</p></main>
@@ -69,7 +92,7 @@ export default function Portal() {
         </div>
       )}
 
-      {design && (
+            {design && (
         <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
           <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Your Design Brief</h2>
           <p className="text-xs text-[#8B8D89] mt-1">
@@ -85,6 +108,29 @@ export default function Portal() {
           </div>
         </div>
       )}
+
+      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
+        <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Messages</h2>
+        <div className="mt-3 flex flex-col gap-3 max-h-80 overflow-y-auto">
+          {messages.map((m) => (
+            <div key={m.id} className={`text-sm p-3 rounded-md max-w-[80%] ${m.sender === 'customer' ? 'bg-[#1B2A4A] text-white self-end' : 'bg-[#F6F5F1] text-[#171A1F] self-start'}`}>
+              {m.body}
+              <p className={`text-xs mt-1 ${m.sender === 'customer' ? 'text-[#C9D2E3]' : 'text-[#8B8D89]'}`}>
+                {new Date(m.created_at).toLocaleString('en-AU')}
+              </p>
+            </div>
+          ))}
+          {messages.length === 0 && <p className="text-sm text-[#8B8D89]">No messages yet.</p>}
+        </div>
+        <div className="flex gap-2 mt-4">
+          <input value={messageInput} onChange={(e) => setMessageInput(e.target.value)} placeholder="Type a message..."
+            className="flex-1 border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
+          <button onClick={sendMessage} disabled={sending}
+            className="bg-[#E1601F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
+            Send
+          </button>
+        </div>
+      </div>
     </main>
   )
 }
