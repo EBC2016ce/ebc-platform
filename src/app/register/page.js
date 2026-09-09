@@ -68,7 +68,7 @@ export default function Register() {
         if (typeof window !== 'undefined' && window.fbq) {
           window.fbq('track', 'CompleteRegistration')
         }
-        window.location.href = '/book?customerId=' + customerId
+        window.location.href = '/design?customerId=' + customerId + '&projectType=' + encodeURIComponent(form.projectType)
       }
     } catch (err) {
       setVerifyError('Could not reach the server: ' + err.message)
