@@ -71,8 +71,11 @@ function DesignPageContent() {
   const customerId = searchParams.get('customerId')
   const projectType = searchParams.get('projectType')
 
-    const NEW_BUILD_LIKE = ['New home', 'Knockdown & rebuild', 'Townhouse', 'Luxury home', 'Full renovation']
-  const effectiveType = NEW_BUILD_LIKE.includes(projectType) ? 'New home' : projectType
+     const NEW_BUILD_LIKE = ['New home', 'Knockdown & rebuild', 'Townhouse', 'Luxury home', 'Full renovation', 'Vacant land']
+  const BATHROOM_LIKE = ['Bathroom renovation', 'Powder room']
+  const effectiveType = NEW_BUILD_LIKE.includes(projectType) ? 'New home'
+    : BATHROOM_LIKE.includes(projectType) ? 'Bathroom renovation'
+    : projectType
   const steps = STEPS_BY_TYPE[effectiveType] || []
   const [stepIndex, setStepIndex] = useState(0)
   const [formData, setFormData] = useState({})

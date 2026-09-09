@@ -1,17 +1,18 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Image from 'next/image'
 
-const PROJECT_TYPES = [
-  'New home', 'Knockdown & rebuild', 'Kitchen renovation', 'Bathroom renovation',
-  'Laundry renovation', 'Full renovation', 'Extension', 'Townhouse', 'Luxury home', 'Other',
-]
+const CATEGORIES = {
+  'Renovation': ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
+  'New Building': ['Knockdown & rebuild', 'Vacant land'],
+  'Extension': ['Extension'],
+}
 
 export default function Register() {
-    const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', mobile: '', address: '', projectType: '', consent: false, password: ''
+  const [form, setForm] = useState({
+    firstName: '', lastName: '', email: '', mobile: '', address: '', category: '', projectType: '', consent: false, password: ''
   })
-  const [status, setStatus] = useState('idle') // idle | saving | verifying | success | error
+  const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [customerId, setCustomerId] = useState(null)
   const [code, setCode] = useState('')
@@ -19,6 +20,11 @@ export default function Register() {
   const [verifyError, setVerifyError] = useState('')
 
   const field = (key, value) => setForm({ ...form, [key]: value })
+
+  const setCategory = (category) => {
+    const options = CATEGORIES[category] || []
+    setForm({ ...form, category, projectType: options.length === 1 ? options[0] : '' })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -36,10 +42,7 @@ export default function Register() {
       if (!res.ok) {
         setStatus('error')
         setErrorMessage(result.error || 'Unknown error')
-           } else {
-        if (typeof window !== 'undefined' && window.fbq) {
-          window.fbq('track', 'Lead')
-        }
+      } else {
         setCustomerId(result.customerId)
         setStatus('verifying')
       }
@@ -62,7 +65,7 @@ export default function Register() {
       })
       const result = await res.json()
 
-                 if (!res.ok) {
+      if (!res.ok) {
         setVerifyError(result.error || 'Unknown error')
       } else {
         if (typeof window !== 'undefined' && window.fbq) {
@@ -74,21 +77,6 @@ export default function Register() {
       setVerifyError('Could not reach the server: ' + err.message)
     }
     setVerifyBusy(false)
-  }
-  if (status === 'success') {
-    return (
-      <main className="min-h-screen flex items-center justify-center px-6 py-16">
-        <div className="max-w-md w-full text-center">
-          <div className="w-12 h-12 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center mx-auto text-xl">✓</div>
-          <h1 className="mt-6 text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Thanks, {form.firstName}
-          </h1>
-          <p className="mt-3 text-[#5A5E66]">
-            Your email is verified. We've received your details and will be in touch shortly to talk through your project.
-          </p>
-        </div>
-      </main>
-    )
   }
 
   if (status === 'verifying') {
@@ -180,22 +168,35 @@ export default function Register() {
               required placeholder="20 Stuart Street, The Basin VIC 3154"
               className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
           </div>
-                  <div>
-          <label htmlFor="password" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Create a password</label>
-          <input id="password" type="password" value={form.password} onChange={(e) => field('password', e.target.value)}
-            required minLength={8} placeholder="At least 8 characters"
-            className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
-        </div>
 
           <div>
-            <label htmlFor="projectType" className="block text-sm font-medium text-[#4A4E56] mb-1.5">What are you planning?</label>
-            <select id="projectType" value={form.projectType} onChange={(e) => field('projectType', e.target.value)}
+            <label htmlFor="password" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Create a password</label>
+            <input id="password" type="password" value={form.password} onChange={(e) => field('password', e.target.value)}
+              required minLength={8} placeholder="At least 8 characters"
+              className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-[#4A4E56] mb-1.5">What are you planning?</label>
+            <select id="category" value={form.category} onChange={(e) => setCategory(e.target.value)}
               required
               className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]">
               <option value="">Select...</option>
-              {PROJECT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+              {Object.keys(CATEGORIES).map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+
+          {form.category && CATEGORIES[form.category].length > 1 && (
+            <div>
+              <label htmlFor="projectType" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Which type?</label>
+              <select id="projectType" value={form.projectType} onChange={(e) => field('projectType', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]">
+                <option value="">Select...</option>
+                {CATEGORIES[form.category].map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+          )}
 
           <label className="flex items-start gap-2 text-sm text-[#5A5E66]">
             <input type="checkbox" checked={form.consent}
@@ -213,7 +214,7 @@ export default function Register() {
             </div>
           )}
 
-          <button type="submit" disabled={status === 'saving'}
+          <button type="submit" disabled={status === 'saving' || !form.projectType}
             className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
             style={{ fontFamily: 'var(--font-heading)' }}>
             {status === 'saving' ? 'Submitting...' : 'Submit'}
