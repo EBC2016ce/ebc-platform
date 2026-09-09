@@ -62,13 +62,13 @@ export default function Register() {
       })
       const result = await res.json()
 
-           if (!res.ok) {
+                 if (!res.ok) {
         setVerifyError(result.error || 'Unknown error')
       } else {
         if (typeof window !== 'undefined' && window.fbq) {
           window.fbq('track', 'CompleteRegistration')
         }
-        setStatus('success')
+        window.location.href = '/book?customerId=' + customerId
       }
     } catch (err) {
       setVerifyError('Could not reach the server: ' + err.message)
