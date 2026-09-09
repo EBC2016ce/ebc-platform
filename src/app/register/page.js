@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState } from 'react'
 import Image from 'next/image'
+import { createClient } from '@/lib/supabase-browser'
 
 const CATEGORIES = {
   'Renovation': ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
@@ -65,12 +66,14 @@ export default function Register() {
       })
       const result = await res.json()
 
-      if (!res.ok) {
+                 if (!res.ok) {
         setVerifyError(result.error || 'Unknown error')
       } else {
         if (typeof window !== 'undefined' && window.fbq) {
           window.fbq('track', 'CompleteRegistration')
         }
+        const supabase = createClient()
+        await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
         window.location.href = '/design?customerId=' + customerId + '&projectType=' + encodeURIComponent(form.projectType)
       }
     } catch (err) {

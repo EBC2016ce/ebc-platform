@@ -4,8 +4,7 @@ import { useSearchParams } from 'next/navigation'
 
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
 const QUOTE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected', 'Expired']
-const PROJECT_STAGES = ['Won / Converted', 'Contract Signed', 'Pre-Construction', 'Construction Started', 'Practical Completion', 'Handover', 'Warranty', 'Completed']
-
+const PROJECT_STAGES = ['Won / Converted', 'Contract Signed', 'Pre-Construction', 'Construction Started', 'Practical Completion', 'Handover', 'Warranty','Completed']
 
 function LeadDetailContent() {
   const searchParams = useSearchParams()
@@ -21,9 +20,11 @@ function LeadDetailContent() {
   const [creatingQuote, setCreatingQuote] = useState(false)
   const [updateText, setUpdateText] = useState('')
   const [addingUpdate, setAddingUpdate] = useState(false)
-    const [milestonesList, setMilestonesList] = useState([])
+  const [files, setFiles] = useState([])
+  const [filesLoading, setFilesLoading] = useState(true)
+  const [milestonesList, setMilestonesList] = useState([])
 
-    const load = () => {
+  const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
       .then((res) => res.json())
       .then((result) => {
@@ -34,6 +35,12 @@ function LeadDetailContent() {
             .then((res) => res.json())
             .then((r) => setMilestonesList(r.milestonesList || []))
         }
+      })
+    fetch('/api/admin/files?customerId=' + customerId)
+      .then((res) => res.json())
+      .then((result) => {
+        setFiles(result.files || [])
+        setFilesLoading(false)
       })
   }
 
@@ -153,7 +160,7 @@ function LeadDetailContent() {
 
           <div className="mt-4">
             <p className="text-sm font-medium text-[#4A4E56] mb-2">Construction milestones</p>
-                        <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               {milestonesList.map((m) => {
                 const done = !!(project.milestones || {})[m]
                 return (
@@ -189,6 +196,29 @@ function LeadDetailContent() {
       )}
 
       <div className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6">
+        <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Uploaded Plans</h2>
+        {filesLoading ? (
+          <p className="text-sm text-[#5A5E66] mt-2">Loading files...</p>
+        ) : files.length === 0 ? (
+          <p className="text-sm text-[#5A5E66] mt-2">No files uploaded yet.</p>
+        ) : (
+          <div className="mt-3 flex flex-col gap-2">
+            {files.map((f, i) => (
+              <div key={i} className="flex justify-between items-center text-sm border-b border-[#EEE] pb-2">
+                <div>
+                  <span className="text-[#8B8D89]">{f.category}: </span>
+                  <span>{f.name}</span>
+                </div>
+                <a href={f.url} target="_blank" rel="noopener noreferrer" className="text-[#1B2A4A] underline text-xs">
+                  Download
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
         <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Design Brief</h2>
         {!design ? (
           <p className="text-sm text-[#5A5E66] mt-2">No design brief submitted yet.</p>

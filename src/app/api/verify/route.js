@@ -26,7 +26,7 @@ export async function POST(request) {
       return Response.json({ error: "That code doesn't match. Please check and try again." }, { status: 400 })
     }
 
-    const { error: updateError } = await supabaseAdmin
+        const { error: updateError } = await supabaseAdmin
       .from('customers')
       .update({ email_verified: true, verification_code: null })
       .eq('id', customerId)
@@ -35,7 +35,13 @@ export async function POST(request) {
       return Response.json({ error: updateError.message }, { status: 400 })
     }
 
-    return Response.json({ success: true })
+    const { data: fullCustomer } = await supabaseAdmin.from('customers').select('email').eq('id', customerId).single()
+    const { data: session } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'magiclink',
+      email: fullCustomer.email,
+    })
+
+    return Response.json({ success: true, actionLink: session?.properties?.action_link })
   } catch (err) {
     return Response.json({ error: 'Server error: ' + err.message }, { status: 500 })
   }

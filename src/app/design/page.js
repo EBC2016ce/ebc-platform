@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { STEPS_BY_TYPE } from '@/lib/designSteps'
+import PlanUploads from '@/components/PlanUploads'
 
 function Field({ field, value, onChange }) {
   if (field.type === 'select') {
@@ -199,7 +200,11 @@ function DesignPageContent() {
               Next
             </button>
           )}
-        </div>
+               </div>
+      </div>
+
+      <div className="mt-6">
+        <PlanUploads customerId={customerId} />
       </div>
     </div>
   )
