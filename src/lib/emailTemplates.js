@@ -153,3 +153,58 @@ export function bookingConfirmationEmailHtml({ firstName, appointmentType, dateL
 </html>
   `
 }
+
+export function reminderEmailHtml({ firstName, message, ctaText, ctaUrl }) {
+  return `
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:#F6F5F1; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F5F1; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:4px; overflow:hidden;">
+
+          <tr>
+            <td style="background-color:#1B2A4A; padding: 32px 40px; text-align:center;">
+              <img src="https://ebc-platform.vercel.app/logo.png" alt="EBC" width="56" height="56" style="display:block; margin: 0 auto;" />
+              <div style="color:#ffffff; font-size:18px; font-weight:bold; margin-top:14px;">
+                Easy Building &amp; Construction Pty Ltd.
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 36px 40px 24px 40px;">
+              <p style="font-size:16px; color:#171A1F; margin:0 0 16px 0;">Hi ${firstName},</p>
+              <p style="font-size:15px; color:#333333; line-height:1.6; margin:0 0 24px 0;">
+                ${message}
+              </p>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 20px;">
+                    <a href="${ctaUrl}" style="display:inline-block; background-color:#E1601F; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:4px; font-size:14px;">
+                      ${ctaText}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#F6F5F1; padding: 20px 40px; text-align:center; border-top:1px solid #D9D6CD;">
+              <p style="font-size:12px; color:#8B8D89; margin:0;">
+                Easy Building &amp; Construction Pty Ltd.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `
+}
