@@ -7,6 +7,7 @@ export async function POST(request) {
     return Response.json({ error: 'Not authorized' }, { status: 401 })
   }
 
+  try {
     const { weekdays, slots, maxPerDay } = await request.json()
 
     const { error } = await supabaseAdmin
