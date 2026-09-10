@@ -21,7 +21,7 @@ function Field({ field, value, onChange }) {
     return (
       <div>
         <label className="block text-sm font-medium text-[#4A4E56] mb-1.5">{field.label}</label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {field.options.map((o) => (
             <button key={o} type="button" onClick={() => onChange(o)}
               className={`px-3 py-1.5 rounded border text-sm ${value === o ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD]'}`}>
@@ -67,16 +67,19 @@ function Field({ field, value, onChange }) {
   )
 }
 
+const RENOVATION_TYPES = ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation']
+const NEW_BUILD_TYPES = ['New home', 'Knockdown & rebuild', 'Vacant land', 'Townhouse', 'Luxury home']
+
 function DesignPageContent() {
   const searchParams = useSearchParams()
   const customerId = searchParams.get('customerId')
   const projectType = searchParams.get('projectType')
 
-     const NEW_BUILD_LIKE = ['New home', 'Knockdown & rebuild', 'Townhouse', 'Luxury home', 'Full renovation', 'Vacant land']
-  const BATHROOM_LIKE = ['Bathroom renovation', 'Powder room']
-  const effectiveType = NEW_BUILD_LIKE.includes(projectType) ? 'New home'
-    : BATHROOM_LIKE.includes(projectType) ? 'Bathroom renovation'
+  const effectiveType = NEW_BUILD_TYPES.includes(projectType) ? 'New home'
+    : RENOVATION_TYPES.includes(projectType) ? 'Kitchen renovation'
     : projectType
+  const uploadCategoryGroup = RENOVATION_TYPES.includes(projectType) ? 'renovation' : 'newbuild'
+
   const steps = STEPS_BY_TYPE[effectiveType] || []
   const [stepIndex, setStepIndex] = useState(0)
   const [formData, setFormData] = useState({})
@@ -165,7 +168,7 @@ function DesignPageContent() {
     <div className="max-w-lg w-full">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Home Design Brief
+          Project Details
         </h1>
         <span className="text-xs text-[#8B8D89]">
           {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : ''}
@@ -200,11 +203,11 @@ function DesignPageContent() {
               Next
             </button>
           )}
-               </div>
+        </div>
       </div>
 
       <div className="mt-6">
-        <PlanUploads customerId={customerId} />
+        <PlanUploads customerId={customerId} categoryGroup={uploadCategoryGroup} />
       </div>
     </div>
   )

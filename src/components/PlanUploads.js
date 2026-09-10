@@ -2,14 +2,21 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 
-const CATEGORIES = [
-  'Working Drawings Plan', 'Engineering/Structural Plan', 'Landscape Plan',
-  'Soil Report', 'Energy Report', 'Planning Permit',
-  'Other 01', 'Other 02', 'Other 03', 'Other 04',
-]
+const CATEGORIES_BY_TYPE = {
+  'renovation': [
+    'Existing Floor Plan', 'Architectural Plan or Sketches', 'Structural Engineer Plan',
+    'Building/Planning Permit', 'Product/Material Selections', 'Inspiration Photos', 'Other',
+  ],
+  'newbuild': [
+    'Working Drawings Plan', 'Engineering/Structural Plan', 'Landscape Plan',
+    'Soil Report', 'Energy Report', 'Planning Permit',
+    'Other 01', 'Other 02', 'Other 03', 'Other 04',
+  ],
+}
 const MAX_SIZE_MB = 15
 
-export default function PlanUploads({ customerId }) {
+export default function PlanUploads({ customerId, categoryGroup = 'newbuild' }) {
+  const CATEGORIES = CATEGORIES_BY_TYPE[categoryGroup] || CATEGORIES_BY_TYPE.newbuild
   const [uploaded, setUploaded] = useState({})
   const [uploading, setUploading] = useState(null)
   const [error, setError] = useState('')
@@ -56,7 +63,7 @@ export default function PlanUploads({ customerId }) {
       <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
         Upload Related Plans
       </h2>
-      <p className="text-sm text-[#5A5E66] mt-1">Optional. Max {MAX_SIZE_MB}MB per file.</p>
+      <p className="text-sm text-[#5A5E66] mt-1">Optional. Max {MAX_SIZE_MB}MB per file. Bigger files? Email plans@easybcon.com.au</p>
 
       {error && (
         <div className="mt-3 text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">
