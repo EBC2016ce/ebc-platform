@@ -81,20 +81,25 @@ function DesignPageContent() {
   const uploadCategoryGroup = RENOVATION_TYPES.includes(projectType) ? 'renovation' : 'newbuild'
 
   const steps = STEPS_BY_TYPE[effectiveType] || []
-  const [stepIndex, setStepIndex] = useState(0)
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(true)
   const [saveStatus, setSaveStatus] = useState('idle')
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+    const [largeFilesLink, setLargeFilesLink] = useState('')
 
-  useEffect(() => {
+    useEffect(() => {
     if (!customerId) return
     fetch('/api/design?customerId=' + customerId)
       .then((res) => res.json())
       .then((result) => {
         if (result.design?.data) setFormData(result.design.data)
         setLoading(false)
+      })
+    fetch('/api/portal')
+      .then((res) => res.json())
+      .then((result) => {
+        if (result.customer?.large_files_link) setLargeFilesLink(result.customer.large_files_link)
       })
   }, [customerId])
 
@@ -115,10 +120,23 @@ function DesignPageContent() {
 
   const setField = (key, value) => setFormData((prev) => ({ ...prev, [key]: value }))
 
-  const submitDesign = async () => {
+    const submitDesign = async () => {
     setSubmitting(true)
     setErrorMessage('')
     try {
+           if (largeFilesLink.trim()) {
+        const linkRes = await fetch('/api/save-large-files-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customerId, link: largeFilesLink }),
+        })
+        if (!linkRes.ok) {
+          const linkResult = await linkRes.json()
+          setErrorMessage('Could not save your link: ' + (linkResult.error || 'Unknown error'))
+          setSubmitting(false)
+          return
+        }
+      }
       const res = await fetch('/api/design', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -161,9 +179,6 @@ function DesignPageContent() {
     )
   }
 
-  const step = steps[stepIndex]
-  const isLastStep = stepIndex === steps.length - 1
-
   return (
     <div className="max-w-lg w-full">
       <div className="flex justify-between items-center">
@@ -174,41 +189,49 @@ function DesignPageContent() {
           {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved' : ''}
         </span>
       </div>
-      <p className="text-sm text-[#5A5E66] mt-1">Step {stepIndex + 1} of {steps.length}: {step.title}</p>
+      <p className="text-sm text-[#5A5E66] mt-1">Answer the questions below, then upload any related files.</p>
 
-      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-5">
-        {step.fields.map((field) => (
-          <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
-        ))}
-
-        {errorMessage && (
-          <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">
-            {errorMessage}
+      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-8">
+        {steps.map((step) => (
+          <div key={step.id}>
+            <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
+            <div className="flex flex-col gap-4">
+              {step.fields.map((field) => (
+                <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
+              ))}
+            </div>
           </div>
-        )}
+        ))}
+      </div>
 
-        <div className="flex justify-between mt-4">
-          <button type="button" disabled={stepIndex === 0} onClick={() => setStepIndex((i) => i - 1)}
-            className="px-4 py-2 rounded border border-[#D9D6CD] text-sm disabled:opacity-40">
-            Back
-          </button>
-          {isLastStep ? (
-            <button type="button" onClick={submitDesign} disabled={submitting}
-              className="bg-[#E1601F] text-white font-medium rounded px-6 py-2 hover:opacity-90 disabled:opacity-50">
-              {submitting ? 'Submitting...' : 'Submit Brief'}
-            </button>
-          ) : (
-            <button type="button" onClick={() => setStepIndex((i) => i + 1)}
-              className="bg-[#1B2A4A] text-white font-medium rounded px-6 py-2 hover:opacity-90">
-              Next
-            </button>
-          )}
+                  <div className="mt-8 bg-[#FFF6F0] border border-[#E1601F] rounded-md p-5">
+        <p className="text-sm font-semibold text-[#1B2A4A]">Please upload your files:</p>
+        <ul className="mt-2 text-sm text-[#4A4E56] list-disc list-inside space-y-1">
+          <li>Max file size: 15MB per file</li>
+          <li>Bigger files? Share them via WeTransfer, Google Drive, or Dropbox, and paste the link below</li>
+        </ul>
+        <div className="mt-3">
+          <input value={largeFilesLink} onChange={(e) => setLargeFilesLink(e.target.value)}
+            placeholder="Paste your file-sharing link here (optional)"
+            className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <PlanUploads customerId={customerId} categoryGroup={uploadCategoryGroup} />
       </div>
+
+      {errorMessage && (
+        <div className="mt-4 text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">
+          {errorMessage}
+        </div>
+      )}
+
+      <button type="button" onClick={submitDesign} disabled={submitting}
+        className="w-full mt-6 bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+        style={{ fontFamily: 'var(--font-heading)' }}>
+        {submitting ? 'Submitting...' : 'Submit'}
+      </button>
     </div>
   )
 }

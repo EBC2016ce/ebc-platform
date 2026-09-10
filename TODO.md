@@ -2,13 +2,26 @@
 
 Everything from the original list is closed out, plus:
 
-- [x] Fixed a real security gap: previously ANY logged-in user (including
-      customers) could access staff admin pages/routes. Now a proper
-      staff_users allowlist exists (3 real staff accounts), and every
-      single admin page + API route checks against it via requireStaff().
-      Verified: staff access works, customer access is correctly blocked.
-      Fixed 10 Sept 2026.
+- [x] Fixed a real security gap: proper staff_users allowlist now controls
+      all admin access, not just "is anyone logged in". Fixed 10 Sept 2026.
 
-Future improvements (SMS, deeper analytics, Google Ads integration, SEO,
-audit logging) should be driven by real customer/staff usage now that
-the platform is live and secure.
+- [x] Simplified New Home and Renovation design briefs to short, focused
+      forms matching the client's sketches. Extension brief still uses the
+      earlier, longer version pending a finalized sketch. Fixed 10 Sept 2026.
+
+- [x] Added Google Places address autocomplete (server-side proxy, key
+      never exposed to browser) - applies to all registration forms since
+      they share one component. Fixed 10 Sept 2026.
+
+- [x] Extracted shared RegistrationForm component + built 3 campaign
+      landing pages (/renovation, /new-home, /extension) for social media
+      ad traffic, each skipping straight to the right category. Fixed
+      10 Sept 2026.
+
+- [ ] Still pending: convert the multi-step wizard design briefs into a
+      single-page layout (all questions + 13-item file upload + one
+      Submit button, per the client's sketch). Need to clarify exact file
+      category count/list before rebuilding.
+
+- [ ] Extension design brief sketch not yet finalized by client - current
+      version may need revisiting once that sketch is ready.

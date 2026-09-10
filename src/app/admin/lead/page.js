@@ -217,7 +217,14 @@ function LeadDetailContent() {
           </div>
         </div>
       )}
-
+      {customer.large_files_link && (
+        <div className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6">
+          <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Large Files Link</h2>
+          <a href={customer.large_files_link} target="_blank" rel="noopener noreferrer" className="text-sm text-[#1B2A4A] underline break-all">
+            {customer.large_files_link}
+          </a>
+        </div>
+      )}
       <div className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6">
         <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Messages</h2>
         <div className="mt-3 flex flex-col gap-3 max-h-80 overflow-y-auto">

@@ -5,12 +5,13 @@ import { createClient } from '@/lib/supabase-browser'
 const CATEGORIES_BY_TYPE = {
   'renovation': [
     'Existing Floor Plan', 'Architectural Plan or Sketches', 'Structural Engineer Plan',
-    'Building/Planning Permit', 'Product/Material Selections', 'Inspiration Photos', 'Other',
+    'Building/Planning Permit', 'Product/Material Selections', 'Inspiration Photos',
+    'Other 01', 'Other 02', 'Other 03', 'Other 04', 'Other 05', 'Other 06', 'Other 07',
   ],
   'newbuild': [
     'Working Drawings Plan', 'Engineering/Structural Plan', 'Landscape Plan',
     'Soil Report', 'Energy Report', 'Planning Permit',
-    'Other 01', 'Other 02', 'Other 03', 'Other 04',
+    'Other 01', 'Other 02', 'Other 03', 'Other 04', 'Other 05', 'Other 06', 'Other 07',
   ],
 }
 const MAX_SIZE_MB = 15
