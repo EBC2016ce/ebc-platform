@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { STEPS_BY_TYPE } from '@/lib/designSteps'
 import PlanUploads from '@/components/PlanUploads'
+import AddressAutocompleteFields from '@/components/AddressAutocompleteFields'
 
 function Field({ field, value, onChange }) {
   if (field.type === 'select') {
@@ -192,10 +193,13 @@ function DesignPageContent() {
       <p className="text-sm text-[#5A5E66] mt-1">Answer the questions below, then upload any related files.</p>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-8">
-        {steps.map((step) => (
+                {steps.map((step) => (
           <div key={step.id}>
             <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
             <div className="flex flex-col gap-4">
+              {step.id === 'address' && (
+                <AddressAutocompleteFields formData={formData} onFieldChange={setField} />
+              )}
               {step.fields.map((field) => (
                 <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
               ))}
