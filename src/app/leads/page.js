@@ -1,15 +1,15 @@
-﻿import { createClient } from '@/lib/supabase-server'
+﻿import { requireStaff } from '@/lib/checkStaff'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 
 export default async function Leads() {
-  const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const { authorized } = await requireStaff()
+  if (!authorized) {
     redirect('/login')
   }
 
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('customers')
     .select('*')

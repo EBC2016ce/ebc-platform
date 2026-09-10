@@ -1,13 +1,11 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
-import { createClient } from '@/lib/supabase-server'
+import { requireStaff } from '@/lib/checkStaff'
 
 export async function POST(request) {
-  try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return Response.json({ error: 'Not authorized' }, { status: 401 })
-    }
+  const { authorized } = await requireStaff()
+  if (!authorized) {
+    return Response.json({ error: 'Not authorized' }, { status: 401 })
+  }
 
     const { weekdays, slots, maxPerDay } = await request.json()
 

@@ -1,5 +1,5 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
-import { createClient } from '@/lib/supabase-server'
+import { requireStaff } from '@/lib/checkStaff'
 
 const MILESTONES_BY_TYPE = {
   "New home": ["Site preparation", "Slab", "Frame", "Roof", "Lock-up", "Rough-in", "Plaster", "Fixing", "Painting", "Flooring", "Final inspections", "Handover"],
@@ -9,9 +9,8 @@ const MILESTONES_BY_TYPE = {
 }
 
 export async function POST(request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const { authorized } = await requireStaff()
+  if (!authorized) {
     return Response.json({ error: 'Not authorized' }, { status: 401 })
   }
 

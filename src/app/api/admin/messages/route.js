@@ -1,10 +1,9 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
-import { createClient } from '@/lib/supabase-server'
+import { requireStaff } from '@/lib/checkStaff'
 
 export async function GET(request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return Response.json({ error: 'Not authorized' }, { status: 401 })
+  const { authorized } = await requireStaff()
+  if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })
 
   const { searchParams } = new URL(request.url)
   const customerId = searchParams.get('customerId')
@@ -15,9 +14,8 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return Response.json({ error: 'Not authorized' }, { status: 401 })
+  const { authorized } = await requireStaff()
+  if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })
 
   const { customerId, body } = await request.json()
   const { error } = await supabaseAdmin.from('messages').insert([{ customer_id: customerId, sender: 'staff', body }])

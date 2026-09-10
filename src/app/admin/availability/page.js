@@ -1,12 +1,11 @@
-﻿import { createClient } from '@/lib/supabase-server'
+﻿import { requireStaff } from '@/lib/checkStaff'
 import { redirect } from 'next/navigation'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import AvailabilityForm from './AvailabilityForm'
 
 export default async function AvailabilityPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const { authorized } = await requireStaff()
+  if (!authorized) {
     redirect('/login')
   }
 

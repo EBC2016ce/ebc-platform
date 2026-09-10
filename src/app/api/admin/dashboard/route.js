@@ -1,13 +1,11 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
-import { createClient } from '@/lib/supabase-server'
+import { requireStaff } from '@/lib/checkStaff'
 
 export async function GET() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
+  const { authorized } = await requireStaff()
+  if (!authorized) {
     return Response.json({ error: 'Not authorized' }, { status: 401 })
   }
-
     const { data: customers } = await supabaseAdmin.from('customers').select('id, first_name, last_name, email, lead_status, project_type, created_at, reminded_design, reminded_booking')
   const { data: quotes } = await supabaseAdmin.from('quotes').select('amount, status')
 
