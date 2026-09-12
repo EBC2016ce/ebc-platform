@@ -6,7 +6,48 @@
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.5;
 }
+
+/* ===== EBC design tokens (added by ebc-apply-changes.ps1) ===== */
+
+:root {
+  --paper: #EDEAE3;
+  --paper-2: #E4E0D6;
+  --ink: #211F1C;
+  --ink-soft: #5A564E;
+  --terracotta: #B24A2E;
+  --blueprint: #1F3A52;
+  --timber: #A9814F;
+  --line: #D3CDBF;
+  --white: #FBFAF7;
+  --ok: #4F7A52;
+  --warn: #B08A2E;
+}
+
+* { box-sizing: border-box; }
+
+h1, h2, h3, h4, .display {
+  font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 640px) { .wrap { padding: 0 20px; } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 13px 24px; border-radius: 2px; font-weight: 600; font-size: 14.5px;
+  cursor: pointer; border: 1px solid transparent; transition: opacity .15s, transform .1s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--terracotta); color: var(--white); }
+.btn-primary:hover { opacity: .9; }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-ghost:hover { background: var(--paper); }
+/* ===== end EBC design tokens ===== */
