@@ -11,7 +11,7 @@ const CATEGORIES = {
   'Extension': ['Extension'],
 }
 
-export default function RegistrationForm({ lockedCategory, title, subtitle }) {
+export default function RegistrationForm({ lockedCategory, title, subtitle, hideLogo }) {
   const initialCategory = lockedCategory || ''
   const initialOptions = lockedCategory ? CATEGORIES[lockedCategory] : []
   const initialType = initialOptions.length === 1 ? initialOptions[0] : ''
@@ -26,10 +26,18 @@ export default function RegistrationForm({ lockedCategory, title, subtitle }) {
   const [code, setCode] = useState('')
   const [verifyBusy, setVerifyBusy] = useState(false)
   const [verifyError, setVerifyError] = useState('')
+  const [resendStatus, setResendStatus] = useState('idle') // idle | sending | sent
+  const [resendCooldown, setResendCooldown] = useState(0)
 
   useEffect(() => {
     saveUtmFromUrl()
   }, [])
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [resendCooldown])
 
   const field = (key, value) => setForm({ ...form, [key]: value })
 
@@ -97,9 +105,42 @@ export default function RegistrationForm({ lockedCategory, title, subtitle }) {
     setVerifyBusy(false)
   }
 
+  const handleResend = async () => {
+    setResendStatus('sending')
+    setVerifyError('')
+    try {
+      const res = await fetch('/api/resend-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId }),
+      })
+      const result = await res.json()
+
+      if (!res.ok) {
+        setVerifyError(result.error || 'Could not resend the code.')
+        setResendStatus('idle')
+      } else {
+        setResendStatus('sent')
+        setResendCooldown(30)
+      }
+    } catch (err) {
+      setVerifyError('Could not reach the server: ' + err.message)
+      setResendStatus('idle')
+    }
+  }
+
   if (status === 'verifying') {
     return (
       <div className="max-w-md w-full">
+        {!hideLogo && (
+          <div className="flex flex-col items-center text-center mb-8">
+            <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
+            <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+              Easy Building &amp; Construction Pty Ltd
+            </span>
+          </div>
+        )}
+
         <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
           Check your email
         </h1>
@@ -113,6 +154,24 @@ export default function RegistrationForm({ lockedCategory, title, subtitle }) {
             <input id="code" value={code} onChange={(e) => setCode(e.target.value)}
               required placeholder="123456" maxLength={6}
               className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+          </div>
+
+          <div className="text-center -mt-2">
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resendStatus === 'sending' || resendCooldown > 0}
+              className="text-sm font-medium text-[#1B2A4A] underline decoration-[#1B2A4A]/40 hover:decoration-[#1B2A4A] disabled:opacity-50 disabled:no-underline transition"
+            >
+              {resendCooldown > 0
+                ? `Resend code (${resendCooldown}s)`
+                : resendStatus === 'sending'
+                ? 'Sending...'
+                : "Didn't receive a code? Resend code"}
+            </button>
+            {resendStatus === 'sent' && (
+              <p className="mt-1.5 text-xs text-[#2E7D4F]">A new code has been sent to {form.email}.</p>
+            )}
           </div>
 
           {verifyError && (
@@ -133,15 +192,17 @@ export default function RegistrationForm({ lockedCategory, title, subtitle }) {
 
   return (
     <div className="max-w-md w-full">
-      <div className="flex flex-col items-center text-center mb-10">
-        <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
-        <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Easy Building &amp; Construction Pty Ltd
-        </span>
-        <span className="mt-1 text-[11px] font-semibold tracking-wider text-[#8A8D94]">
-          REGISTERED BUILDING PRACTITIONERS
-        </span>
-      </div>
+      {!hideLogo && (
+        <div className="flex flex-col items-center text-center mb-10">
+          <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
+          <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+            Easy Building &amp; Construction Pty Ltd
+          </span>
+          <span className="mt-1 text-[11px] font-semibold tracking-wider text-[#8A8D94]">
+            REGISTERED BUILDING PRACTITIONERS
+          </span>
+        </div>
+      )}
 
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
         {title || 'Register your project'}
