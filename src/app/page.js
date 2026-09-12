@@ -355,9 +355,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-[#8A8D94] text-center mt-6">
-            Photos shown are reused from current project photography as placeholders — swap in individual project photos as they become available.
-          </p>
         </div>
       </section>
 
@@ -400,7 +397,7 @@ export default function Home() {
             ))}
           </div>
           <p className="text-xs text-[#8A8D94] text-center mt-6">
-            Blog section placeholder — write real posts and connect this section once content is ready.
+            New articles are on the way — check back soon.
           </p>
         </div>
       </section>

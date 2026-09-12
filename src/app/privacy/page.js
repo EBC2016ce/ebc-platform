@@ -30,7 +30,7 @@ export default function Privacy() {
           any time by contacting us directly.
         </p>
         <p>
-          This policy may be updated from time to time. Last updated: {new Date().toLocaleDateString('en-AU')}.
+          This policy may be updated from time to time. Last updated: 12 September 2026.
         </p>
       </div>
     </main>
