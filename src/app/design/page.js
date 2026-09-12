@@ -89,6 +89,7 @@ function DesignPageContent() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
     const [largeFilesLink, setLargeFilesLink] = useState('')
+    const [registeredAddress, setRegisteredAddress] = useState('')
 
     useEffect(() => {
     if (!customerId) return
@@ -102,6 +103,7 @@ function DesignPageContent() {
       .then((res) => res.json())
       .then((result) => {
         if (result.customer?.large_files_link) setLargeFilesLink(result.customer.large_files_link)
+        if (result.customer?.address) setRegisteredAddress(result.customer.address)
       })
   }, [customerId])
 
@@ -194,19 +196,42 @@ function DesignPageContent() {
       <p className="text-sm text-[#5A5E66] mt-1">Answer the questions below, then upload any related files.</p>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-8">
-                {steps.map((step) => (
-          <div key={step.id}>
-            <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
-            <div className="flex flex-col gap-4">
-              {step.id === 'address' && (
-                <AddressAutocompleteFields formData={formData} onFieldChange={setField} />
-              )}
-              {step.fields.map((field) => (
-                <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
-              ))}
+                {steps.map((step) => {
+          const isAddressStep = step.id === 'address'
+          const hasRegisteredAddress = isAddressStep && !!registeredAddress
+          const sameAsRegistered = hasRegisteredAddress && formData.addressSameAsRegistered === 'Yes'
+          const showManualAddress = isAddressStep && (!hasRegisteredAddress || formData.addressSameAsRegistered === 'No')
+
+          return (
+            <div key={step.id}>
+              <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
+              <div className="flex flex-col gap-4">
+                {hasRegisteredAddress && (
+                  <div>
+                    <label className="block text-sm font-medium text-[#4A4E56] mb-1.5">
+                      Is the project address the same as the address you registered with?
+                    </label>
+                    <p className="text-sm text-[#5A5E66] mb-2">{registeredAddress}</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {['Yes', 'No'].map((o) => (
+                        <button key={o} type="button" onClick={() => setField('addressSameAsRegistered', o)}
+                          className={`px-3 py-1.5 rounded border text-sm ${formData.addressSameAsRegistered === o ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD]'}`}>
+                          {o}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {showManualAddress && (
+                  <AddressAutocompleteFields formData={formData} onFieldChange={setField} />
+                )}
+                {!sameAsRegistered && step.fields.map((field) => (
+                  <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
                   <div className="mt-8 bg-[#FFF6F0] border border-[#E1601F] rounded-md p-5">
