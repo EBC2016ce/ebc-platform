@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SiteNav() {
   return (
@@ -9,10 +10,18 @@ export default function SiteNav() {
     }}>
       <div className="wrap" style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "18px 0",
+        padding: "12px 0",
       }}>
-        <Link href="/" style={{ fontSize: 19, fontWeight: 700, color: "var(--ink)" }}>
-          EBC <span style={{ color: "var(--terracotta)" }}>&middot;</span> Easy Building &amp; Construction
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} style={{ height: 44, width: "auto" }} />
+          <span style={{ display: "block" }}>
+            <span style={{ display: "block", fontSize: 17, fontWeight: 700, color: "var(--ink)", lineHeight: 1.15 }}>
+              Easy Building &amp; Construction Pty Ltd
+            </span>
+            <span style={{ display: "block", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.06em", color: "var(--ink-soft)" }}>
+              REGISTERED BUILDING PRACTITIONERS
+            </span>
+          </span>
         </Link>
         <div style={{ display: "flex", gap: 34, alignItems: "center", fontSize: 14.5, fontWeight: 500 }}>
           <Link href="/new-home" style={{ color: "var(--ink-soft)" }}>New Home</Link>

@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Image from 'next/image'
 
 function BookPageContent() {
   const searchParams = useSearchParams()
@@ -135,6 +136,12 @@ function BookPageContent() {
 export default function BookPage() {
   return (
     <main className="min-h-screen flex flex-col items-center px-6 py-16">
+      <div className="flex flex-col items-center mb-8">
+        <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
+        <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+          Easy Building &amp; Construction Pty Ltd
+        </span>
+      </div>
       <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
         <BookPageContent />
       </Suspense>

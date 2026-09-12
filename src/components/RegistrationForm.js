@@ -133,14 +133,15 @@ export default function RegistrationForm({ lockedCategory, title, subtitle }) {
 
   return (
     <div className="max-w-md w-full">
-      {!lockedCategory && (
-        <div className="flex flex-col items-center text-center mb-10">
-          <Image src="/logo.png" alt="EBC logo" width={72} height={72} />
-          <span className="mt-4 text-xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Easy Building &amp; Construction Pty Ltd.
-          </span>
-        </div>
-      )}
+      <div className="flex flex-col items-center text-center mb-10">
+        <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
+        <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+          Easy Building &amp; Construction Pty Ltd
+        </span>
+        <span className="mt-1 text-[11px] font-semibold tracking-wider text-[#8A8D94]">
+          REGISTERED BUILDING PRACTITIONERS
+        </span>
+      </div>
 
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
         {title || 'Register your project'}

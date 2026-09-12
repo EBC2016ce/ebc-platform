@@ -1,5 +1,6 @@
 ﻿'use client'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 export default function Portal() {
   const [data, setData] = useState(null)
@@ -41,6 +42,12 @@ export default function Portal() {
 
   return (
     <main className="max-w-2xl mx-auto px-6 py-16">
+      <div className="flex items-center gap-3 mb-8">
+        <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-12 w-auto" />
+        <span className="text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+          Easy Building &amp; Construction Pty Ltd
+        </span>
+      </div>
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
         Welcome, {customer.first_name}
       </h1>

@@ -112,13 +112,13 @@ export default function Home() {
       <header className="sticky top-0 bg-white/95 backdrop-blur-sm z-40 border-b border-[#EAE7E0] shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-6 flex-wrap">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="EBC logo" width={52} height={52} className="rounded-full" />
+            <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" priority />
             <span>
-              <span className="block font-semibold text-[#1B2A4A] text-lg leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+              <span className="block font-bold text-[#1B2A4A] text-lg leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                 Easy Building &amp; Construction Pty Ltd
               </span>
               <span className="block text-[11px] font-semibold tracking-wider text-[#8A8D94]">
-                QUALITY&nbsp;&nbsp;|&nbsp;&nbsp;COMMITMENT&nbsp;&nbsp;|&nbsp;&nbsp;ON TIME
+                REGISTERED BUILDING PRACTITIONERS
               </span>
             </span>
           </Link>
@@ -137,21 +137,23 @@ export default function Home() {
 
       {/* Hero: single full-bleed photo, light overlay for readability */}
       <section className="relative h-[560px] md:h-[640px] overflow-hidden">
-        <Image src="/hero-reference.jpg" alt="Recently completed EBC home" fill className="object-cover" priority />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/40 via-white/10 to-transparent md:from-white/30 md:via-transparent md:to-transparent" />
-        <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col justify-center">
-          <span className="text-sm font-semibold text-[#1B2A4A]/70 tracking-wide mb-3">YOUR VISION &middot; OUR EXPERTISE</span>
-          <h1 className="text-4xl md:text-6xl font-semibold text-[#1B2A4A] leading-tight max-w-xl" style={{ fontFamily: 'var(--font-heading)' }}>
-            Quality Building &amp; Renovations{' '}
-            <span className="text-[#3C6FB0]">Across Victoria</span>
-          </h1>
-          <p className="mt-5 text-lg text-[#3A3F4A] max-w-md leading-relaxed">
-            From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
-          </p>
-          <Link href="/register" className="mt-8 inline-flex items-center gap-2 w-fit bg-[#1B2A4A] text-white font-medium rounded-full px-7 py-3.5 hover:bg-[#13203A] hover:shadow-xl hover:shadow-[#1B2A4A]/20 transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
-            Get a Free Quote
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-          </Link>
+        <Image src="/hero.jpg" alt="Modern EBC home build in Melbourne" fill className="object-cover" priority />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/5" />
+        <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex items-center">
+          <div className="max-w-xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
+            <span className="block text-sm font-semibold text-[#FFB088] tracking-wide mb-3">YOUR VISION &middot; OUR EXPERTISE</span>
+            <h1 className="text-4xl md:text-6xl font-semibold text-white leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+              Quality Building &amp; Renovations{' '}
+              <span className="text-[#8FC2FF]">Across Victoria</span>
+            </h1>
+            <p className="mt-5 text-lg text-white/90 leading-relaxed">
+              From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
+            </p>
+            <Link href="/register" className="mt-8 inline-flex items-center gap-2 w-fit bg-[#E1601F] text-white font-medium rounded-full px-7 py-3.5 hover:opacity-90 hover:shadow-xl hover:shadow-[#E1601F]/30 hover:-translate-y-0.5 transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+              Get a Free Quote
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </Link>
+          </div>
         </div>
       </section>
 

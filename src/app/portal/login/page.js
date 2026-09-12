@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase-browser'
 
 export default function PortalLogin() {
@@ -27,7 +28,13 @@ export default function PortalLogin() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-16">
       <div className="max-w-sm w-full">
-        <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+        <div className="flex flex-col items-center mb-6">
+          <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" />
+          <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+            Easy Building &amp; Construction Pty Ltd
+          </span>
+        </div>
+        <h1 className="text-2xl font-semibold text-[#1B2A4A] text-center" style={{ fontFamily: 'var(--font-heading)' }}>
           Log in to your project
         </h1>
         <form onSubmit={handleLogin} className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-4">

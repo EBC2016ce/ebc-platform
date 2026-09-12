@@ -1,10 +1,17 @@
+import Image from 'next/image'
+
 export default function Privacy() {
   return (
     <main className="max-w-2xl mx-auto px-6 py-16 text-[#171A1F]">
+      <div className="flex items-center gap-3 mb-8">
+        <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-12 w-auto" />
+        <span className="text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+          Easy Building &amp; Construction Pty Ltd
+        </span>
+      </div>
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
         Privacy Policy
       </h1>
-      <p className="mt-2 text-sm text-[#5A5E66]">Easy Building &amp; Construction Pty Ltd.</p>
 
       <div className="mt-8 flex flex-col gap-6 text-sm leading-relaxed text-[#333]">
         <p>

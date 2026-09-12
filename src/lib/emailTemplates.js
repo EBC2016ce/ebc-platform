@@ -31,10 +31,10 @@ export function verificationEmailHtml({ firstName, code, projectType }) {
         <table width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:4px; overflow:hidden;">
 
           <tr>
-            <td style="background-color:#1B2A4A; padding: 32px 40px; text-align:center;">
-              <img src="https://ebc-platform.vercel.app/logo.png" alt="EBC" width="56" height="56" style="display:block; margin: 0 auto;" />
-              <div style="color:#ffffff; font-size:18px; font-weight:bold; margin-top:14px;">
-                Easy Building &amp; Construction Pty Ltd.
+            <td style="background-color:#ffffff; padding: 28px 40px 20px 40px; text-align:center; border-bottom:1px solid #EAE7E0;">
+              <img src="https://easybcon.com.au/logo-icon.png" alt="EBC" width="110" height="54" style="display:block; margin: 0 auto;" />
+              <div style="color:#1B2A4A; font-size:19px; font-weight:bold; margin-top:14px; font-family: Arial, Helvetica, sans-serif;">
+                Easy Building &amp; Construction Pty Ltd
               </div>
             </td>
           </tr>
@@ -71,7 +71,7 @@ export function verificationEmailHtml({ firstName, code, projectType }) {
           <tr>
             <td style="background-color:#F6F5F1; padding: 20px 40px; text-align:center; border-top:1px solid #D9D6CD;">
               <p style="font-size:12px; color:#8B8D89; margin:0;">
-                Easy Building &amp; Construction Pty Ltd. — this is a transactional email regarding your registration.
+                This is a transactional email regarding your registration.
               </p>
             </td>
           </tr>
@@ -96,10 +96,10 @@ export function bookingConfirmationEmailHtml({ firstName, appointmentType, dateL
         <table width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:4px; overflow:hidden;">
 
           <tr>
-            <td style="background-color:#1B2A4A; padding: 32px 40px; text-align:center;">
-              <img src="https://ebc-platform.vercel.app/logo.png" alt="EBC" width="56" height="56" style="display:block; margin: 0 auto;" />
-              <div style="color:#ffffff; font-size:18px; font-weight:bold; margin-top:14px;">
-                Easy Building &amp; Construction Pty Ltd.
+            <td style="background-color:#ffffff; padding: 28px 40px 20px 40px; text-align:center; border-bottom:1px solid #EAE7E0;">
+              <img src="https://easybcon.com.au/logo-icon.png" alt="EBC" width="110" height="54" style="display:block; margin: 0 auto;" />
+              <div style="color:#1B2A4A; font-size:19px; font-weight:bold; margin-top:14px; font-family: Arial, Helvetica, sans-serif;">
+                Easy Building &amp; Construction Pty Ltd
               </div>
             </td>
           </tr>
@@ -140,7 +140,7 @@ export function bookingConfirmationEmailHtml({ firstName, appointmentType, dateL
           <tr>
             <td style="background-color:#F6F5F1; padding: 20px 40px; text-align:center; border-top:1px solid #D9D6CD;">
               <p style="font-size:12px; color:#8B8D89; margin:0;">
-                Easy Building &amp; Construction Pty Ltd. — this is a transactional email regarding your booking.
+                This is a transactional email regarding your booking.
               </p>
             </td>
           </tr>
@@ -165,10 +165,10 @@ export function reminderEmailHtml({ firstName, message, ctaText, ctaUrl }) {
         <table width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:4px; overflow:hidden;">
 
           <tr>
-            <td style="background-color:#1B2A4A; padding: 32px 40px; text-align:center;">
-              <img src="https://ebc-platform.vercel.app/logo.png" alt="EBC" width="56" height="56" style="display:block; margin: 0 auto;" />
-              <div style="color:#ffffff; font-size:18px; font-weight:bold; margin-top:14px;">
-                Easy Building &amp; Construction Pty Ltd.
+            <td style="background-color:#ffffff; padding: 28px 40px 20px 40px; text-align:center; border-bottom:1px solid #EAE7E0;">
+              <img src="https://easybcon.com.au/logo-icon.png" alt="EBC" width="110" height="54" style="display:block; margin: 0 auto;" />
+              <div style="color:#1B2A4A; font-size:19px; font-weight:bold; margin-top:14px; font-family: Arial, Helvetica, sans-serif;">
+                Easy Building &amp; Construction Pty Ltd
               </div>
             </td>
           </tr>
@@ -195,7 +195,7 @@ export function reminderEmailHtml({ firstName, message, ctaText, ctaUrl }) {
           <tr>
             <td style="background-color:#F6F5F1; padding: 20px 40px; text-align:center; border-top:1px solid #D9D6CD;">
               <p style="font-size:12px; color:#8B8D89; margin:0;">
-                Easy Building &amp; Construction Pty Ltd.
+                Melbourne, Victoria — reply to this email any time.
               </p>
             </td>
           </tr>
