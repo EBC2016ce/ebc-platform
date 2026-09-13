@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
 const QUOTE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected', 'Expired']
@@ -155,6 +156,9 @@ function LeadDetailContent() {
 
   return (
     <div className="max-w-2xl w-full">
+      <Link href="/leads" className="inline-flex items-center gap-1 text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition mb-4">
+        ← Back to Leads
+      </Link>
       <div className="flex justify-between items-start flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -360,7 +364,7 @@ function LeadDetailContent() {
 
 export default function LeadDetailPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center px-6 py-16">
+    <main className="min-h-screen flex flex-col items-center px-6 py-16 bg-[#F6F5F1]">
       <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
         <LeadDetailContent />
       </Suspense>

@@ -1,50 +1,181 @@
-﻿import { requireStaff } from '@/lib/checkStaff'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase-server'
+'use client'
+import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase-browser'
 
-export default async function Leads() {
-  const { authorized } = await requireStaff()
-  if (!authorized) {
-    redirect('/login')
+const CATEGORY_MAP = {
+  'New Building': ['New home'],
+  'Renovation': ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
+  'Extension': ['Extension'],
+}
+
+function categorize(projectType) {
+  for (const [category, types] of Object.entries(CATEGORY_MAP)) {
+    if (types.includes(projectType)) return category
+  }
+  return 'Other'
+}
+
+const STATUS_COLORS = {
+  New: 'bg-[#3C6FB0]/10 text-[#3C6FB0]',
+  Contacted: 'bg-[#8A8D94]/10 text-[#5A5E66]',
+  Qualified: 'bg-[#8A8D94]/10 text-[#5A5E66]',
+  Quoted: 'bg-[#E1601F]/10 text-[#E1601F]',
+  Negotiation: 'bg-[#E1601F]/10 text-[#E1601F]',
+  Won: 'bg-[#2E7D4F]/10 text-[#2E7D4F]',
+  Lost: 'bg-[#A23B2E]/10 text-[#A23B2E]',
+}
+
+function LeadsTable({ title, leads }) {
+  if (leads.length === 0) return null
+  return (
+    <div className="bg-white border border-[#D9D6CD] rounded-md overflow-hidden mb-6">
+      <div className="px-5 py-3 bg-[#F6F5F1] border-b border-[#D9D6CD] flex items-center justify-between">
+        <h2 className="font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>{title}</h2>
+        <span className="text-xs text-[#8A8D94]">{leads.length} lead{leads.length === 1 ? '' : 's'}</span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-[#8A8D94] uppercase tracking-wide">
+              <th className="px-5 py-2 font-medium">Name</th>
+              <th className="px-5 py-2 font-medium">Email</th>
+              <th className="px-5 py-2 font-medium">Mobile</th>
+              <th className="px-5 py-2 font-medium">Project</th>
+              <th className="px-5 py-2 font-medium">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leads.map((c) => (
+              <tr key={c.id} className={`border-t border-[#EEE] hover:bg-[#F6F5F1] transition ${c.hasUnread ? 'bg-[#FFF6F0]' : ''}`}>
+                <td className="px-5 py-3">
+                  <Link href={'/admin/lead?customerId=' + c.id} className="font-medium text-[#1B2A4A] hover:text-[#E1601F] transition flex items-center gap-2">
+                    {c.hasUnread && <span className="w-2 h-2 rounded-full bg-[#E1601F] shrink-0" title="Unread message" />}
+                    {c.first_name} {c.last_name}
+                  </Link>
+                </td>
+                <td className="px-5 py-3 text-[#5A5E66]">{c.email}</td>
+                <td className="px-5 py-3 text-[#5A5E66]">{c.mobile}</td>
+                <td className="px-5 py-3 text-[#5A5E66]">{c.project_type}</td>
+                <td className="px-5 py-3">
+                  <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${STATUS_COLORS[c.lead_status] || 'bg-[#8A8D94]/10 text-[#5A5E66]'}`}>
+                    {c.lead_status || 'New'}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+export default function Leads() {
+  const [leads, setLeads] = useState(null)
+  const [error, setError] = useState('')
+  const [reportBusy, setReportBusy] = useState(false)
+  const [reportSent, setReportSent] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    fetch('/api/admin/leads')
+      .then((res) => {
+        if (res.status === 401) { router.push('/login'); return null }
+        return res.json()
+      })
+      .then((result) => {
+        if (!result) return
+        if (result.error) setError(result.error)
+        else setLeads(result.leads || [])
+      })
+  }, [router])
+
+  const grouped = useMemo(() => {
+    const g = { 'New Building': [], Renovation: [], Extension: [], Other: [] }
+    for (const c of leads || []) {
+      g[categorize(c.project_type)].push(c)
+    }
+    return g
+  }, [leads])
+
+  const stats = useMemo(() => {
+    const all = leads || []
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+    return {
+      total: all.length,
+      newThisWeek: all.filter((c) => new Date(c.created_at).getTime() > weekAgo).length,
+      won: all.filter((c) => c.lead_status === 'Won').length,
+      unread: all.filter((c) => c.hasUnread).length,
+    }
+  }, [leads])
+
+  const emailReport = async () => {
+    setReportBusy(true)
+    setReportSent(false)
+    await fetch('/api/admin/leads-report', { method: 'POST' })
+    setReportBusy(false)
+    setReportSent(true)
   }
 
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('customers')
-    .select('*')
-    .order('id', { ascending: false })
+  const logOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   return (
-    <main style={{ padding: '40px', fontFamily: 'sans-serif' }}>
-      <h1>Leads</h1>
-      {error && <p style={{ color: 'red' }}>Error: {error.message}</p>}
-      <table style={{ borderCollapse: 'collapse', width: '100%' }}>
-        <thead>
-          <tr>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Name</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Email</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Mobile</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Project Type</th>
-            <th style={{ textAlign: 'left', borderBottom: '1px solid #ccc', padding: '8px' }}>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data && data.map((c) => (
-            <tr key={c.id}>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-                <Link href={'/admin/lead?customerId=' + c.id} style={{ color: '#1B2A4A', fontWeight: 600 }}>
-                  {c.first_name} {c.last_name}
-                </Link>
-              </td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.email}</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.mobile}</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.project_type}</td>
-              <td style={{ padding: '8px', borderBottom: '1px solid #eee' }}>{c.lead_status || 'New'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <main className="min-h-screen bg-[#F6F5F1] px-6 py-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Leads</h1>
+            <p className="text-sm text-[#5A5E66] mt-1">All registered projects, grouped by type.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={emailReport} disabled={reportBusy}
+              className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition disabled:opacity-50">
+              {reportBusy ? 'Sending...' : reportSent ? 'Report sent ✓' : 'Email me this report'}
+            </button>
+            <button onClick={logOut} className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">Log out</button>
+          </div>
+        </div>
+
+        {error && <div className="mb-6 text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-4 py-3">{error}</div>}
+
+        {!leads ? (
+          <p className="text-sm text-[#5A5E66]">Loading leads...</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white border border-[#D9D6CD] rounded-md p-4">
+                <div className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>{stats.total}</div>
+                <div className="text-xs text-[#8A8D94] mt-1">Total leads</div>
+              </div>
+              <div className="bg-white border border-[#D9D6CD] rounded-md p-4">
+                <div className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>{stats.newThisWeek}</div>
+                <div className="text-xs text-[#8A8D94] mt-1">New this week</div>
+              </div>
+              <div className="bg-white border border-[#D9D6CD] rounded-md p-4">
+                <div className="text-2xl font-semibold text-[#2E7D4F]" style={{ fontFamily: 'var(--font-heading)' }}>{stats.won}</div>
+                <div className="text-xs text-[#8A8D94] mt-1">Won</div>
+              </div>
+              <div className="bg-white border border-[#D9D6CD] rounded-md p-4">
+                <div className="text-2xl font-semibold text-[#E1601F]" style={{ fontFamily: 'var(--font-heading)' }}>{stats.unread}</div>
+                <div className="text-xs text-[#8A8D94] mt-1">Unread messages</div>
+              </div>
+            </div>
+
+            <LeadsTable title="New Building" leads={grouped['New Building']} />
+            <LeadsTable title="Renovation" leads={grouped['Renovation']} />
+            <LeadsTable title="Extension" leads={grouped['Extension']} />
+            <LeadsTable title="Other" leads={grouped['Other']} />
+
+            {leads.length === 0 && <p className="text-sm text-[#8A8D94]">No leads yet.</p>}
+          </>
+        )}
+      </div>
     </main>
   )
 }
