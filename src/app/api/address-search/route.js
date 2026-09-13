@@ -25,15 +25,16 @@
       placeId: s.placePrediction?.placeId || '',
     }))
 
-        // TEMP DEBUG: surface Google's raw response when nothing comes back,
-        // so we can see the real error instead of a silent empty array.
-        // Remove this once the autocomplete issue is confirmed fixed.
-        if (suggestions.length === 0) {
-          return Response.json({ suggestions, googleDebug: data, hasKey: !!process.env.GOOGLE_PLACES_API_KEY })
+        if (suggestions.length === 0 && data.error) {
+          // Log the real reason to the server logs (Vercel) without exposing
+          // it to the client, so a broken key/config shows up as an empty
+          // dropdown for users but is diagnosable from the logs.
+          console.error('Google Places autocomplete error:', JSON.stringify(data.error))
         }
 
         return Response.json({ suggestions })
   } catch (err) {
+    console.error('Google Places autocomplete request failed:', err)
     return Response.json({ suggestions: [], error: err.message })
   }
 }
