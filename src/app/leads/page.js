@@ -51,7 +51,10 @@ function LeadsTable({ title, leads }) {
               <tr key={c.id} className={`border-t border-[#EEE] hover:bg-[#F6F5F1] transition ${c.hasUnread ? 'bg-[#FFF6F0]' : ''}`}>
                 <td className="px-5 py-3">
                   <Link href={'/admin/lead?customerId=' + c.id} className="font-medium text-[#1B2A4A] hover:text-[#E1601F] transition flex items-center gap-2">
-                    {c.hasUnread && <span className="w-2 h-2 rounded-full bg-[#E1601F] shrink-0" title="Unread message" />}
+                    {c.hasUnread && (
+                      <span className="w-2 h-2 rounded-full bg-[#E1601F] shrink-0"
+                        title={c.hasUnreadMessage ? 'Unread message' : 'New lead — not yet opened'} />
+                    )}
                     {c.first_name} {c.last_name}
                   </Link>
                 </td>
@@ -77,6 +80,9 @@ export default function Leads() {
   const [error, setError] = useState('')
   const [reportBusy, setReportBusy] = useState(false)
   const [reportSent, setReportSent] = useState(false)
+  const [reportEmail, setReportEmail] = useState('')
+  const [showReportBox, setShowReportBox] = useState(false)
+  const [reportError, setReportError] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -108,15 +114,32 @@ export default function Leads() {
       newThisWeek: all.filter((c) => new Date(c.created_at).getTime() > weekAgo).length,
       won: all.filter((c) => c.lead_status === 'Won').length,
       unread: all.filter((c) => c.hasUnread).length,
+      unviewed: all.filter((c) => c.isUnviewed).length,
     }
   }, [leads])
 
   const emailReport = async () => {
     setReportBusy(true)
     setReportSent(false)
-    await fetch('/api/admin/leads-report', { method: 'POST' })
+    setReportError('')
+    try {
+      const res = await fetch('/api/admin/leads-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: reportEmail.trim() || undefined }),
+      })
+      const result = await res.json()
+      if (!res.ok) {
+        setReportError(result.error || 'Could not send the report.')
+      } else {
+        setReportSent(true)
+        setShowReportBox(false)
+        setReportEmail('')
+      }
+    } catch (err) {
+      setReportError('Could not reach the server: ' + err.message)
+    }
     setReportBusy(false)
-    setReportSent(true)
   }
 
   const logOut = async () => {
@@ -133,12 +156,34 @@ export default function Leads() {
             <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Leads</h1>
             <p className="text-sm text-[#5A5E66] mt-1">All registered projects, grouped by type.</p>
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={emailReport} disabled={reportBusy}
-              className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition disabled:opacity-50">
-              {reportBusy ? 'Sending...' : reportSent ? 'Report sent ✓' : 'Email me this report'}
+          <div className="flex items-center gap-3 relative">
+            <Link href="/admin/reports"
+              className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
+              Reports
+            </Link>
+            <button onClick={() => setShowReportBox((v) => !v)}
+              className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
+              {reportSent ? 'Report sent ✓' : 'Email this report'}
             </button>
             <button onClick={logOut} className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">Log out</button>
+
+            {showReportBox && (
+              <div className="absolute top-full right-0 mt-2 w-72 bg-white border border-[#D9D6CD] rounded-md shadow-lg p-4 z-10">
+                <label className="block text-xs font-medium text-[#4A4E56] mb-1.5">Send the leads report to</label>
+                <input type="email" value={reportEmail} onChange={(e) => setReportEmail(e.target.value)}
+                  placeholder="you@easybcon.com.au (leave blank for yourself)"
+                  className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm mb-3" />
+                <button onClick={emailReport} disabled={reportBusy}
+                  className="w-full bg-[#0068D8] text-white font-medium rounded py-2 text-sm hover:bg-[#0050B0] disabled:opacity-50 transition">
+                  {reportBusy ? 'Sending...' : 'Send report'}
+                </button>
+                {reportError && (
+                  <div className="mt-2 text-xs text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-2 py-1.5">
+                    {reportError}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -163,7 +208,7 @@ export default function Leads() {
               </div>
               <div className="bg-white border border-[#D9D6CD] rounded-md p-4">
                 <div className="text-2xl font-semibold text-[#E1601F]" style={{ fontFamily: 'var(--font-heading)' }}>{stats.unread}</div>
-                <div className="text-xs text-[#8A8D94] mt-1">Unread messages</div>
+                <div className="text-xs text-[#8A8D94] mt-1">Needs attention ({stats.unviewed} new)</div>
               </div>
             </div>
 

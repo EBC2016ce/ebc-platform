@@ -6,9 +6,17 @@ import { resend } from '@/lib/resend'
 // Suggested report types bundled into one email for now: new leads this
 // week, breakdown by status, breakdown by project type, and any leads with
 // unread customer messages that need a reply.
-export async function POST() {
+export async function POST(request) {
   const { authorized, user, staffRecord } = await requireStaff()
   if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })
+
+  let recipient = user.email
+  try {
+    const body = await request.json()
+    if (body?.to && String(body.to).trim()) recipient = String(body.to).trim()
+  } catch {
+    // no JSON body sent — fall back to the requesting staff member's own email
+  }
 
   const { data: customers } = await supabaseAdmin.from('customers').select('*').order('id', { ascending: false })
   const { data: unread } = await supabaseAdmin.from('messages').select('customer_id').eq('sender', 'customer').eq('read_by_staff', false)
@@ -46,15 +54,30 @@ export async function POST() {
     </div>
   `
 
+  if (!process.env.RESEND_API_KEY) {
+    console.error('Leads report email failed: RESEND_API_KEY is not set in this environment.')
+    return Response.json({ error: 'Email is not configured on the server (missing API key). Contact your developer.' }, { status: 500 })
+  }
+
   try {
-    await resend.emails.send({
+    // The Resend SDK does not throw on API-level failures (bad domain,
+    // invalid recipient, etc.) — it resolves with { data, error }, so that
+    // has to be checked explicitly or failures are silently swallowed.
+    const { data, error } = await resend.emails.send({
       from: 'EBC Admin <noreply@mail.ebc33.com.au>',
-      to: user.email,
+      to: recipient,
       subject: `EBC Leads Report — ${new Date().toLocaleDateString('en-AU')}`,
       html,
     })
-    return Response.json({ success: true })
+
+    if (error) {
+      console.error('Leads report email failed:', JSON.stringify(error))
+      return Response.json({ error: error.message || 'Resend rejected the email.' }, { status: 500 })
+    }
+
+    return Response.json({ success: true, sentTo: recipient, id: data?.id })
   } catch (err) {
+    console.error('Leads report email threw:', err)
     return Response.json({ error: err.message }, { status: 500 })
   }
 }

@@ -20,7 +20,12 @@ export async function GET() {
 
   const unreadIds = new Set((unread || []).map((m) => m.customer_id))
 
-  const leads = (customers || []).map((c) => ({ ...c, hasUnread: unreadIds.has(c.id) }))
+  const leads = (customers || []).map((c) => ({
+    ...c,
+    hasUnread: unreadIds.has(c.id) || !c.viewed_by_staff,
+    hasUnreadMessage: unreadIds.has(c.id),
+    isUnviewed: !c.viewed_by_staff,
+  }))
 
   return Response.json({ leads })
 }
