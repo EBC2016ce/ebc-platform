@@ -43,7 +43,13 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
     return () => clearTimeout(timer)
   }, [resendCooldown])
 
-  const field = (key, value) => setForm({ ...form, [key]: value })
+  // Uses the functional updater form because AddressAutocompleteFields calls
+  // this multiple times back-to-back (streetNo, streetName, state,
+  // postalCode) when a suggestion is selected. Spreading the outer `form`
+  // closure directly would make each call overwrite the previous one since
+  // they'd all be based on the same stale snapshot, leaving only the last
+  // field (postalCode) actually set.
+  const field = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
   const setCategory = (category) => {
     const options = CATEGORIES[category] || []
