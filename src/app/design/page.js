@@ -90,6 +90,7 @@ function DesignPageContent() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
     const [largeFilesLink, setLargeFilesLink] = useState('')
+  const [customerAddress, setCustomerAddress] = useState('')
 
     useEffect(() => {
     if (!customerId) return
@@ -103,6 +104,7 @@ function DesignPageContent() {
       .then((res) => res.json())
       .then((result) => {
         if (result.customer?.large_files_link) setLargeFilesLink(result.customer.large_files_link)
+        if (result.customer?.address) setCustomerAddress(result.customer.address)
       })
   }, [customerId])
 
@@ -122,6 +124,21 @@ function DesignPageContent() {
   }, [formData]) // eslint-disable-line
 
   const setField = (key, value) => setFormData((prev) => ({ ...prev, [key]: value }))
+
+  const handleSameAddress = (same) => {
+    setField('sameAsRegisteredAddress', same)
+    if (same && customerAddress) {
+      const match = customerAddress.match(/^(.+?)\s+(.+),\s*([A-Za-z]{2,3})\s+(\d{3,4})$/)
+      if (match) {
+        setField('streetNo', match[1])
+        setField('streetName', match[2])
+        setField('state', match[3].toUpperCase())
+        setField('postalCode', match[4])
+      } else {
+        setField('streetName', customerAddress)
+      }
+    }
+  }
 
     const submitDesign = async () => {
     setSubmitting(true)
@@ -199,10 +216,26 @@ function DesignPageContent() {
           <div key={step.id}>
             <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
             <div className="flex flex-col gap-4">
-              {step.id === 'address' && (
+              {step.id === 'address' && customerAddress && (
+                <div className="bg-[#F6F5F1] border border-[#D9D6CD] rounded-md p-4">
+                  <p className="text-sm font-medium text-[#1B2A4A] mb-1">Is the project address the same as your registered address?</p>
+                  <p className="text-sm text-[#5A5E66] mb-3">{customerAddress}</p>
+                  <div className="flex gap-2 flex-wrap">
+                    <button type="button" onClick={() => handleSameAddress(true)}
+                      className={`px-4 py-2 rounded border text-sm font-medium transition ${formData.sameAsRegisteredAddress === true ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD] text-[#1B2A4A]'}`}>
+                      Yes, same address
+                    </button>
+                    <button type="button" onClick={() => handleSameAddress(false)}
+                      className={`px-4 py-2 rounded border text-sm font-medium transition ${formData.sameAsRegisteredAddress === false ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD] text-[#1B2A4A]'}`}>
+                      No, different address
+                    </button>
+                  </div>
+                </div>
+              )}
+              {step.id === 'address' && formData.sameAsRegisteredAddress !== true && (
                 <AddressAutocompleteFields formData={formData} onFieldChange={setField} />
               )}
-              {step.fields.map((field) => (
+              {(step.id !== 'address' || formData.sameAsRegisteredAddress !== true) && step.fields.map((field) => (
                 <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
               ))}
             </div>
