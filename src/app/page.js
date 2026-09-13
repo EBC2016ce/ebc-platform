@@ -138,7 +138,7 @@ export default function Home() {
             <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition">
               <PhoneIcon /> 1300 715 840
             </a>
-            <Link href="/portal/login" className="inline-flex items-center gap-2 border border-[#1B2A4A] text-[#1B2A4A] text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-[#1B2A4A] hover:text-white transition whitespace-nowrap">
+            <Link href="/portal/login" className="inline-flex items-center gap-2 bg-[#8FC2FF] text-[#0F1930] text-sm font-semibold rounded-md px-5 py-2.5 shadow-[0_4px_0_#5C93D9] hover:shadow-[0_2px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all duration-150 whitespace-nowrap">
               Client Login
             </Link>
           </div>
@@ -163,7 +163,15 @@ export default function Home() {
             <p className="mt-5 text-lg text-white/90 leading-relaxed">
               From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
             </p>
-            <Link href="/register" className="mt-8 inline-flex items-center gap-2 w-fit bg-[#E1601F] text-white font-medium rounded-full px-7 py-3.5 hover:opacity-90 hover:shadow-xl hover:shadow-[#E1601F]/30 hover:-translate-y-0.5 transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+            <div className="mt-6 flex items-center gap-4 flex-wrap">
+              <Link href="/portal/login" className="inline-flex items-center gap-2 bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-6 py-3 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
+                Customer Portal
+              </Link>
+              <Link href="/login" className="inline-flex items-center gap-2 bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-6 py-3 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
+                Admin Portal
+              </Link>
+            </div>
+            <Link href="/register" className="mt-4 inline-flex items-center gap-2 w-fit bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-7 py-3.5 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
               Get a Free Quote
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </Link>
@@ -296,7 +304,7 @@ export default function Home() {
               </h3>
               <p className="text-[#C9D2E3] mt-2">Register your project and we&apos;ll walk you through it personally.</p>
             </div>
-            <Link href="/register" className="bg-[#E1601F] text-white font-medium rounded px-7 py-3.5 hover:opacity-90 hover:shadow-xl hover:shadow-[#E1601F]/30 transition whitespace-nowrap">
+            <Link href="/register" className="bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-7 py-3.5 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150 whitespace-nowrap">
               Register Now
             </Link>
           </div>
@@ -490,7 +498,7 @@ export default function Home() {
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center">
             <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">GET IN TOUCH</p>
             <h2 className="text-3xl md:text-4xl font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>Ready to Start Your Project?</h2>
-            <Link href="/register" className="inline-block mt-7 bg-[#E1601F] text-white font-medium rounded px-8 py-4 hover:opacity-90 hover:shadow-xl hover:shadow-[#E1601F]/30 hover:-translate-y-0.5 transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+            <Link href="/register" className="inline-block mt-7 bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-8 py-4 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
               Get Started
             </Link>
           </div>
