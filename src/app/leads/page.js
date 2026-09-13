@@ -83,6 +83,7 @@ export default function Leads() {
   const [reportEmail, setReportEmail] = useState('')
   const [showReportBox, setShowReportBox] = useState(false)
   const [reportError, setReportError] = useState('')
+  const [activeCategory, setActiveCategory] = useState('New Building')
   const router = useRouter()
 
   useEffect(() => {
@@ -212,10 +213,24 @@ export default function Leads() {
               </div>
             </div>
 
-            <LeadsTable title="New Building" leads={grouped['New Building']} />
-            <LeadsTable title="Renovation" leads={grouped['Renovation']} />
-            <LeadsTable title="Extension" leads={grouped['Extension']} />
-            <LeadsTable title="Other" leads={grouped['Other']} />
+            {leads.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {['New Building', 'Renovation', 'Extension', 'Other'].map((cat) => (
+                  <button key={cat} onClick={() => setActiveCategory(cat)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium border transition ${
+                      activeCategory === cat ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white text-[#1B2A4A] border-[#D9D6CD] hover:border-[#1B2A4A]'
+                    }`}>
+                    {cat} <span className={activeCategory === cat ? 'text-[#C9D2E3]' : 'text-[#8A8D94]'}>({grouped[cat].length})</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <LeadsTable title={activeCategory} leads={grouped[activeCategory] || []} />
+
+            {leads.length > 0 && grouped[activeCategory].length === 0 && (
+              <p className="text-sm text-[#8A8D94]">No {activeCategory.toLowerCase()} leads yet.</p>
+            )}
 
             {leads.length === 0 && <p className="text-sm text-[#8A8D94]">No leads yet.</p>}
           </>
