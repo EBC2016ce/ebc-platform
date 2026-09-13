@@ -6,28 +6,28 @@ const quickLinks = [
     title: 'New Building Construction',
     desc: 'Custom homes designed and built to suit your lifestyle and budget.',
     href: '/new-home',
-    img: '/card-newbuild-reference.jpg',
+    img: '/quicklink-new-building.jpg',
     icon: 'home',
   },
   {
     title: 'Renovations',
     desc: 'Kitchen, bathroom, laundry or full home renovations.',
     href: '/renovation',
-    img: '/card-renovation-reference.jpg',
+    img: '/quicklink-renovation.jpg',
     icon: 'wrench',
   },
   {
     title: 'Extensions',
     desc: 'More space for your growing family and lifestyle.',
     href: '/extension',
-    img: '/card-extension-reference.jpg',
+    img: '/quicklink-extension.jpg',
     icon: 'expand',
   },
   {
     title: 'Our Projects',
     desc: 'Explore our completed homes, renovations and extensions.',
     href: '#our-work',
-    img: '/card-projects-reference.jpg',
+    img: '/quicklink-our-projects.jpg',
     icon: 'gallery',
   },
 ]
@@ -53,18 +53,18 @@ const reviews = [
 ]
 
 const projects = [
-  { img: '/project2-after.jpg', category: 'Melbourne Home Renovation', title: 'The Kitchen Transformation' },
-  { img: '/after-1.jpg', category: 'Melbourne Home Renovation', title: 'The Complete Refresh' },
-  { img: '/project2-during.jpg', category: 'Melbourne Home Renovation', title: 'Mid-Build Progress' },
-  { img: '/before-1.jpg', category: 'Melbourne Home Renovation', title: 'Where It Started' },
-  { img: '/during-1.jpg', category: 'Melbourne Home Renovation', title: 'Frame & Fitout' },
-  { img: '/project2-after.jpg', category: 'Melbourne Home Renovation', title: 'Finished & Handed Over' },
+  { img: '/project-kitchen-after.jpg', category: 'Melbourne Home Renovation', title: 'The Kitchen Transformation' },
+  { img: '/renovation-after.jpg', category: 'Melbourne Home Renovation', title: 'The Complete Refresh' },
+  { img: '/project-renovation-during.jpg', category: 'Melbourne Home Renovation', title: 'Mid-Build Progress' },
+  { img: '/renovation-before.jpg', category: 'Melbourne Home Renovation', title: 'Where It Started' },
+  { img: '/project-frame-fitout.jpg', category: 'Melbourne Home Renovation', title: 'Frame & Fitout' },
+  { img: '/project-kitchen-after.jpg', category: 'Melbourne Home Renovation', title: 'Finished & Handed Over' },
 ]
 
 const blogPosts = [
-  { img: '/project2-after.jpg', date: 'Coming soon', title: 'Design & Build vs. Hiring Separately: What Actually Matters', excerpt: 'A straight-talking look at the two approaches to planning your renovation or new build.' },
-  { img: '/before-1.jpg', date: 'Coming soon', title: 'Renovating in Melbourne: The Questions Every Homeowner Asks First', excerpt: 'Permits, timelines, and costs — what to know before your first conversation with a builder.' },
-  { img: '/after-1.jpg', date: 'Coming soon', title: 'Extension Costs & Timelines: A Practical Guide', excerpt: 'What actually drives the cost and schedule of a home extension in Victoria.' },
+  { img: '/project-kitchen-after.jpg', date: 'Coming soon', title: 'Design & Build vs. Hiring Separately: What Actually Matters', excerpt: 'A straight-talking look at the two approaches to planning your renovation or new build.' },
+  { img: '/renovation-before.jpg', date: 'Coming soon', title: 'Renovating in Melbourne: The Questions Every Homeowner Asks First', excerpt: 'Permits, timelines, and costs — what to know before your first conversation with a builder.' },
+  { img: '/renovation-after.jpg', date: 'Coming soon', title: 'Extension Costs & Timelines: A Practical Guide', excerpt: 'What actually drives the cost and schedule of a home extension in Victoria.' },
 ]
 
 function QuickIcon({ name }) {
@@ -142,7 +142,7 @@ export default function Home() {
 
       {/* Hero: single full-bleed photo, light overlay for readability */}
       <section className="relative h-[560px] md:h-[640px] overflow-hidden">
-        <Image src="/hero.jpg" alt="Modern EBC home build in Melbourne" fill className="object-cover" priority />
+        <Image src="/hero-melbourne-home-build.jpg" alt="Modern EBC home build in Melbourne" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/5" />
         <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex items-center">
           <div className="max-w-xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
@@ -278,7 +278,7 @@ export default function Home() {
       {/* Promo banner strip */}
       <section className="relative overflow-hidden">
         <div className="relative h-64">
-          <Image src="/project2-during.jpg" alt="Renovation in progress" fill className="object-cover" />
+          <Image src="/project-renovation-during.jpg" alt="Renovation in progress" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#1B2A4A]/85" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
@@ -346,12 +346,47 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg group">
-            <Image src="/before-1.jpg" alt="Before renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src="/renovation-before.jpg" alt="Before renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg mt-8 group">
-            <Image src="/after-1.jpg" alt="After renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src="/renovation-after.jpg" alt="After renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
         </div>
+      </section>
+
+      {/* Why choose us - video slots */}
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="text-center max-w-xl mx-auto mb-10">
+          <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">SEE US IN ACTION</p>
+          <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+            Watch How We Build
+          </h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* VIDEO SLOT 1 — replace the src below with your hosted video URL (YouTube/Vimeo embed or an .mp4 file in /public) */}
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930] flex items-center justify-center">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/videoseries?list=UULF..."
+              title="EBC - Why Choose Us"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+          {/* VIDEO SLOT 2 — replace the src below with your hosted video URL */}
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930] flex items-center justify-center">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/videoseries?list=UULF..."
+              title="EBC - Client Walkthrough"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+        <p className="text-xs text-[#8A8D94] text-center mt-4">
+          Video placeholders — swap the iframe src for a real YouTube/Vimeo link from your channel when ready.
+        </p>
       </section>
 
       {/* Projects - full 6 item grid */}
@@ -441,7 +476,7 @@ export default function Home() {
       {/* Final CTA banner */}
       <section className="relative overflow-hidden">
         <div className="relative h-80">
-          <Image src="/after-1.jpg" alt="Completed home" fill className="object-cover" />
+          <Image src="/renovation-after.jpg" alt="Completed home" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0F1930]/85" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center">
             <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">GET IN TOUCH</p>
