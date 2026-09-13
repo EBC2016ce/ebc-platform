@@ -73,7 +73,7 @@ export default function PortalLogin() {
                 onChange={(e) => setPassword(e.target.value)} required
                 className="border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
               {error && <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">{error}</div>}
-              <button type="submit" className="bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90">
+              <button type="submit" className="bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] transition">
                 Log In
               </button>
               <button
@@ -101,7 +101,7 @@ export default function PortalLogin() {
                 className="border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
               {resetError && <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">{resetError}</div>}
               <button type="submit" disabled={resetBusy}
-                className="bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50">
+                className="bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition">
                 {resetBusy ? 'Sending...' : 'Send reset link'}
               </button>
               <button

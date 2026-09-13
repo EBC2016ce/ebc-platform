@@ -186,7 +186,7 @@ function BookPageContent() {
         <button
           onClick={confirmBooking}
           disabled={!selectedDay || !selectedTime || status === 'booking'}
-          className="w-full mt-6 bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+          className="w-full mt-6 bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
           {status === 'booking' ? 'Booking...' : 'Confirm booking'}

@@ -125,7 +125,7 @@ export function bookingConfirmationEmailHtml({ firstName, appointmentType, dateL
                             <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding-bottom: 20px;">
-                    <a href="${calendarLink}" style="display:inline-block; background-color:#E1601F; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:4px; font-size:14px;">
+                    <a href="${calendarLink}" style="display:inline-block; background-color:#0068D8; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:4px; font-size:14px;">
                       Add to Google Calendar
                     </a>
                   </td>
@@ -193,7 +193,7 @@ export function reminderEmailHtml({ firstName, message, ctaText, ctaUrl }) {
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding-bottom: 20px;">
-                    <a href="${ctaUrl}" style="display:inline-block; background-color:#E1601F; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:4px; font-size:14px;">
+                    <a href="${ctaUrl}" style="display:inline-block; background-color:#0068D8; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:4px; font-size:14px;">
                       ${ctaText}
                     </a>
                   </td>

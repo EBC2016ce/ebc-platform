@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
 import AddressAutocompleteFields from './AddressAutocompleteFields'
@@ -137,12 +138,12 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
     return (
       <div className="max-w-md w-full">
         {!hideLogo && (
-          <div className="flex flex-col items-center text-center mb-8">
+          <Link href="/" className="flex flex-col items-center text-center mb-8">
             <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
             <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-              Easy Building &amp; Construction Pty Ltd
+              Easy Building &amp; Construction Pty Ltd.
             </span>
-          </div>
+          </Link>
         )}
 
         <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -185,11 +186,14 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
           )}
 
           <button type="submit" disabled={verifyBusy}
-            className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+            className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
             style={{ fontFamily: 'var(--font-heading)' }}>
             {verifyBusy ? 'Verifying...' : 'Verify'}
           </button>
         </form>
+        <div className="text-center mt-5">
+          <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+        </div>
       </div>
     )
   }
@@ -197,15 +201,15 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
   return (
     <div className="max-w-md w-full">
       {!hideLogo && (
-        <div className="flex flex-col items-center text-center mb-10">
+        <Link href="/" className="flex flex-col items-center text-center mb-10">
           <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
           <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Easy Building &amp; Construction Pty Ltd
+            Easy Building &amp; Construction Pty Ltd.
           </span>
           <span className="mt-1 text-[11px] font-semibold tracking-wider text-[#8A8D94]">
             REGISTERED BUILDING PRACTITIONERS
           </span>
-        </div>
+        </Link>
       )}
 
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -326,11 +330,14 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
         )}
 
         <button type="submit" disabled={status === 'saving' || !form.projectType}
-          className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+          className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
           style={{ fontFamily: 'var(--font-heading)' }}>
           {status === 'saving' ? 'Submitting...' : 'Submit'}
         </button>
       </form>
+      <div className="text-center mt-5">
+        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+      </div>
     </div>
   )
 }

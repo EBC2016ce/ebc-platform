@@ -144,7 +144,7 @@ export default function BathroomRenovationLanding() {
           )}
 
           <button type="submit" disabled={status === 'saving'}
-            className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+            className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
             style={{ fontFamily: 'var(--font-heading)' }}>
             {status === 'saving' ? 'Submitting...' : 'Get My Free Consultation'}
           </button>
