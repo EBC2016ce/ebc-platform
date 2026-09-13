@@ -82,7 +82,7 @@ export default function AdLandingPage({
             MBV — Master Builders Victoria
           </span>
           <span className="border border-[#D9D6CD] rounded-lg px-6 py-3 bg-white shadow-sm text-sm font-semibold text-[#1B2A4A]">
-            BPC — Registered Building Practitioner
+            Building and Plumbing Commission — Registered Practitioner
           </span>
           <span className="border border-[#D9D6CD] rounded-lg px-6 py-3 bg-white shadow-sm text-sm font-semibold text-[#1B2A4A]">
             15+ Years Experience

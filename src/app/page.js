@@ -232,10 +232,11 @@ export default function Home() {
       </section>
 
       {/* Brand tagline */}
-      <section className="px-6 py-14 text-center bg-white">
-        <p className="max-w-3xl mx-auto text-xl md:text-2xl text-[#1B2A4A] leading-relaxed" style={{ fontFamily: 'var(--font-heading)' }}>
-          Construction is a craft. Building relationships is an art.{' '}
-          <span className="text-[#E1601F]">Doing both is EBC.</span>
+      <section className="px-6 py-16 text-center bg-white">
+        <p className="max-w-3xl mx-auto text-3xl md:text-5xl font-semibold text-[#1B2A4A] leading-snug" style={{ fontFamily: 'var(--font-heading)' }}>
+          <span className="block">Construction is a craft.</span>
+          <span className="block">Building relationships is an art.</span>
+          <span className="block">Doing both is EBC.</span>
         </p>
       </section>
 
