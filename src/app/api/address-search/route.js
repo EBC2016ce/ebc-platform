@@ -32,16 +32,7 @@
           console.error('Google Places autocomplete error:', JSON.stringify(data.error))
         }
 
-        // TEMPORARY DEBUG - remove after diagnosing the "no suggestions" issue
-        return Response.json({
-          suggestions,
-          _debug: {
-            hasKey: !!process.env.GOOGLE_PLACES_API_KEY,
-            keyLength: process.env.GOOGLE_PLACES_API_KEY ? process.env.GOOGLE_PLACES_API_KEY.length : 0,
-            googleError: data.error || null,
-            status: res.status,
-          },
-        })
+        return Response.json({ suggestions })
   } catch (err) {
     console.error('Google Places autocomplete request failed:', err)
     return Response.json({ suggestions: [], error: err.message })
