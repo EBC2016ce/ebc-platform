@@ -218,3 +218,202 @@ export function reminderEmailHtml({ firstName, message, ctaText, ctaUrl }) {
 </html>
   `
 }
+
+function statCard(label, value, color) {
+  return `
+    <td width="25%" valign="top" style="padding:4px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F5F1; border-radius:6px;">
+        <tr>
+          <td style="padding:14px 10px; text-align:center;">
+            <div style="font-size:20px; font-weight:bold; color:${color || '#1B2A4A'}; font-family: Arial, Helvetica, sans-serif;">${value}</div>
+            <div style="font-size:11px; color:#8A8D94; margin-top:2px;">${label}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  `
+}
+
+function barRow(label, count, max, color) {
+  const pct = max > 0 ? Math.max(Math.round((count / max) * 100), count > 0 ? 6 : 0) : 0
+  return `
+    <tr>
+      <td style="padding:5px 0; font-size:13px; color:#4A4E56; width:110px;">${label}</td>
+      <td style="padding:5px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F0EEE8; border-radius:4px;">
+          <tr>
+            <td style="background-color:${color || '#1B2A4A'}; width:${pct}%; height:14px; border-radius:4px; font-size:1px; line-height:14px;">&nbsp;</td>
+            <td></td>
+          </tr>
+        </table>
+      </td>
+      <td style="padding:5px 0 5px 10px; font-size:13px; font-weight:bold; color:#1B2A4A; text-align:right; width:30px;">${count}</td>
+    </tr>
+  `
+}
+
+function sectionHeading(title, subtitle) {
+  return `
+    <tr>
+      <td style="padding: 28px 0 10px 0;">
+        <div style="font-size:15px; font-weight:bold; color:#1B2A4A; font-family: Arial, Helvetica, sans-serif;">${title}</div>
+        ${subtitle ? `<div style="font-size:12px; color:#8A8D94; margin-top:2px;">${subtitle}</div>` : ''}
+      </td>
+    </tr>
+  `
+}
+
+const money = (n) => '$' + Number(n || 0).toLocaleString('en-AU', { maximumFractionDigits: 0 })
+
+// A polished, five-section leads report email — pipeline, sources,
+// follow-up/response, quotes & revenue, and project category performance —
+// with a link through to the live dashboard for the full drill-down.
+export function leadsReportEmailHtml(data, reportUrl) {
+  const { pipeline, sources, followUp, revenue, categories } = data
+  const maxStatus = Math.max(...pipeline.byStatus.map((s) => s.count), 1)
+  const statusColor = (s) => (s === 'Won' ? '#2E7D4F' : s === 'Lost' ? '#A23B2E' : '#1B2A4A')
+
+  const topSources = sources.slice(0, 5)
+  const maxSource = Math.max(...topSources.map((s) => s.count), 1)
+
+  const followUpRows = (followUp.needsFollowUp || []).slice(0, 5).map((c) => `
+    <tr>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#1B2A4A;">${c.name}</td>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#5A5E66;">${c.projectType || ''}</td>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; font-weight:bold; color:${c.daysSinceContact >= 7 ? '#A23B2E' : '#E1601F'}; text-align:right;">${c.daysSinceContact}d</td>
+    </tr>
+  `).join('') || `<tr><td colspan="3" style="padding:8px 0; font-size:13px; color:#8A8D94;">Nothing overdue — great work.</td></tr>`
+
+  const catRows = categories.map((c) => `
+    <tr>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#1B2A4A; font-weight:bold;">${c.category}</td>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#5A5E66; text-align:center;">${c.total}</td>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#2E7D4F; text-align:center;">${c.won}</td>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#5A5E66; text-align:center;">${c.winRate === null ? '—' : c.winRate + '%'}</td>
+      <td style="padding:6px 0; border-top:1px solid #EEE; font-size:13px; color:#1B2A4A; text-align:right; font-weight:bold;">${money(c.acceptedValue)}</td>
+    </tr>
+  `).join('')
+
+  return `
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:#F6F5F1; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F5F1; padding: 32px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:6px; overflow:hidden;">
+
+          <tr>
+            <td style="background-color:#1B2A4A; padding: 26px 40px; text-align:center;">
+              <img src="https://easybcon.com.au/logo-icon.png" alt="EBC" width="100" height="49" style="display:block; margin: 0 auto;" />
+              <div style="color:#ffffff; font-size:18px; font-weight:bold; margin-top:12px; font-family: Arial, Helvetica, sans-serif;">
+                Leads &amp; Pipeline Report
+              </div>
+              <div style="color:#C9D2E3; font-size:12px; margin-top:4px;">
+                ${new Date(data.generatedAt).toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 30px 40px 10px 40px;">
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${sectionHeading('1. Pipeline &amp; Conversion', 'Where every lead currently sits, and how many convert to won jobs.')}
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  ${statCard('Total leads', pipeline.total)}
+                  ${statCard('New this week', pipeline.newThisWeek)}
+                  ${statCard('Win rate', pipeline.winRate === null ? '—' : pipeline.winRate + '%', '#2E7D4F')}
+                  ${statCard('Active', pipeline.active, '#3C6FB0')}
+                </tr>
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:14px;">
+                ${pipeline.byStatus.map((s) => barRow(s.status, s.count, maxStatus, statusColor(s.status))).join('')}
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${sectionHeading('2. Lead Sources', 'Which marketing channels bring in the most (and best-converting) leads.')}
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${topSources.length === 0
+                  ? '<tr><td style="font-size:13px; color:#8A8D94; padding:6px 0;">No source data yet.</td></tr>'
+                  : topSources.map((s) => barRow(`${s.source}${s.winRate !== null ? ' (' + s.winRate + '%)' : ''}`, s.count, maxSource, '#3C6FB0')).join('')}
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${sectionHeading('3. Follow-up &amp; Response', 'Leads waiting on a reply — the longer these sit, the more likely you lose them.')}
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  ${statCard('Unread messages', followUp.unreadMessages, '#E1601F')}
+                  ${statCard('New, not opened', followUp.unviewedLeads, '#E1601F')}
+                  ${statCard('Never contacted', followUp.neverContacted, '#A23B2E')}
+                  ${statCard("Stale 'New' 7d+", followUp.staleNew, '#A23B2E')}
+                </tr>
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+                <tr>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px;">Name</td>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px;">Project</td>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px; text-align:right;">Waiting</td>
+                </tr>
+                ${followUpRows}
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${sectionHeading('4. Quotes &amp; Revenue', 'The dollar value moving through your pipeline right now.')}
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  ${statCard('Total quoted', money(revenue.totalQuoted))}
+                  ${statCard('Accepted', money(revenue.accepted), '#2E7D4F')}
+                  ${statCard('Awaiting reply', money(revenue.outstanding), '#E1601F')}
+                  ${statCard('Quote win rate', revenue.quoteWinRate === null ? '—' : revenue.quoteWinRate + '%')}
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                ${sectionHeading('5. Project Category Performance', 'Which project type brings in the most leads and converts best.')}
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px;">Category</td>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px; text-align:center;">Leads</td>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px; text-align:center;">Won</td>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px; text-align:center;">Win %</td>
+                  <td style="font-size:11px; color:#8A8D94; text-transform:uppercase; padding-bottom:4px; text-align:right;">Accepted $</td>
+                </tr>
+                ${catRows}
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 30px 0 10px 0;">
+                    <a href="${reportUrl}" style="display:inline-block; background-color:#0068D8; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 28px; border-radius:4px; font-size:14px;">
+                      View full report &amp; manage leads
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#F6F5F1; padding: 18px 40px; text-align:center; border-top:1px solid #D9D6CD;">
+              <p style="font-size:11px; color:#8B8D89; margin:0;">
+                Sent from your EBC admin dashboard.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `
+}
