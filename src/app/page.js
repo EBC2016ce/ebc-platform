@@ -186,14 +186,18 @@ export default function Home() {
       <section className="bg-[#F6F5F1] border-y border-[#EAE7E0] px-6 py-6">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-6 text-sm">
           <a href="https://www.bpc.vic.gov.au/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
-            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center text-[#1B2A4A] font-bold text-[11px] group-hover:border-[#E1601F] transition-colors">BPC</span>
+            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center p-1.5 group-hover:border-[#E1601F] transition-colors">
+              <Image src="/bpc-logo.png" alt="BPC" width={211} height={120} className="w-full h-auto object-contain" />
+            </span>
             <div className="leading-tight">
               <div className="font-semibold text-[#1B2A4A] group-hover:text-[#E1601F] transition-colors">Registered Builder</div>
               <div className="text-[#8A8D94] text-xs">Unlimited Licence for Residential Buildings</div>
             </div>
           </a>
           <a href="https://www.mbav.com.au/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
-            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center text-[#1B2A4A] font-bold text-[10px] leading-none text-center group-hover:border-[#E1601F] transition-colors">MBV</span>
+            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center p-1.5 group-hover:border-[#E1601F] transition-colors">
+              <Image src="/mbav-logo.png" alt="MBV" width={230} height={120} className="w-full h-auto object-contain" />
+            </span>
             <div className="font-semibold text-[#1B2A4A] group-hover:text-[#E1601F] transition-colors">Master Builders Victoria</div>
           </a>
           <div className="flex items-center gap-3 text-[#1B2A4A]">

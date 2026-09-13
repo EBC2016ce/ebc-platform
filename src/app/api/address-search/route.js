@@ -25,6 +25,13 @@
       placeId: s.placePrediction?.placeId || '',
     }))
 
+        // TEMP DEBUG: surface Google's raw response when nothing comes back,
+        // so we can see the real error instead of a silent empty array.
+        // Remove this once the autocomplete issue is confirmed fixed.
+        if (suggestions.length === 0) {
+          return Response.json({ suggestions, googleDebug: data, hasKey: !!process.env.GOOGLE_PLACES_API_KEY })
+        }
+
         return Response.json({ suggestions })
   } catch (err) {
     return Response.json({ suggestions: [], error: err.message })
