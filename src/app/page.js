@@ -115,11 +115,11 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       {/* Header: logo + tagline, nav, phone CTA */}
       <header className="sticky top-0 bg-white/95 backdrop-blur-sm z-40 border-b border-[#EAE7E0] shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-6 flex-wrap">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 md:gap-6">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" priority />
-            <span>
-              <span className="block font-bold text-[#1B2A4A] text-lg leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
+            <span className="text-center md:text-left">
+              <span className="block font-bold text-[#1B2A4A] text-base sm:text-lg leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                 Easy Building &amp; Construction Pty Ltd.
               </span>
               <span className="block text-[11px] font-semibold tracking-wider text-[#8A8D94]">
