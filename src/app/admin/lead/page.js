@@ -156,9 +156,14 @@ function LeadDetailContent() {
 
   return (
     <div className="max-w-2xl w-full">
-      <Link href="/leads" className="inline-flex items-center gap-1 text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition mb-4">
-        ← Back to Leads
-      </Link>
+      <div className="flex items-center justify-between mb-4">
+        <Link href="/leads" className="inline-flex items-center gap-1 text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">
+          ← Back to Leads
+        </Link>
+        <Link href={'/admin/audit?customerId=' + customerId} className="text-sm text-[#1B2A4A] underline decoration-[#1B2A4A]/40 hover:decoration-[#1B2A4A] transition">
+          Export Audit Report
+        </Link>
+      </div>
       <div className="flex justify-between items-start flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
