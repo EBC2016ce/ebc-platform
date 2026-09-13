@@ -148,8 +148,10 @@ export default function Home() {
           <div className="max-w-xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
             <span className="block text-sm font-semibold text-[#FFB088] tracking-wide mb-3">YOUR VISION &middot; OUR EXPERTISE</span>
             <h1 className="text-4xl md:text-6xl font-semibold text-white leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-              Quality New Buildings, Extensions &amp; Renovations{' '}
-              <span className="text-[#8FC2FF]">Across Melbourne (Eastern Suburbs)</span>
+              <span className="block">Quality New Buildings</span>
+              <span className="block">Extensions</span>
+              <span className="block">Renovations</span>
+              <span className="block text-[#8FC2FF]">Across Melbourne (Eastern Suburbs)</span>
             </h1>
             <p className="mt-5 text-lg text-white/90 leading-relaxed">
               From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
