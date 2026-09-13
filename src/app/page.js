@@ -33,13 +33,12 @@ const quickLinks = [
 ]
 
 const services = [
-  { title: 'Custom Home Renovations', desc: 'High-quality renovations designed to improve layout, function and modern living.', href: '/renovation' },
-  { title: 'Custom Bathroom Renovations', desc: 'Bathroom renovations with premium finishes and practical layouts for comfort and style.', href: '/renovation' },
-  { title: 'Custom Kitchen Renovations', desc: 'Kitchen renovations featuring tailored cabinetry and quality finishes for a functional hub.', href: '/renovation' },
-  { title: 'Custom Home Extensions', desc: 'Seamless extensions that expand your living space and integrate with your existing home.', href: '/extension' },
-  { title: 'New Home Building', desc: 'End-to-end custom home building with a focus on craftsmanship and lasting quality.', href: '/new-home' },
-  { title: 'Book A Free Consultation', desc: 'Speak with our team to map your project and get a clear, tailored plan.', href: '/register', highlight: true },
+  { title: 'Home Renovations', desc: 'High-quality renovations designed to improve layout, function and modern living — kitchens, bathrooms, laundries and full homes.', href: '/renovation' },
+  { title: 'Home Extensions', desc: 'Seamless extensions that expand your living space and integrate with your existing home.', href: '/extension' },
+  { title: 'New Home Building', desc: 'End-to-end home building with a focus on craftsmanship and lasting quality.', href: '/new-home' },
 ]
+
+const consultationCta = { title: 'Book A Free Consultation', desc: 'Speak with our team to map your project and get a clear, tailored plan.', href: '/register' }
 
 const process = [
   { step: '01', title: 'Register', desc: 'Tell us about your project — takes about a minute.' },
@@ -100,6 +99,12 @@ function SocialIcon({ name }) {
   if (name === 'linkedin') return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5ZM3 9.8h4V21H3V9.8Zm7 0h3.8v1.6h.05c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.78 2.65 4.78 6.1V21h-4v-4.9c0-1.17-.02-2.68-1.63-2.68-1.63 0-1.88 1.27-1.88 2.6V21h-4V9.8Z" /></svg>
   )
+  if (name === 'youtube') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12s0-3.2-.4-4.7a2.9 2.9 0 0 0-2-2C17.9 5 12 5 12 5s-5.9 0-7.6.3a2.9 2.9 0 0 0-2 2C2 8.8 2 12 2 12s0 3.2.4 4.7a2.9 2.9 0 0 0 2 2C6.1 19 12 19 12 19s5.9 0 7.6-.3a2.9 2.9 0 0 0 2-2c.4-1.5.4-4.7.4-4.7ZM10 15.3V8.7l6 3.3-6 3.3Z" /></svg>
+  )
+  if (name === 'x') return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 3H22l-7.6 8.7L22.9 21H16.5l-5-6.5L5.6 21H2.5l8.1-9.3L2 3h6.6l4.5 5.9L18.9 3Zm-1.1 16.1h1.7L7.3 4.8H5.5l12.3 14.3Z" /></svg>
+  )
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5H16l.4-3H13.5V8.4c0-.87.24-1.46 1.5-1.46H16.5V4.35C16.24 4.31 15.35 4.25 14.3 4.25c-2.2 0-3.7 1.34-3.7 3.8v2.45H8.1v3h2.5V21h2.9Z" /></svg>
   )
@@ -115,19 +120,19 @@ export default function Home() {
             <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" priority />
             <span>
               <span className="block font-bold text-[#1B2A4A] text-lg leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-                Easy Building &amp; Construction Pty Ltd
+                Easy Building &amp; Construction Pty Ltd.
               </span>
               <span className="block text-[11px] font-semibold tracking-wider text-[#8A8D94]">
                 REGISTERED BUILDING PRACTITIONERS
               </span>
             </span>
           </Link>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#3A3F4A]">
-            <Link href="/" className="text-[#1B2A4A] font-semibold border-b-2 border-[#E1601F] pb-1">Home</Link>
-            <Link href="#why-us" className="hover:text-[#E1601F] transition">About Us</Link>
-            <Link href="#services" className="hover:text-[#E1601F] transition">Services</Link>
-            <Link href="#our-work" className="hover:text-[#E1601F] transition">Projects</Link>
-            <Link href="/register" className="hover:text-[#E1601F] transition">Contact Us</Link>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-[#1B2A4A]">
+            <Link href="/" className="border-b-2 border-[#E1601F] pb-1">Home</Link>
+            <Link href="#why-us" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">About Us</Link>
+            <Link href="#services" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Services</Link>
+            <Link href="#our-work" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Projects</Link>
+            <Link href="/register" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Contact Us</Link>
           </nav>
           <a href="tel:1300715840" className="inline-flex items-center gap-2 bg-[#1B2A4A] text-white text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-[#13203A] transition">
             <PhoneIcon /> 1300 715 840
@@ -143,8 +148,8 @@ export default function Home() {
           <div className="max-w-xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
             <span className="block text-sm font-semibold text-[#FFB088] tracking-wide mb-3">YOUR VISION &middot; OUR EXPERTISE</span>
             <h1 className="text-4xl md:text-6xl font-semibold text-white leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-              Quality Building &amp; Renovations{' '}
-              <span className="text-[#8FC2FF]">Across Victoria</span>
+              Quality New Buildings, Extensions &amp; Renovations{' '}
+              <span className="text-[#8FC2FF]">Across Melbourne (Eastern Suburbs)</span>
             </h1>
             <p className="mt-5 text-lg text-white/90 leading-relaxed">
               From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
@@ -180,24 +185,23 @@ export default function Home() {
       {/* Trust / contact strip */}
       <section className="bg-[#F6F5F1] border-y border-[#EAE7E0] px-6 py-6">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-6 text-sm">
-          <div className="flex items-center gap-3">
-            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center text-[#1B2A4A] font-bold text-[11px]">BPC</span>
+          <a href="https://www.bpc.vic.gov.au/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
+            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center text-[#1B2A4A] font-bold text-[11px] group-hover:border-[#E1601F] transition-colors">BPC</span>
             <div className="leading-tight">
-              <div className="font-semibold text-[#1B2A4A]">Registered Builder</div>
+              <div className="font-semibold text-[#1B2A4A] group-hover:text-[#E1601F] transition-colors">Registered Builder</div>
               <div className="text-[#8A8D94] text-xs">Unlimited Licence for Residential Buildings</div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center text-[#1B2A4A] font-bold text-[10px] leading-none text-center">MBV</span>
-            <div className="font-semibold text-[#1B2A4A]">Master Builders Victoria</div>
-          </div>
-          <div className="flex items-center gap-2 text-[#3A3F4A] font-medium">
-            <PinIcon /> Melbourne, Victoria (Eastern Suburbs)
-          </div>
+          </a>
+          <a href="https://www.mbav.com.au/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
+            <span className="w-10 h-10 shrink-0 rounded-full bg-white border border-[#D9D6CD] flex items-center justify-center text-[#1B2A4A] font-bold text-[10px] leading-none text-center group-hover:border-[#E1601F] transition-colors">MBV</span>
+            <div className="font-semibold text-[#1B2A4A] group-hover:text-[#E1601F] transition-colors">Master Builders Victoria</div>
+          </a>
           <div className="flex items-center gap-3 text-[#1B2A4A]">
-            <a href="#" aria-label="Instagram" className="hover:text-[#E1601F] transition"><SocialIcon name="instagram" /></a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-[#E1601F] transition"><SocialIcon name="linkedin" /></a>
-            <a href="#" aria-label="Facebook" className="hover:text-[#E1601F] transition"><SocialIcon name="facebook" /></a>
+            <a href="https://www.instagram.com/easybcon.com.au/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#E1601F] transition"><SocialIcon name="instagram" /></a>
+            <a href="https://www.linkedin.com/company/easybcon" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-[#E1601F] transition"><SocialIcon name="linkedin" /></a>
+            <a href="https://www.facebook.com/easybcon.com.au" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-[#E1601F] transition"><SocialIcon name="facebook" /></a>
+            <a href="https://www.youtube.com/@EBC2010AUS" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-[#E1601F] transition"><SocialIcon name="youtube" /></a>
+            <a href="https://x.com/easybcon" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:text-[#E1601F] transition"><SocialIcon name="x" /></a>
           </div>
           <div className="flex items-center gap-4 text-[#3A3F4A] font-medium">
             <a href="mailto:info@easybcon.com.au" className="hover:text-[#E1601F] transition">info@easybcon.com.au</a>
@@ -223,10 +227,18 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Brand tagline */}
+      <section className="px-6 py-14 text-center bg-white">
+        <p className="max-w-3xl mx-auto text-xl md:text-2xl text-[#1B2A4A] leading-relaxed" style={{ fontFamily: 'var(--font-heading)' }}>
+          Construction is a craft. Building relationships is an art.{' '}
+          <span className="text-[#E1601F]">Doing both is EBC.</span>
+        </p>
+      </section>
+
       {/* Services grid */}
       <section id="services" className="max-w-6xl mx-auto px-6 py-24">
         <div className="text-center max-w-xl mx-auto mb-14">
-          <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">CUSTOM BUILDING SERVICES</p>
+          <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">BUILDING SERVICES</p>
           <h2 className="text-3xl md:text-4xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
             Expert Solutions for Every Construction Need
           </h2>
@@ -236,24 +248,30 @@ export default function Home() {
             <Link
               key={s.title}
               href={s.href}
-              className={`group block rounded-xl p-7 transition-all ${
-                s.highlight
-                  ? 'bg-[#1B2A4A] hover:shadow-xl'
-                  : 'border border-[#EAE7E0] bg-white hover:shadow-xl hover:shadow-[#1B2A4A]/5 hover:-translate-y-1 hover:border-[#E1601F]/30'
-              }`}
+              className="group block rounded-xl p-7 transition-all border border-[#EAE7E0] bg-white hover:shadow-xl hover:shadow-[#1B2A4A]/5 hover:-translate-y-1 hover:border-[#E1601F]/30"
             >
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-5 transition-colors ${
-                s.highlight ? 'bg-[#E1601F]' : 'bg-[#1B2A4A] group-hover:bg-[#E1601F]'
-              }`}>
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5 transition-colors bg-[#1B2A4A] group-hover:bg-[#E1601F]">
                 <div className="w-5 h-5 rounded-sm bg-white/90" />
               </div>
-              <h3 className={`font-semibold mb-2 text-lg ${s.highlight ? 'text-white' : 'text-[#1B2A4A]'}`} style={{ fontFamily: 'var(--font-heading)' }}>{s.title}</h3>
-              <p className={`text-sm leading-relaxed mb-4 ${s.highlight ? 'text-[#C9D2E3]' : 'text-[#5A5E66]'}`}>{s.desc}</p>
-              <span className={`text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all ${s.highlight ? 'text-[#FFB088]' : 'text-[#E1601F]'}`}>
-                {s.highlight ? 'Get A Quote →' : 'Learn More →'}
+              <h3 className="font-semibold mb-2 text-lg text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>{s.title}</h3>
+              <p className="text-sm leading-relaxed mb-4 text-[#5A5E66]">{s.desc}</p>
+              <span className="text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all text-[#E1601F]">
+                Learn More →
               </span>
             </Link>
           ))}
+        </div>
+        <div className="mt-6 max-w-md mx-auto">
+          <Link
+            href={consultationCta.href}
+            className="group block rounded-xl p-7 text-center transition-all bg-[#1B2A4A] hover:shadow-xl"
+          >
+            <h3 className="font-semibold mb-2 text-lg text-white" style={{ fontFamily: 'var(--font-heading)' }}>{consultationCta.title}</h3>
+            <p className="text-sm leading-relaxed mb-4 text-[#C9D2E3]">{consultationCta.desc}</p>
+            <span className="text-sm font-semibold inline-flex items-center gap-1 group-hover:gap-2 transition-all text-[#FFB088]">
+              Get A Quote →
+            </span>
+          </Link>
         </div>
       </section>
 
@@ -406,9 +424,17 @@ export default function Home() {
       <section className="px-6 py-16 text-center">
         <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">A BUILDER YOU CAN TRUST</p>
         <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A] mb-7" style={{ fontFamily: 'var(--font-heading)' }}>Fully Licensed And Insured</h2>
-        <div className="flex justify-center gap-6 flex-wrap text-sm text-[#1B2A4A] font-semibold">
-          <span className="border border-[#D9D6CD] rounded-lg px-6 py-4 bg-white shadow-sm">MBV — Master Builders Victoria</span>
-          <span className="border border-[#D9D6CD] rounded-lg px-6 py-4 bg-white shadow-sm">BPC — Registered Building Practitioner</span>
+        <div className="flex justify-center gap-6 flex-wrap">
+          <a href="https://www.mbav.com.au/" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-3 border border-[#D9D6CD] rounded-lg px-6 py-4 bg-white shadow-sm hover:border-[#E1601F] transition-colors">
+            <Image src="/mbav-logo.png" alt="Master Builders Victoria" width={230} height={120} className="h-10 w-auto" />
+            <span className="text-sm text-[#1B2A4A] font-semibold">Master Builders Victoria</span>
+          </a>
+          <a href="https://www.bpc.vic.gov.au/" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-3 border border-[#D9D6CD] rounded-lg px-6 py-4 bg-white shadow-sm hover:border-[#E1601F] transition-colors">
+            <Image src="/bpc-logo.png" alt="Building and Plumbing Commission" width={211} height={120} className="h-10 w-auto" />
+            <span className="text-sm text-[#1B2A4A] font-semibold">Registered Building Practitioner</span>
+          </a>
         </div>
       </section>
 
@@ -429,17 +455,25 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-white px-6 py-12 border-t border-[#EAE7E0]">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 text-sm">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-10 text-sm">
           <div>
-            <div className="font-semibold text-[#1B2A4A] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Easy Building &amp; Construction</div>
+            <div className="font-semibold text-[#1B2A4A] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Easy Building &amp; Construction Pty Ltd.</div>
             <p className="text-[#8A8D94] leading-relaxed">New homes, renovations, and extensions across Melbourne — one team from first conversation to final handover.</p>
+            <div className="flex items-center gap-3 mt-4 text-[#1B2A4A]">
+              <a href="https://www.instagram.com/easybcon.com.au/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#E1601F] transition"><SocialIcon name="instagram" /></a>
+              <a href="https://www.linkedin.com/company/easybcon" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-[#E1601F] transition"><SocialIcon name="linkedin" /></a>
+              <a href="https://www.facebook.com/easybcon.com.au" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-[#E1601F] transition"><SocialIcon name="facebook" /></a>
+              <a href="https://www.youtube.com/@EBC2010AUS" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-[#E1601F] transition"><SocialIcon name="youtube" /></a>
+              <a href="https://x.com/easybcon" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:text-[#E1601F] transition"><SocialIcon name="x" /></a>
+            </div>
           </div>
           <div>
             <div className="font-semibold text-[#1B2A4A] mb-3">Company</div>
             <div className="flex flex-col gap-2 text-[#5A5E66]">
               <Link href="/" className="hover:text-[#E1601F] transition">Home</Link>
               <Link href="/register" className="hover:text-[#E1601F] transition">Register</Link>
-              <Link href="/contact" className="hover:text-[#E1601F] transition">Contact</Link>
+              <Link href="/register" className="hover:text-[#E1601F] transition">Contact</Link>
+              <Link href="/privacy" className="hover:text-[#E1601F] transition">Privacy Policy</Link>
             </div>
           </div>
           <div>
@@ -448,6 +482,15 @@ export default function Home() {
               <Link href="/new-home" className="hover:text-[#E1601F] transition">New Home</Link>
               <Link href="/renovation" className="hover:text-[#E1601F] transition">Renovation</Link>
               <Link href="/extension" className="hover:text-[#E1601F] transition">Extension</Link>
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold text-[#1B2A4A] mb-3">Contact</div>
+            <div className="flex flex-col gap-2 text-[#5A5E66]">
+              <a href="tel:1300715840" className="hover:text-[#E1601F] transition">1300 715 840</a>
+              <a href="mailto:info@easybcon.com.au" className="hover:text-[#E1601F] transition">info@easybcon.com.au</a>
+              <span>P.O. Box 2014</span>
+              <span>Forest Hill VIC 3131</span>
             </div>
           </div>
         </div>
