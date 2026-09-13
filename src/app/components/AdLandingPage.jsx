@@ -34,7 +34,7 @@ export default function AdLandingPage({
               Easy Building &amp; Construction Pty Ltd.
             </span>
           </Link>
-          <a href="tel:1300715840" className="inline-flex items-center gap-2 bg-[#0068D8] text-white text-base font-semibold rounded-full px-6 py-3 hover:bg-[#0050B0] transition whitespace-nowrap">
+          <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition whitespace-nowrap">
             <PhoneIcon /> 1300 715 840
           </a>
         </div>
