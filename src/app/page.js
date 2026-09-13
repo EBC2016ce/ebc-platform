@@ -134,9 +134,14 @@ export default function Home() {
             <Link href="#our-work" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Projects</Link>
             <Link href="/register" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Contact Us</Link>
           </nav>
-          <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition">
-            <PhoneIcon /> 1300 715 840
-          </a>
+          <div className="flex items-center gap-4">
+            <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition">
+              <PhoneIcon /> 1300 715 840
+            </a>
+            <Link href="/portal/login" className="inline-flex items-center gap-2 border border-[#1B2A4A] text-[#1B2A4A] text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-[#1B2A4A] hover:text-white transition whitespace-nowrap">
+              Client Login
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -512,6 +517,7 @@ export default function Home() {
               <Link href="/" className="hover:text-[#E1601F] transition">Home</Link>
               <Link href="/register" className="hover:text-[#E1601F] transition">Register</Link>
               <Link href="/register" className="hover:text-[#E1601F] transition">Contact</Link>
+              <Link href="/portal/login" className="hover:text-[#E1601F] transition">Client Login</Link>
               <Link href="/privacy" className="hover:text-[#E1601F] transition">Privacy Policy</Link>
             </div>
           </div>

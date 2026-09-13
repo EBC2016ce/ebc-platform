@@ -131,9 +131,19 @@ export function bookingConfirmationEmailHtml({ firstName, appointmentType, dateL
                   </td>
                 </tr>
               </table>
-              <p style="font-size:14px; color:#5A5E66; line-height:1.6; margin:0;">
-                An EBC team member will be in touch ahead of time. If you need to reschedule, just reply to this email.
+              <p style="font-size:14px; color:#5A5E66; line-height:1.6; margin:0 0 20px 0;">
+                An EBC team member will be in touch ahead of time. You'll also get a text message reminder closer to the date.
               </p>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#FFF6F0; border:1px solid #E1601F33; border-radius:6px; padding:14px 18px;">
+                    <p style="font-size:13px; color:#5A5E66; line-height:1.6; margin:0;">
+                      <strong style="color:#1B2A4A;">Need to reschedule or cancel?</strong><br/>
+                      Just reply to this email or call us at least <strong>24 hours</strong> before your appointment and we'll happily find a new time.
+                    </p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 

@@ -2,6 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getBookingConfig } from '@/lib/booking'
 import { resend } from '@/lib/resend'
 import { bookingConfirmationEmailHtml, buildGoogleCalendarLink } from '@/lib/emailTemplates'
+import { sendSms } from '@/lib/sms'
 
 export async function POST(request) {
   try {
@@ -36,7 +37,7 @@ export async function POST(request) {
       return Response.json({ error: error.message }, { status: 400 })
     }
 
-        const { data: customer } = await supabaseAdmin.from('customers').select('first_name, email').eq('id', customerId).single()
+        const { data: customer } = await supabaseAdmin.from('customers').select('first_name, email, mobile').eq('id', customerId).single()
     if (customer) {
       const dateLabel = new Date(bookingDate).toLocaleDateString('en-AU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
       const calendarLink = buildGoogleCalendarLink({
@@ -57,6 +58,14 @@ export async function POST(request) {
           calendarLink,
         }),
       })
+
+      if (customer.mobile) {
+        const shortDate = new Date(bookingDate).toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' })
+        sendSms({
+          to: customer.mobile,
+          body: `Hi ${customer.first_name}, your EBC consultation is confirmed for ${shortDate} at ${bookingTime}. Need to reschedule? Just call us at least 24 hours ahead.`,
+        }).catch(console.error)
+      }
     }
 
     return Response.json({ success: true })
