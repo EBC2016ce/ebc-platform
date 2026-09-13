@@ -207,10 +207,6 @@ export default function Home() {
             <a href="https://www.youtube.com/@EBC2010AUS" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-[#E1601F] transition"><SocialIcon name="youtube" /></a>
             <a href="https://x.com/easybcon" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:text-[#E1601F] transition"><SocialIcon name="x" /></a>
           </div>
-          <div className="flex items-center gap-4 text-[#3A3F4A] font-medium">
-            <a href="mailto:info@easybcon.com.au" className="hover:text-[#E1601F] transition">info@easybcon.com.au</a>
-            <a href="https://easybcon.com.au" className="hover:text-[#E1601F] transition">easybcon.com.au</a>
-          </div>
         </div>
       </section>
 
