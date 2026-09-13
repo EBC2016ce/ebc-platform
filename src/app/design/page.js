@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { STEPS_BY_TYPE } from '@/lib/designSteps'
 import PlanUploads from '@/components/PlanUploads'
 import AddressAutocompleteFields from '@/components/AddressAutocompleteFields'
@@ -244,15 +245,18 @@ function DesignPageContent() {
 export default function DesignPage() {
   return (
     <main className="min-h-screen flex flex-col items-center px-6 py-16">
-      <div className="flex flex-col items-center mb-8">
+      <Link href="/" className="flex flex-col items-center mb-8">
         <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
         <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Easy Building &amp; Construction Pty Ltd
+          Easy Building &amp; Construction Pty Ltd.
         </span>
-      </div>
+      </Link>
       <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
         <DesignPageContent />
       </Suspense>
+      <div className="text-center mt-8">
+        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+      </div>
     </main>
   )
 }

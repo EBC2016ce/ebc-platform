@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 
 export default function PortalLogin() {
@@ -52,12 +53,12 @@ export default function PortalLogin() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-16">
       <div className="max-w-sm w-full">
-        <div className="flex flex-col items-center mb-6">
+        <Link href="/" className="flex flex-col items-center mb-6">
           <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" />
           <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Easy Building &amp; Construction Pty Ltd
+            Easy Building &amp; Construction Pty Ltd.
           </span>
-        </div>
+        </Link>
 
         {mode === 'login' && (
           <>
@@ -133,6 +134,10 @@ export default function PortalLogin() {
             </div>
           </>
         )}
+
+        <div className="text-center mt-5">
+          <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+        </div>
       </div>
     </main>
   )

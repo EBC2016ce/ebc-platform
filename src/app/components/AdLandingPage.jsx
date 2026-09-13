@@ -31,7 +31,7 @@ export default function AdLandingPage({
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-11 w-auto" priority />
             <span className="hidden sm:block font-bold text-[#1B2A4A] text-sm leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-              Easy Building &amp; Construction Pty Ltd
+              Easy Building &amp; Construction Pty Ltd.
             </span>
           </Link>
           <a href="tel:1300715840" className="inline-flex items-center gap-2 bg-[#1B2A4A] text-white text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-[#13203A] transition whitespace-nowrap">
