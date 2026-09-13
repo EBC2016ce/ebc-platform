@@ -145,7 +145,7 @@ export default function Home() {
         <Image src="/hero-melbourne-home-build.jpg" alt="Modern EBC home build in Melbourne" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/5" />
         <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex items-center">
-          <div className="max-w-xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
+          <div className="max-w-2xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
             <span className="block text-sm font-semibold text-[#FFB088] tracking-wide mb-3">YOUR VISION &middot; OUR EXPERTISE</span>
             <h1 className="text-4xl md:text-6xl font-semibold text-white leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
               <span className="grid" style={{ gridTemplateColumns: 'auto auto' }}>
@@ -153,7 +153,7 @@ export default function Home() {
                 <span></span><span>Extensions</span>
                 <span></span><span>Renovations</span>
               </span>
-              <span className="block mt-1 text-[#8FC2FF]">Across Melbourne (Eastern Suburbs)</span>
+              <span className="block mt-1 text-[#8FC2FF] text-xl md:text-3xl whitespace-nowrap">Across Melbourne (Eastern Suburbs)</span>
             </h1>
             <p className="mt-5 text-lg text-white/90 leading-relaxed">
               From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
