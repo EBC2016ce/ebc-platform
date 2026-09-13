@@ -134,14 +134,9 @@ export default function Home() {
             <Link href="#our-work" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Projects</Link>
             <Link href="/register" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Contact Us</Link>
           </nav>
-          <div className="flex items-center gap-4">
-            <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition">
-              <PhoneIcon /> 1300 715 840
-            </a>
-            <Link href="/portal/login" className="inline-flex items-center gap-2 bg-[#8FC2FF] text-[#0F1930] text-sm font-semibold rounded-md px-5 py-2.5 shadow-[0_4px_0_#5C93D9] hover:shadow-[0_2px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all duration-150 whitespace-nowrap">
-              Client Login
-            </Link>
-          </div>
+          <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition">
+            <PhoneIcon /> 1300 715 840
+          </a>
         </div>
       </header>
 
@@ -163,18 +158,22 @@ export default function Home() {
             <p className="mt-5 text-lg text-white/90 leading-relaxed">
               From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
             </p>
-            <div className="mt-6 flex items-center gap-4 flex-wrap">
-              <Link href="/portal/login" className="inline-flex items-center gap-2 bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-6 py-3 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
-                Customer Portal
-              </Link>
-              <Link href="/login" className="inline-flex items-center gap-2 bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-6 py-3 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
-                Admin Portal
+            <div className="mt-6 flex flex-col items-center gap-4">
+              <div className="flex items-center gap-8 flex-wrap justify-center">
+                <Link href="/portal/login" className="inline-flex items-center gap-1.5 text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                  Customer Portal
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </Link>
+                <Link href="/login" className="inline-flex items-center gap-1.5 text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                  Admin Portal
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </Link>
+              </div>
+              <Link href="/register" className="inline-flex items-center gap-1.5 text-[#E1601F] font-semibold border-b-2 border-[#E1601F]/40 pb-1 hover:border-[#E1601F] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                Get a Free Quote
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </Link>
             </div>
-            <Link href="/register" className="mt-4 inline-flex items-center gap-2 w-fit bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-7 py-3.5 shadow-[0_5px_0_#5C93D9] hover:shadow-[0_3px_0_#5C93D9] hover:translate-y-[2px] active:shadow-none active:translate-y-[5px] transition-all duration-150" style={{ fontFamily: 'var(--font-heading)' }}>
-              Get a Free Quote
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-            </Link>
           </div>
         </div>
       </section>
