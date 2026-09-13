@@ -1,7 +1,7 @@
 ﻿'use client'
 import { useState, useRef } from 'react'
 
-export default function AddressAutocompleteFields({ formData, onFieldChange }) {
+export default function AddressAutocompleteFields({ formData, onFieldChange, label = 'Search your address' }) {
   const [searchText, setSearchText] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const [showDropdown, setShowDropdown] = useState(false)
@@ -40,7 +40,7 @@ export default function AddressAutocompleteFields({ formData, onFieldChange }) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-[#4A4E56] mb-1.5">Search your address</label>
+      <label className="block text-sm font-medium text-[#4A4E56] mb-1.5">{label}</label>
       <div className="relative">
         <input
           value={searchText}

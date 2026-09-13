@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase-browser'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
-import AddressAutocomplete from './AddressAutocomplete'
+import AddressAutocompleteFields from './AddressAutocompleteFields'
 
 const CATEGORIES = {
   'Renovation': ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
@@ -11,13 +11,16 @@ const CATEGORIES = {
   'Extension': ['Extension'],
 }
 
+const AUSTRALIAN_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'WA', 'TAS', 'NT', 'ACT']
+
 export default function RegistrationForm({ lockedCategory, title, subtitle, hideLogo }) {
   const initialCategory = lockedCategory || ''
   const initialOptions = lockedCategory ? CATEGORIES[lockedCategory] : []
   const initialType = initialOptions.length === 1 ? initialOptions[0] : ''
 
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', mobile: '', address: '',
+    firstName: '', lastName: '', email: '', mobile: '',
+    streetNo: '', streetName: '', state: '', postalCode: '',
     category: initialCategory, projectType: initialType, consent: false, password: ''
   })
   const [status, setStatus] = useState('idle')
@@ -53,10 +56,11 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
 
     try {
       const utm = getStoredUtm()
+      const address = `${form.streetNo} ${form.streetName}, ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, ...utm }),
+        body: JSON.stringify({ ...form, address, ...utm }),
       })
       const result = await res.json()
 
@@ -242,8 +246,36 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
         </div>
 
                 <div>
-          <label htmlFor="address" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Project address</label>
-          <AddressAutocomplete value={form.address} onChange={(v) => field('address', v)} required />
+          <AddressAutocompleteFields label="Your Address" formData={form} onFieldChange={field} />
+          <div className="grid grid-cols-2 gap-4 mt-3">
+            <div>
+              <label htmlFor="streetNo" className="block text-xs font-medium text-[#4A4E56] mb-1">Street No</label>
+              <input id="streetNo" value={form.streetNo} onChange={(e) => field('streetNo', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+            <div>
+              <label htmlFor="streetName" className="block text-xs font-medium text-[#4A4E56] mb-1">Street Name</label>
+              <input id="streetName" value={form.streetName} onChange={(e) => field('streetName', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+            <div>
+              <label htmlFor="state" className="block text-xs font-medium text-[#4A4E56] mb-1">State</label>
+              <select id="state" value={form.state} onChange={(e) => field('state', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]">
+                <option value="">Select...</option>
+                {AUSTRALIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="postalCode" className="block text-xs font-medium text-[#4A4E56] mb-1">Postal Code</label>
+              <input id="postalCode" value={form.postalCode} onChange={(e) => field('postalCode', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+          </div>
         </div>
 
         <div>
