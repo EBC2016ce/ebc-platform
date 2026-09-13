@@ -468,7 +468,7 @@ export default function Home() {
           <a href="https://www.bpc.vic.gov.au/" target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-3 border border-[#D9D6CD] rounded-lg px-6 py-4 bg-white shadow-sm hover:border-[#E1601F] transition-colors">
             <Image src="/bpc-logo.png" alt="Building and Plumbing Commission" width={211} height={120} className="h-10 w-auto" />
-            <span className="text-sm text-[#1B2A4A] font-semibold">Registered Building Practitioner</span>
+            <span className="text-sm text-[#1B2A4A] font-semibold">Building and Plumbing Commission</span>
           </a>
         </div>
       </section>
