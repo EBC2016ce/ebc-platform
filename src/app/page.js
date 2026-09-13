@@ -149,9 +149,9 @@ export default function Home() {
             <span className="block text-sm font-semibold text-[#FFB088] tracking-wide mb-3">YOUR VISION &middot; OUR EXPERTISE</span>
             <h1 className="text-4xl md:text-6xl font-semibold text-white leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
               <span className="grid" style={{ gridTemplateColumns: 'auto auto' }}>
-                <span>Quality&nbsp;</span><span>New Buildings</span>
-                <span></span><span>Extensions</span>
-                <span></span><span>Renovations</span>
+                <span>Quality&nbsp;</span><span className="border-b-2 border-[#E1601F] pb-1 w-fit">New Buildings</span>
+                <span></span><span className="border-b-2 border-[#E1601F] pb-1 w-fit">Extensions</span>
+                <span></span><span className="border-b-2 border-[#E1601F] pb-1 w-fit">Renovations</span>
               </span>
               <span className="block mt-1 text-[#8FC2FF] text-xl md:text-3xl whitespace-nowrap">Across Melbourne (Eastern Suburbs)</span>
             </h1>
