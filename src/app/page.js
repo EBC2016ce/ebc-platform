@@ -134,7 +134,7 @@ export default function Home() {
             <Link href="#our-work" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Projects</Link>
             <Link href="/register" className="border-b-2 border-[#E1601F] pb-1 hover:text-[#E1601F] transition">Contact Us</Link>
           </nav>
-          <a href="tel:1300715840" className="inline-flex items-center gap-2 bg-[#0068D8] text-white text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-[#0050B0] transition">
+          <a href="tel:1300715840" className="inline-flex items-center gap-2 bg-[#0068D8] text-white text-base font-semibold rounded-full px-6 py-3 hover:bg-[#0050B0] transition">
             <PhoneIcon /> 1300 715 840
           </a>
         </div>
