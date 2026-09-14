@@ -128,12 +128,24 @@ function DesignPageContent() {
   const handleSameAddress = (same) => {
     setField('sameAsRegisteredAddress', same)
     if (same && customerAddress) {
-      const match = customerAddress.match(/^(.+?)\s+(.+),\s*([A-Za-z]{2,3})\s+(\d{3,4})$/)
-      if (match) {
-        setField('streetNo', match[1])
-        setField('streetName', match[2])
-        setField('state', match[3].toUpperCase())
-        setField('postalCode', match[4])
+      // Registered addresses are composed as "No Street, Suburb STATE Postcode".
+      // Try that shape first, then fall back to the older "No Street, STATE
+      // Postcode" shape (no suburb) for addresses saved before suburb was
+      // collected, so those customers don't just dump the whole string into
+      // the street name field.
+      const withSuburb = customerAddress.match(/^(.+?)\s+(.+),\s*(.+?)\s+([A-Za-z]{2,3})\s+(\d{3,4})$/)
+      const withoutSuburb = customerAddress.match(/^(.+?)\s+(.+),\s*([A-Za-z]{2,3})\s+(\d{3,4})$/)
+      if (withSuburb) {
+        setField('streetNo', withSuburb[1])
+        setField('streetName', withSuburb[2])
+        setField('suburb', withSuburb[3])
+        setField('state', withSuburb[4].toUpperCase())
+        setField('postalCode', withSuburb[5])
+      } else if (withoutSuburb) {
+        setField('streetNo', withoutSuburb[1])
+        setField('streetName', withoutSuburb[2])
+        setField('state', withoutSuburb[3].toUpperCase())
+        setField('postalCode', withoutSuburb[4])
       } else {
         setField('streetName', customerAddress)
       }

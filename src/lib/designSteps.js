@@ -15,6 +15,7 @@ export const STEPS_BY_TYPE = {
       fields: [
         { key: "streetNo", label: "Street No", type: "text" },
         { key: "streetName", label: "Street Name", type: "text" },
+        { key: "suburb", label: "Suburb", type: "text" },
         { key: "state", label: "State", type: "select", options: AUSTRALIAN_STATES },
         { key: "postalCode", label: "Postal Code", type: "text" },
       ],
@@ -45,6 +46,7 @@ export const STEPS_BY_TYPE = {
       fields: [
         { key: "streetNo", label: "Street No", type: "text" },
         { key: "streetName", label: "Street Name", type: "text" },
+        { key: "suburb", label: "Suburb", type: "text" },
         { key: "state", label: "State", type: "select", options: AUSTRALIAN_STATES },
         { key: "postalCode", label: "Postal Code", type: "text" },
       ],

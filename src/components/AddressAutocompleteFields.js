@@ -34,6 +34,7 @@ export default function AddressAutocompleteFields({ formData, onFieldChange, lab
 
     onFieldChange('streetNo', details.streetNo || '')
     onFieldChange('streetName', details.streetName || '')
+    onFieldChange('suburb', details.suburb || '')
     onFieldChange('state', details.state || '')
     onFieldChange('postalCode', details.postalCode || '')
   }

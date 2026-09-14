@@ -1,6 +1,17 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+// Randomizes the order of the "Watch How We Build" video tiles so the same
+// clip isn't always first — a plain Fisher-Yates shuffle, no fixed seed.
+function shuffleBuildVideos(videos) {
+  const shuffled = [...videos]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 const quickLinks = [
   {
     title: 'New Building Construction',
@@ -379,13 +390,16 @@ export default function Home() {
           </h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {[
+          {shuffleBuildVideos([
             { src: '/projects/new-home/new-home-waffle-work.mp4', poster: '/projects/new-home/new-home-hero.jpg', caption: 'New home slab pour' },
             { src: '/projects/renovation/renovation-bathroom-before.mp4', caption: 'Bathroom — before' },
             { src: '/projects/renovation/renovation-bathroom-after.mp4', caption: 'Bathroom — after' },
             { src: '/projects/extension/extension-ad-final.mp4', caption: 'Extension project' },
             { src: '/projects/extension/extension-highlight-vertical.mp4', caption: 'Extension walkthrough' },
-          ].map((v, i) => (
+            { src: '/projects/new-home/new-home-build-02.mp4', caption: 'New home — framing' },
+            { src: '/projects/new-home/new-home-build-03.mp4', caption: 'New home — slab pour' },
+            { src: '/projects/new-home/new-home-build-04.mp4', caption: 'New home — site setup' },
+          ]).map((v, i) => (
             <div key={i} className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
               <video
                 src={v.src}

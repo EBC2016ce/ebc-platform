@@ -33,6 +33,7 @@ export async function POST(request) {
         email: body.email,
         mobile: body.mobile,
         address: body.address,
+        suburb: body.suburb || null,
         project_type: body.projectType,
         consent_given: body.consent,
         utm_source: body.utmSource || null,

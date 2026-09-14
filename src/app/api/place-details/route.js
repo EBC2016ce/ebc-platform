@@ -21,6 +21,9 @@
     return Response.json({
       streetNo: find('street_number'),
       streetName: find('route'),
+      // "locality" covers most Australian suburbs; some outer/regional
+      // addresses only carry "sublocality" instead, so fall back to that.
+      suburb: find('locality') || find('sublocality'),
       state: findShort('administrative_area_level_1'),
       postalCode: find('postal_code'),
     })

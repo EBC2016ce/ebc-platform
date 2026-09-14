@@ -21,7 +21,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', mobile: '',
-    streetNo: '', streetName: '', state: '', postalCode: '',
+    streetNo: '', streetName: '', suburb: '', state: '', postalCode: '',
     category: initialCategory, projectType: initialType, consent: false, password: ''
   })
   const [status, setStatus] = useState('idle')
@@ -63,7 +63,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
 
     try {
       const utm = getStoredUtm()
-      const address = `${form.streetNo} ${form.streetName}, ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
+      const address = `${form.streetNo} ${form.streetName}, ${form.suburb} ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -267,6 +267,12 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
             <div>
               <label htmlFor="streetName" className="block text-xs font-medium text-[#4A4E56] mb-1">Street Name</label>
               <input id="streetName" value={form.streetName} onChange={(e) => field('streetName', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+            <div>
+              <label htmlFor="suburb" className="block text-xs font-medium text-[#4A4E56] mb-1">Suburb</label>
+              <input id="suburb" value={form.suburb} onChange={(e) => field('suburb', e.target.value)}
                 required
                 className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
             </div>
