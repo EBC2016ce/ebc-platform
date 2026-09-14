@@ -82,6 +82,8 @@ export async function GET(request) {
       const smsResult = await sendSms({
         to: customer.mobile,
         body: `Hi ${customer.first_name}, reminder: your EBC ${appointmentType.toLowerCase()} is today at ${booking.booking_time} (in about 2 hours). Need to reschedule? Call us ASAP.`,
+        purpose: 'appointment_reminder_customer',
+        customerId: booking.customer_id,
       })
       if (!smsResult.success) {
         console.error('Reminder SMS to customer failed for booking', booking.id, smsResult.error)
@@ -92,6 +94,8 @@ export async function GET(request) {
       const adminSmsResult = await sendSms({
         to: adminPhone,
         body: `Reminder: ${customer.first_name}'s ${appointmentType.toLowerCase()} is today at ${booking.booking_time} (in ~2 hrs). ${customer.mobile || 'no mobile on file'}.`,
+        purpose: 'appointment_reminder_admin',
+        customerId: booking.customer_id,
       })
       if (!adminSmsResult.success) {
         console.error('Reminder SMS to admin failed for booking', booking.id, adminSmsResult.error)

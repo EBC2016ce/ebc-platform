@@ -68,6 +68,8 @@ export async function POST(request) {
       sendSms({
         to: body.mobile,
         body: `Hi ${body.firstName}, thanks for registering with Easy Building & Construction Pty Ltd. Your verification code is ${code}. It expires in 15 minutes.`,
+        purpose: 'verification_code',
+        customerId: data.id,
       }).catch((err) => console.error('Customer SMS failed:', err))
     }
 
@@ -80,6 +82,8 @@ export async function POST(request) {
       sendSms({
         to: adminPhone,
         body: `New EBC lead: ${body.firstName} ${body.lastName}, ${body.mobile}, ${body.projectType}. Address: ${body.address}`,
+        purpose: 'admin_new_lead_alert',
+        customerId: data.id,
       }).catch((err) => console.error('Admin SMS alert failed:', err))
     }
 

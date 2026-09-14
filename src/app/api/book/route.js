@@ -74,6 +74,8 @@ export async function POST(request) {
         const smsResult = await sendSms({
           to: customer.mobile,
           body: `Hi ${customer.first_name}, your EBC consultation is confirmed for ${shortDate} at ${bookingTime}. Need to reschedule? Just call us at least 24 hours ahead.`,
+          purpose: 'booking_confirmation',
+          customerId,
         })
         if (!smsResult.success) {
           console.error('Booking confirmation SMS failed for customer', customerId, smsResult.error)
