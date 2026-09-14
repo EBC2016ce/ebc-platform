@@ -10,6 +10,7 @@ export default function Portal() {
   const [messages, setMessages] = useState([])
   const [messageInput, setMessageInput] = useState('')
   const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState('')
   const router = useRouter()
 
   const loadMessages = () => {
@@ -54,14 +55,32 @@ export default function Portal() {
   const sendMessage = async () => {
     if (!messageInput.trim()) return
     setSending(true)
-    await fetch('/api/portal-messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ body: messageInput }),
-    })
-    setMessageInput('')
-    loadMessages()
-    setSending(false)
+    setSendError('')
+    const textToSend = messageInput
+    try {
+      const res = await fetch('/api/portal-messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: textToSend }),
+      })
+      if (res.status === 401) { router.push('/portal/login'); return }
+      if (!res.ok) {
+        const r = await res.json().catch(() => null)
+        // Keep the typed message in the box so nothing is lost — the
+        // customer can just hit Send again instead of retyping it.
+        setSendError((r && r.error) || 'Message failed to send — please try again.')
+        return
+      }
+      // Only clear the input and refresh the thread once we know the
+      // message actually saved. Clearing unconditionally made a failed
+      // send look like the message had "disappeared".
+      setMessageInput('')
+      loadMessages()
+    } catch {
+      setSendError('Message failed to send — check your connection and try again.')
+    } finally {
+      setSending(false)
+    }
   }
 
   const logOut = async () => {
@@ -207,12 +226,14 @@ export default function Portal() {
         </div>
         <div className="flex gap-2 mt-4">
           <input value={messageInput} onChange={(e) => setMessageInput(e.target.value)} placeholder="Type a message..."
+            onKeyDown={(e) => { if (e.key === 'Enter' && !sending) sendMessage() }}
             className="flex-1 border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
           <button onClick={sendMessage} disabled={sending}
             className="bg-[#E1601F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
-            Send
+            {sending ? 'Sending...' : 'Send'}
           </button>
         </div>
+        {sendError && <p className="text-xs text-[#A23B2E] mt-2">{sendError}</p>}
       </div>
 
       <div className="text-center mt-8">

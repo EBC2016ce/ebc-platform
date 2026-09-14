@@ -27,6 +27,7 @@ function LeadDetailContent() {
   const [messages, setMessages] = useState([])
   const [messageInput, setMessageInput] = useState('')
   const [sendingMessage, setSendingMessage] = useState(false)
+  const [sendMessageError, setSendMessageError] = useState('')
 
   const loadMessages = () => {
     fetch('/api/admin/messages?customerId=' + customerId)
@@ -157,14 +158,30 @@ function LeadDetailContent() {
   const sendMessage = async () => {
     if (!messageInput.trim()) return
     setSendingMessage(true)
-    await fetch('/api/admin/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customerId, body: messageInput }),
-    })
-    setMessageInput('')
-    loadMessages()
-    setSendingMessage(false)
+    setSendMessageError('')
+    const textToSend = messageInput
+    try {
+      const res = await fetch('/api/admin/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId, body: textToSend }),
+      })
+      if (res.status === 401) { setAuthExpired(true); return }
+      if (!res.ok) {
+        const r = await res.json().catch(() => null)
+        // Leave the typed reply in the box rather than clearing it — a
+        // silently-dropped send looked to the customer/staff like the
+        // message had just vanished.
+        setSendMessageError((r && r.error) || 'Message failed to send — please try again.')
+        return
+      }
+      setMessageInput('')
+      loadMessages()
+    } catch {
+      setSendMessageError('Message failed to send — check your connection and try again.')
+    } finally {
+      setSendingMessage(false)
+    }
   }
 
   if (!customerId) return <p className="text-[#A23B2E]">Missing customer reference.</p>
@@ -269,12 +286,14 @@ function LeadDetailContent() {
         </div>
         <div className="flex gap-2 mt-4">
           <input value={messageInput} onChange={(e) => setMessageInput(e.target.value)} placeholder="Reply to customer..."
+            onKeyDown={(e) => { if (e.key === 'Enter' && !sendingMessage) sendMessage() }}
             className="flex-1 border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
           <button onClick={sendMessage} disabled={sendingMessage}
             className="bg-[#E1601F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
-            Send
+            {sendingMessage ? 'Sending...' : 'Send'}
           </button>
         </div>
+        {sendMessageError && <p className="text-xs text-[#A23B2E] mt-2">{sendMessageError}</p>}
       </div>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
