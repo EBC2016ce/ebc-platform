@@ -47,10 +47,15 @@ export async function POST(request) {
     })
 
     // Server-side backup of the browser Pixel's CompleteRegistration event —
-    // the conversion the ad set is actually optimizing toward. Best-effort,
-    // never blocks verification. Same dedup approach as the Lead event.
+    // the conversion the ad set is actually optimizing toward. Awaited (not
+    // fire-and-forget) because Vercel can freeze/tear down the function's
+    // execution environment as soon as the response is sent — an unawaited
+    // call here was getting cut off before it ever reached Facebook's
+    // servers. sendCapiEvent already catches its own errors internally, so
+    // this never throws and never blocks verification. Same dedup approach
+    // as the Lead event.
     if (fbEventId && fullCustomer) {
-      sendCapiEvent({
+      await sendCapiEvent({
         eventName: 'CompleteRegistration',
         eventId: fbEventId,
         eventSourceUrl: pageUrl,

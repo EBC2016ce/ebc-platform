@@ -63,12 +63,16 @@ export async function POST(request) {
       return Response.json({ error: 'Registration saved, but the email failed to send: ' + emailError.message }, { status: 500 })
     }
 
-    // Server-side backup of the browser Pixel's Lead event — best-effort,
-    // never blocks registration. The eventId (sent by the client alongside
-    // its own fbq() call) lets Meta dedupe the two into one event instead
-    // of double-counting a lead that fired from both places.
+    // Server-side backup of the browser Pixel's Lead event. Awaited (not
+    // fire-and-forget) because Vercel can freeze/tear down the function's
+    // execution environment as soon as the response is sent — an unawaited
+    // call here was getting cut off before it ever reached Facebook's
+    // servers. sendCapiEvent already catches its own errors internally, so
+    // this never throws and never blocks registration on a CAPI failure.
+    // The eventId (sent by the client alongside its own fbq() call) lets
+    // Meta dedupe the two into one event instead of double-counting.
     if (body.fbEventId) {
-      sendCapiEvent({
+      await sendCapiEvent({
         eventName: 'Lead',
         eventId: body.fbEventId,
         eventSourceUrl: body.pageUrl,
