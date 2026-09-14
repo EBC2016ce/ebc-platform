@@ -401,6 +401,14 @@ export default function Home() {
             { src: '/projects/new-home/new-home-build-04.mp4', caption: 'New home — site setup' },
           ]).map((v, i) => (
             <div key={i} className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
+              {/*
+                object-contain (not object-cover) on purpose: several of these
+                clips are portrait (vertical) source video inside a 16:9 tile.
+                object-cover was cropping off the top/bottom of those, which
+                cropped the EBC watermark right out of frame — contain
+                letterboxes them instead so the full frame, watermark
+                included, always stays visible.
+              */}
               <video
                 src={v.src}
                 poster={v.poster}
@@ -411,7 +419,7 @@ export default function Home() {
                 preload="metadata"
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
-                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                className="absolute inset-0 w-full h-full object-contain pointer-events-none"
               />
               <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white/90 bg-black/40 rounded px-2 py-0.5">
                 {v.caption}
