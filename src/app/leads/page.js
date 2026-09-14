@@ -104,6 +104,7 @@ export default function Leads() {
   const [reportError, setReportError] = useState('')
   const [activeCategory, setActiveCategory] = useState('New Building')
   const [canManageLeads, setCanManageLeads] = useState(false)
+  const [canViewSubscriptions, setCanViewSubscriptions] = useState(false)
   const router = useRouter()
 
   const load = () => {
@@ -118,6 +119,7 @@ export default function Leads() {
         else {
           setLeads(result.leads || [])
           setCanManageLeads(!!result.canManageLeads)
+          setCanViewSubscriptions(!!result.canViewSubscriptions)
         }
       })
   }
@@ -220,6 +222,12 @@ export default function Leads() {
               className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
               Ad Performance
             </Link>
+            {canViewSubscriptions && (
+              <a href="https://claude.ai/code/artifact/74f108e4-e9c5-4f48-ab44-805b0e4ca87c" target="_blank" rel="noopener noreferrer"
+                className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
+                Subscriptions
+              </a>
+            )}
             <button onClick={() => setShowReportBox((v) => !v)}
               className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
               {reportSent ? 'Report sent ✓' : 'Email this report'}

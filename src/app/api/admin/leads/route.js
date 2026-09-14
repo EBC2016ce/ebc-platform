@@ -9,8 +9,13 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export async function GET(request) {
-  const { authorized, canManageLeads } = await requireStaff()
+  const { authorized, canManageLeads, user } = await requireStaff()
   if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })
+
+  // The subscriptions ledger (Claude/Vercel/Resend/ClickSend/domains costs)
+  // is sensitive billing info, not something every staff login should see a
+  // link to — restricted to this one admin, independent of can_manage_leads.
+  const canViewSubscriptions = user.email === 'admin-ebc03@easybcon.com.au'
 
   const { searchParams } = new URL(request.url)
   const includeArchived = searchParams.get('includeArchived') === '1'
@@ -36,7 +41,7 @@ export async function GET(request) {
     isUnviewed: !c.viewed_by_staff,
   }))
 
-  return Response.json({ leads, canManageLeads })
+  return Response.json({ leads, canManageLeads, canViewSubscriptions })
 }
 
 // Archive / unarchive / permanently delete a lead. Only staff members with
