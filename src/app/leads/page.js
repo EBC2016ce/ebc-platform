@@ -194,7 +194,7 @@ export default function Leads() {
   }
 
   const logOut = async () => {
-    const supabase = createClient()
+    const supabase = createClient('staff')
     await supabase.auth.signOut()
     router.push('/login')
   }

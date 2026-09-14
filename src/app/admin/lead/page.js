@@ -31,8 +31,16 @@ function LeadDetailContent() {
 
   const loadMessages = () => {
     fetch('/api/admin/messages?customerId=' + customerId)
-      .then((res) => res.json())
-      .then((r) => setMessages(r.messages || []))
+      .then((res) => {
+        // The 6-second poll hit this same endpoint silently on a 401 and
+        // just reset the thread to empty — the page looked "stuck" not
+        // updating, and only re-logging in (which happened to land on
+        // `load()`'s own 401 check) ever surfaced that the session had
+        // actually expired.
+        if (res.status === 401) { setAuthExpired(true); return null }
+        return res.json()
+      })
+      .then((r) => { if (r) setMessages(r.messages || []) })
   }
 
   const router = useRouter()

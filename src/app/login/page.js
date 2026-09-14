@@ -21,7 +21,7 @@ export default function Login() {
     e.preventDefault()
     setError('')
     setBusy(true)
-    const supabase = createClient()
+    const supabase = createClient('staff')
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     setBusy(false)
@@ -38,7 +38,7 @@ export default function Login() {
     e.preventDefault()
     setResetBusy(true)
     setResetError('')
-    const supabase = createClient()
+    const supabase = createClient('staff')
 
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
       redirectTo: `${window.location.origin}/login/reset-password`,

@@ -18,7 +18,7 @@ export default function StaffResetPassword() {
     // Supabase reads the recovery token from the URL and establishes a
     // temporary session automatically — just confirm one exists before
     // letting the staff member submit a new password.
-    const supabase = createClient()
+    const supabase = createClient('staff')
     supabase.auth.getSession().then(({ data }) => {
       setReady(!!data.session)
     })
@@ -38,7 +38,7 @@ export default function StaffResetPassword() {
     }
 
     setBusy(true)
-    const supabase = createClient()
+    const supabase = createClient('staff')
     const { error } = await supabase.auth.updateUser({ password })
     setBusy(false)
 
