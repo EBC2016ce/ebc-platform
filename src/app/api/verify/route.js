@@ -1,8 +1,9 @@
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { sendCapiEvent } from '@/lib/metaCapi'
 
 export async function POST(request) {
   try {
-    const { customerId, code } = await request.json()
+    const { customerId, code, fbEventId, pageUrl } = await request.json()
 
     const { data: customer, error: fetchError } = await supabaseAdmin
       .from('customers')
@@ -35,11 +36,33 @@ export async function POST(request) {
       return Response.json({ error: updateError.message }, { status: 400 })
     }
 
-    const { data: fullCustomer } = await supabaseAdmin.from('customers').select('email').eq('id', customerId).single()
+    const { data: fullCustomer } = await supabaseAdmin
+      .from('customers')
+      .select('email, mobile, first_name, last_name')
+      .eq('id', customerId)
+      .single()
     const { data: session } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
       email: fullCustomer.email,
     })
+
+    // Server-side backup of the browser Pixel's CompleteRegistration event —
+    // the conversion the ad set is actually optimizing toward. Best-effort,
+    // never blocks verification. Same dedup approach as the Lead event.
+    if (fbEventId && fullCustomer) {
+      sendCapiEvent({
+        eventName: 'CompleteRegistration',
+        eventId: fbEventId,
+        eventSourceUrl: pageUrl,
+        userData: {
+          email: fullCustomer.email,
+          phone: fullCustomer.mobile,
+          firstName: fullCustomer.first_name,
+          lastName: fullCustomer.last_name,
+        },
+        request,
+      }).catch((err) => console.error('Meta CAPI CompleteRegistration event failed:', err))
+    }
 
     return Response.json({ success: true, actionLink: session?.properties?.action_link })
   } catch (err) {

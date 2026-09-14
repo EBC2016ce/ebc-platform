@@ -64,10 +64,15 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
     try {
       const utm = getStoredUtm()
       const address = `${form.streetNo} ${form.streetName}, ${form.suburb} ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
+      // Shared with the server so it can send a matching Conversions API
+      // event — same eventId on both sides is what lets Meta dedupe the
+      // browser fbq() call and the server-side backup into a single event.
+      const fbEventId = crypto.randomUUID()
+      const pageUrl = window.location.href
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, address, ...utm }),
+        body: JSON.stringify({ ...form, address, ...utm, fbEventId, pageUrl }),
       })
       const result = await res.json()
 
@@ -76,7 +81,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
         setErrorMessage(result.error || 'Unknown error')
       } else {
         if (typeof window !== 'undefined' && window.fbq) {
-          window.fbq('track', 'Lead')
+          window.fbq('track', 'Lead', {}, { eventID: fbEventId })
         }
         setCustomerId(result.customerId)
         setStatus('verifying')
@@ -93,10 +98,12 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
     setVerifyError('')
 
     try {
+      const fbEventId = crypto.randomUUID()
+      const pageUrl = window.location.href
       const res = await fetch('/api/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerId, code }),
+        body: JSON.stringify({ customerId, code, fbEventId, pageUrl }),
       })
       const result = await res.json()
 
@@ -104,7 +111,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
         setVerifyError(result.error || 'Unknown error')
       } else {
         if (typeof window !== 'undefined' && window.fbq) {
-          window.fbq('track', 'CompleteRegistration')
+          window.fbq('track', 'CompleteRegistration', {}, { eventID: fbEventId })
         }
         const supabase = createClient()
         await supabase.auth.signInWithPassword({ email: form.email, password: form.password })

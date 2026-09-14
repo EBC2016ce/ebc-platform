@@ -2,6 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { resend } from '@/lib/resend'
 import { verificationEmailHtml } from '@/lib/emailTemplates'
 import { sendSms } from '@/lib/sms'
+import { sendCapiEvent } from '@/lib/metaCapi'
 
 function generateCode() {
   return Math.floor(100000 + Math.random() * 900000).toString()
@@ -60,6 +61,20 @@ export async function POST(request) {
     if (emailError) {
       console.error('Resend send failed:', emailError)
       return Response.json({ error: 'Registration saved, but the email failed to send: ' + emailError.message }, { status: 500 })
+    }
+
+    // Server-side backup of the browser Pixel's Lead event — best-effort,
+    // never blocks registration. The eventId (sent by the client alongside
+    // its own fbq() call) lets Meta dedupe the two into one event instead
+    // of double-counting a lead that fired from both places.
+    if (body.fbEventId) {
+      sendCapiEvent({
+        eventName: 'Lead',
+        eventId: body.fbEventId,
+        eventSourceUrl: body.pageUrl,
+        userData: { email: body.email, phone: body.mobile, firstName: body.firstName, lastName: body.lastName },
+        request,
+      }).catch((err) => console.error('Meta CAPI Lead event failed:', err))
     }
 
     // Thank the customer and send them the same code by SMS, in case the email
