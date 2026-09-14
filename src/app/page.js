@@ -1,6 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+export const metadata = {
+  title: 'Easy Building & Construction Pty Ltd | Melbourne Builder',
+  description: 'Melbourne residential builder — new homes, renovations and extensions. Register your project for a free consultation with a registered, insured builder.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'Easy Building & Construction Pty Ltd | Melbourne Builder',
+    description: 'Melbourne residential builder — new homes, renovations and extensions.',
+    url: '/',
+    images: ['/hero-melbourne-home-build.jpg'],
+  },
+}
+
 // Randomizes the order of the "Watch How We Build" video tiles so the same
 // clip isn't always first — a plain Fisher-Yates shuffle, no fixed seed.
 function shuffleBuildVideos(videos) {

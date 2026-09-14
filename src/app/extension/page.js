@@ -1,5 +1,11 @@
 import AdLandingPage from '../components/AdLandingPage'
 
+export const metadata = {
+  title: 'Home Extensions Melbourne',
+  description: "Seamless home extensions that expand your living space and blend naturally with your existing home. Registered & fully insured Melbourne builder.",
+  alternates: { canonical: '/extension' },
+}
+
 export default function ExtensionLanding() {
   return (
     <AdLandingPage

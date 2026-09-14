@@ -1,5 +1,10 @@
-﻿'use client'
-import RegistrationForm from '@/components/RegistrationForm'
+﻿import RegistrationForm from '@/components/RegistrationForm'
+
+export const metadata = {
+  title: 'Register Your Project',
+  description: 'Tell us about your new build, renovation or extension project and get started with Easy Building & Construction.',
+  alternates: { canonical: '/register' },
+}
 
 export default function Register() {
   return (

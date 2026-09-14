@@ -1,5 +1,11 @@
 import AdLandingPage from '../components/AdLandingPage'
 
+export const metadata = {
+  title: 'Home Renovations Melbourne',
+  description: 'Kitchen, bathroom, laundry or full home renovations — premium finishes and careful craftsmanship from a registered, insured Melbourne builder.',
+  alternates: { canonical: '/renovation' },
+}
+
 export default function RenovationLanding() {
   return (
     <AdLandingPage

@@ -15,8 +15,17 @@ const hankenGrotesk = Hanken_Grotesk({
 });
 
 export const metadata = {
-  title: "EBC — Easy Building & Construction",
-  description: "Register your project with Easy Building & Construction.",
+  metadataBase: new URL("https://easybcon.com.au"),
+  title: {
+    default: "Easy Building & Construction Pty Ltd | Melbourne Builder",
+    template: "%s | Easy Building & Construction",
+  },
+  description: "Melbourne residential builder for new homes, renovations and extensions. Register your project for a free consultation with a registered, insured builder.",
+  openGraph: {
+    siteName: "Easy Building & Construction Pty Ltd",
+    locale: "en_AU",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }) {

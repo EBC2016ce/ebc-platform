@@ -1,5 +1,11 @@
 import AdLandingPage from '../components/AdLandingPage'
 
+export const metadata = {
+  title: 'New Home Builds Melbourne',
+  description: "Knockdown & rebuild or a vacant block — get a clear plan and a fixed quote from a licensed Melbourne builder with 15+ years' experience.",
+  alternates: { canonical: '/new-home' },
+}
+
 export default function NewHomeLanding() {
   return (
     <AdLandingPage
