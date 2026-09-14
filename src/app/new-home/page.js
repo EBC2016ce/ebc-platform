@@ -12,11 +12,14 @@ export default function NewHomeLanding() {
         '15+ years building homes across Victoria',
         'Registered & fully insured builder',
       ]}
-      image="/after-1.jpg"
-      imageAlt="Recently completed new home build"
+      image="/projects/new-home/new-home-hero.jpg"
+      imageAlt="New home slab under construction"
       lockedCategory="New Building"
       formTitle="Building New? Let's Talk."
       formSubtitle="Knockdown & rebuild or a vacant block - tell us about your project."
+      gallery={[
+        { type: 'video', src: '/projects/new-home/new-home-waffle-work.mp4', caption: 'Waffle Pod Slab — Foundation Stage' },
+      ]}
     />
   )
 }

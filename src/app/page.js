@@ -53,12 +53,12 @@ const reviews = [
 ]
 
 const projects = [
-  { img: '/project-kitchen-after.jpg', category: 'Melbourne Home Renovation', title: 'The Kitchen Transformation' },
-  { img: '/renovation-after.jpg', category: 'Melbourne Home Renovation', title: 'The Complete Refresh' },
-  { img: '/project-renovation-during.jpg', category: 'Melbourne Home Renovation', title: 'Mid-Build Progress' },
-  { img: '/renovation-before.jpg', category: 'Melbourne Home Renovation', title: 'Where It Started' },
-  { img: '/project-frame-fitout.jpg', category: 'Melbourne Home Renovation', title: 'Frame & Fitout' },
-  { img: '/project-kitchen-after.jpg', category: 'Melbourne Home Renovation', title: 'Finished & Handed Over' },
+  { img: '/projects/renovation/renovation-kitchen-after.jpg', category: 'Melbourne Home Renovation', title: 'The Kitchen Transformation' },
+  { img: '/projects/renovation/renovation-wallremoval-after.jpg', category: 'Melbourne Home Renovation', title: 'The Complete Refresh' },
+  { img: '/projects/renovation/renovation-kitchen-during.jpg', category: 'Melbourne Home Renovation', title: 'Mid-Build Progress' },
+  { img: '/projects/renovation/renovation-kitchen-before.jpg', category: 'Melbourne Home Renovation', title: 'Where It Started' },
+  { img: '/projects/renovation/renovation-deck-m-framing.jpg', category: 'Melbourne Home Renovation', title: 'Frame & Fitout' },
+  { img: '/projects/renovation/renovation-bathroom-hero.jpg', category: 'Melbourne Home Renovation', title: 'Finished & Handed Over' },
 ]
 
 const blogPosts = [
@@ -294,7 +294,7 @@ export default function Home() {
       {/* Promo banner strip */}
       <section className="relative overflow-hidden">
         <div className="relative h-64">
-          <Image src="/project-renovation-during.jpg" alt="Renovation in progress" fill className="object-cover" />
+          <Image src="/projects/renovation/renovation-wallremoval-before.jpg" alt="Renovation in progress" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#1B2A4A]/85" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
@@ -362,10 +362,10 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg group">
-            <Image src="/renovation-before.jpg" alt="Before renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src="/projects/renovation/renovation-wallremoval-before.jpg" alt="Before renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg mt-8 group">
-            <Image src="/renovation-after.jpg" alt="After renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src="/projects/renovation/renovation-wallremoval-after.jpg" alt="After renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
         </div>
       </section>
@@ -379,29 +379,28 @@ export default function Home() {
           </h2>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
-          {/* VIDEO SLOT 1 — replace the src below with your hosted video URL (YouTube/Vimeo embed or an .mp4 file in /public) */}
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930] flex items-center justify-center">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/videoseries?list=UULF..."
-              title="EBC - Why Choose Us"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
+            <video
+              src="/projects/new-home/new-home-waffle-work.mp4"
+              poster="/projects/new-home/new-home-hero.jpg"
+              controls
+              preload="metadata"
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
-          {/* VIDEO SLOT 2 — replace the src below with your hosted video URL */}
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930] flex items-center justify-center">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/videoseries?list=UULF..."
-              title="EBC - Client Walkthrough"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
+            <video
+              src="/projects/renovation/renovation-bathroom-after.mp4"
+              controls
+              preload="metadata"
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </div>
         </div>
         <p className="text-xs text-[#8A8D94] text-center mt-4">
-          Video placeholders — swap the iframe src for a real YouTube/Vimeo link from your channel when ready.
+          Real footage from our own projects — a new home slab pour, and a completed bathroom renovation.
         </p>
       </section>
 
@@ -492,7 +491,7 @@ export default function Home() {
       {/* Final CTA banner */}
       <section className="relative overflow-hidden">
         <div className="relative h-80">
-          <Image src="/renovation-after.jpg" alt="Completed home" fill className="object-cover" />
+          <Image src="/projects/renovation/renovation-bathroom-hero.jpg" alt="Completed home" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0F1930]/85" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center">
             <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">GET IN TOUCH</p>
@@ -525,6 +524,7 @@ export default function Home() {
               <Link href="/register" className="hover:text-[#E1601F] transition">Register</Link>
               <Link href="/register" className="hover:text-[#E1601F] transition">Contact</Link>
               <Link href="/portal/login" className="hover:text-[#E1601F] transition">Client Login</Link>
+              <Link href="/blog" className="hover:text-[#E1601F] transition">Blog</Link>
               <Link href="/privacy" className="hover:text-[#E1601F] transition">Privacy Policy</Link>
             </div>
           </div>
