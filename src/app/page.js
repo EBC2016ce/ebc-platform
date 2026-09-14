@@ -397,7 +397,6 @@ export default function Home() {
                 preload="metadata"
                 disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
-                onContextMenu={(e) => e.preventDefault()}
                 className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               />
               <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white/90 bg-black/40 rounded px-2 py-0.5">
