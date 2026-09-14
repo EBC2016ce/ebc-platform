@@ -1,9 +1,10 @@
 ﻿'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
-import AddressAutocomplete from './AddressAutocomplete'
+import AddressAutocompleteFields from './AddressAutocompleteFields'
 
 const CATEGORIES = {
   'Renovation': ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
@@ -11,13 +12,16 @@ const CATEGORIES = {
   'Extension': ['Extension'],
 }
 
-export default function RegistrationForm({ lockedCategory, title, subtitle, hideLogo }) {
+const AUSTRALIAN_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'WA', 'TAS', 'NT', 'ACT']
+
+export default function RegistrationForm({ lockedCategory, lockedProjectType, title, subtitle, hideLogo }) {
   const initialCategory = lockedCategory || ''
   const initialOptions = lockedCategory ? CATEGORIES[lockedCategory] : []
-  const initialType = initialOptions.length === 1 ? initialOptions[0] : ''
+  const initialType = lockedProjectType || (initialOptions.length === 1 ? initialOptions[0] : '')
 
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', mobile: '', address: '',
+    firstName: '', lastName: '', email: '', mobile: '',
+    streetNo: '', streetName: '', suburb: '', state: '', postalCode: '',
     category: initialCategory, projectType: initialType, consent: false, password: ''
   })
   const [status, setStatus] = useState('idle')
@@ -39,7 +43,13 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
     return () => clearTimeout(timer)
   }, [resendCooldown])
 
-  const field = (key, value) => setForm({ ...form, [key]: value })
+  // Uses the functional updater form because AddressAutocompleteFields calls
+  // this multiple times back-to-back (streetNo, streetName, state,
+  // postalCode) when a suggestion is selected. Spreading the outer `form`
+  // closure directly would make each call overwrite the previous one since
+  // they'd all be based on the same stale snapshot, leaving only the last
+  // field (postalCode) actually set.
+  const field = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
   const setCategory = (category) => {
     const options = CATEGORIES[category] || []
@@ -53,10 +63,11 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
 
     try {
       const utm = getStoredUtm()
+      const address = `${form.streetNo} ${form.streetName}, ${form.suburb} ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, ...utm }),
+        body: JSON.stringify({ ...form, address, ...utm }),
       })
       const result = await res.json()
 
@@ -133,12 +144,12 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
     return (
       <div className="max-w-md w-full">
         {!hideLogo && (
-          <div className="flex flex-col items-center text-center mb-8">
+          <Link href="/" className="flex flex-col items-center text-center mb-8">
             <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
             <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-              Easy Building &amp; Construction Pty Ltd
+              Easy Building &amp; Construction Pty Ltd.
             </span>
-          </div>
+          </Link>
         )}
 
         <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -181,11 +192,14 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
           )}
 
           <button type="submit" disabled={verifyBusy}
-            className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+            className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
             style={{ fontFamily: 'var(--font-heading)' }}>
             {verifyBusy ? 'Verifying...' : 'Verify'}
           </button>
         </form>
+        <div className="text-center mt-5">
+          <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+        </div>
       </div>
     )
   }
@@ -193,15 +207,15 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
   return (
     <div className="max-w-md w-full">
       {!hideLogo && (
-        <div className="flex flex-col items-center text-center mb-10">
+        <Link href="/" className="flex flex-col items-center text-center mb-10">
           <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
           <span className="mt-3 text-xl font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Easy Building &amp; Construction Pty Ltd
+            Easy Building &amp; Construction Pty Ltd.
           </span>
           <span className="mt-1 text-[11px] font-semibold tracking-wider text-[#8A8D94]">
             REGISTERED BUILDING PRACTITIONERS
           </span>
-        </div>
+        </Link>
       )}
 
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -242,8 +256,42 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
         </div>
 
                 <div>
-          <label htmlFor="address" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Project address</label>
-          <AddressAutocomplete value={form.address} onChange={(v) => field('address', v)} required />
+          <AddressAutocompleteFields label="Your Address" formData={form} onFieldChange={field} />
+          <div className="grid grid-cols-2 gap-4 mt-3">
+            <div>
+              <label htmlFor="streetNo" className="block text-xs font-medium text-[#4A4E56] mb-1">Street No</label>
+              <input id="streetNo" value={form.streetNo} onChange={(e) => field('streetNo', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+            <div>
+              <label htmlFor="streetName" className="block text-xs font-medium text-[#4A4E56] mb-1">Street Name</label>
+              <input id="streetName" value={form.streetName} onChange={(e) => field('streetName', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+            <div>
+              <label htmlFor="suburb" className="block text-xs font-medium text-[#4A4E56] mb-1">Suburb</label>
+              <input id="suburb" value={form.suburb} onChange={(e) => field('suburb', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+            <div>
+              <label htmlFor="state" className="block text-xs font-medium text-[#4A4E56] mb-1">State</label>
+              <select id="state" value={form.state} onChange={(e) => field('state', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]">
+                <option value="">Select...</option>
+                {AUSTRALIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="postalCode" className="block text-xs font-medium text-[#4A4E56] mb-1">Postal Code</label>
+              <input id="postalCode" value={form.postalCode} onChange={(e) => field('postalCode', e.target.value)}
+                required
+                className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+            </div>
+          </div>
         </div>
 
         <div>
@@ -265,7 +313,7 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
           </div>
         )}
 
-        {form.category && CATEGORIES[form.category].length > 1 && (
+        {!lockedProjectType && form.category && CATEGORIES[form.category].length > 1 && (
           <div>
             <label htmlFor="projectType" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Which type?</label>
             <select id="projectType" value={form.projectType} onChange={(e) => field('projectType', e.target.value)}
@@ -294,11 +342,14 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
         )}
 
         <button type="submit" disabled={status === 'saving' || !form.projectType}
-          className="w-full bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+          className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
           style={{ fontFamily: 'var(--font-heading)' }}>
           {status === 'saving' ? 'Submitting...' : 'Submit'}
         </button>
       </form>
+      <div className="text-center mt-5">
+        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+      </div>
     </div>
   )
 }

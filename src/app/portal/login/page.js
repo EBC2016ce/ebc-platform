@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 
 export default function PortalLogin() {
@@ -52,12 +53,12 @@ export default function PortalLogin() {
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-16">
       <div className="max-w-sm w-full">
-        <div className="flex flex-col items-center mb-6">
+        <Link href="/" className="flex flex-col items-center mb-6">
           <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" />
           <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-            Easy Building &amp; Construction Pty Ltd
+            Easy Building &amp; Construction Pty Ltd.
           </span>
-        </div>
+        </Link>
 
         {mode === 'login' && (
           <>
@@ -72,7 +73,7 @@ export default function PortalLogin() {
                 onChange={(e) => setPassword(e.target.value)} required
                 className="border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
               {error && <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">{error}</div>}
-              <button type="submit" className="bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90">
+              <button type="submit" className="bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] transition">
                 Log In
               </button>
               <button
@@ -100,7 +101,7 @@ export default function PortalLogin() {
                 className="border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
               {resetError && <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">{resetError}</div>}
               <button type="submit" disabled={resetBusy}
-                className="bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50">
+                className="bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition">
                 {resetBusy ? 'Sending...' : 'Send reset link'}
               </button>
               <button
@@ -133,6 +134,10 @@ export default function PortalLogin() {
             </div>
           </>
         )}
+
+        <div className="text-center mt-5">
+          <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+        </div>
       </div>
     </main>
   )

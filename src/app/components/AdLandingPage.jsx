@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import RegistrationForm from '@/components/RegistrationForm'
+import BeforeAfterSlider from './BeforeAfterSlider'
 
 function PhoneIcon() {
   return (
@@ -22,6 +23,7 @@ export default function AdLandingPage({
   lockedCategory,
   formTitle,
   formSubtitle,
+  gallery,
 }) {
   return (
     <main className="min-h-screen bg-white">
@@ -31,10 +33,10 @@ export default function AdLandingPage({
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-11 w-auto" priority />
             <span className="hidden sm:block font-bold text-[#1B2A4A] text-sm leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
-              Easy Building &amp; Construction Pty Ltd
+              Easy Building &amp; Construction Pty Ltd.
             </span>
           </Link>
-          <a href="tel:1300715840" className="inline-flex items-center gap-2 bg-[#1B2A4A] text-white text-sm font-semibold rounded-full px-5 py-2.5 hover:bg-[#13203A] transition whitespace-nowrap">
+          <a href="tel:1300715840" className="inline-flex items-center gap-2 text-[#0068D8] text-base font-semibold rounded-full px-6 py-3 hover:text-[#0050B0] transition whitespace-nowrap">
             <PhoneIcon /> 1300 715 840
           </a>
         </div>
@@ -75,6 +77,49 @@ export default function AdLandingPage({
         </div>
       </section>
 
+      {/* Recent work gallery */}
+      {gallery && gallery.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 py-12 md:py-16 border-t border-[#EAE7E0]">
+          <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A] text-center" style={{ fontFamily: 'var(--font-heading)' }}>
+            Recent Work
+          </h2>
+          <p className="text-center text-sm text-[#5A5E66] mt-2 mb-8 max-w-md mx-auto">
+            A look at some of our completed projects.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {gallery.map((item, i) => (
+              <div key={i} className="flex flex-col">
+                {item.type === 'beforeAfter' && (
+                  <div className="relative rounded-xl overflow-hidden shadow-md aspect-video">
+                    <BeforeAfterSlider beforeSrc={item.before} afterSrc={item.after} beforeAlt={item.alt} afterAlt={item.alt} />
+                  </div>
+                )}
+                {item.type === 'image' && (
+                  <div className="relative rounded-xl overflow-hidden shadow-md aspect-video">
+                    <Image src={item.src} alt={item.alt} fill className="object-cover" />
+                  </div>
+                )}
+                {item.type === 'video' && (
+                  <div className={`relative rounded-xl overflow-hidden shadow-md mx-auto ${item.orientation === 'vertical' ? 'aspect-[9/16] max-w-[280px]' : 'aspect-video w-full'}`}>
+                    <video
+                      src={item.src}
+                      poster={item.poster}
+                      controls
+                      preload="metadata"
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                {item.caption && (
+                  <span className="mt-2 text-xs font-medium text-[#8A8D94] text-center">{item.caption}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Trust strip */}
       <section className="bg-[#F6F5F1] border-y border-[#EAE7E0] px-6 py-10">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-4">
@@ -82,7 +127,7 @@ export default function AdLandingPage({
             MBV — Master Builders Victoria
           </span>
           <span className="border border-[#D9D6CD] rounded-lg px-6 py-3 bg-white shadow-sm text-sm font-semibold text-[#1B2A4A]">
-            BPC — Registered Building Practitioner
+            Building and Plumbing Commission — Registered Practitioner
           </span>
           <span className="border border-[#D9D6CD] rounded-lg px-6 py-3 bg-white shadow-sm text-sm font-semibold text-[#1B2A4A]">
             15+ Years Experience

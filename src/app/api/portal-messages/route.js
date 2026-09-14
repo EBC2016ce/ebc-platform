@@ -23,7 +23,7 @@ export async function POST(request) {
   if (!customer) return Response.json({ error: 'No matching project found' }, { status: 404 })
 
   const { body: messageBody } = await request.json()
-  const { error } = await supabase.from('messages').insert([{ customer_id: customer.id, sender: 'customer', body: messageBody }])
+  const { error } = await supabase.from('messages').insert([{ customer_id: customer.id, sender: 'customer', body: messageBody, read_by_staff: false }])
 
   if (error) return Response.json({ error: error.message }, { status: 400 })
   return Response.json({ success: true })

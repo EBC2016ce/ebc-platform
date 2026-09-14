@@ -12,11 +12,15 @@ export default function ExtensionLanding() {
         'Clear process from design through to handover',
         'Registered & fully insured builder',
       ]}
-      image="/before-1.jpg"
+      image="/projects/extension/extension-hero.jpg"
       imageAlt="Home extension project"
       lockedCategory="Extension"
       formTitle="Extending Your Home? Let's Talk."
       formSubtitle="Tell us about your extension project."
+      gallery={[
+        { type: 'video', src: '/projects/extension/extension-ad-final.mp4', orientation: 'vertical', caption: 'Extension Project Highlight' },
+        { type: 'video', src: '/projects/extension/extension-highlight-vertical.mp4', orientation: 'vertical', caption: 'Extension Walkthrough' },
+      ]}
     />
   )
 }

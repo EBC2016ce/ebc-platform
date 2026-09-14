@@ -25,8 +25,16 @@
       placeId: s.placePrediction?.placeId || '',
     }))
 
+        if (suggestions.length === 0 && data.error) {
+          // Log the real reason to the server logs (Vercel) without exposing
+          // it to the client, so a broken key/config shows up as an empty
+          // dropdown for users but is diagnosable from the logs.
+          console.error('Google Places autocomplete error:', JSON.stringify(data.error))
+        }
+
         return Response.json({ suggestions })
   } catch (err) {
+    console.error('Google Places autocomplete request failed:', err)
     return Response.json({ suggestions: [], error: err.message })
   }
 }

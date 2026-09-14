@@ -1,6 +1,11 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
 import { requireStaff } from '@/lib/checkStaff'
 
+// Must never be cached — a cached response could serve one lead's data to a
+// staff member requesting a different customerId.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request) {
   const { authorized } = await requireStaff()
   if (!authorized) {
@@ -11,6 +16,14 @@ export async function GET(request) {
   const customerId = searchParams.get('customerId')
 
   const { data: customer } = await supabaseAdmin.from('customers').select('*').eq('id', customerId).single()
+
+  // Opening a lead's detail page marks it as viewed, so it stops showing as
+  // an unopened "new" lead on the leads list.
+  if (customer && !customer.viewed_by_staff) {
+    await supabaseAdmin.from('customers').update({ viewed_by_staff: true }).eq('id', customerId)
+    customer.viewed_by_staff = true
+  }
+
   const { data: design } = await supabaseAdmin.from('designs').select('*').eq('customer_id', customerId).maybeSingle()
   const { data: bookings } = await supabaseAdmin.from('bookings').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
   const { data: notes } = await supabaseAdmin.from('lead_notes').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })

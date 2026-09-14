@@ -1,14 +1,15 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Privacy() {
   return (
     <main className="max-w-2xl mx-auto px-6 py-16 text-[#171A1F]">
-      <div className="flex items-center gap-3 mb-8">
+      <Link href="/" className="flex items-center gap-3 mb-8 w-fit">
         <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-12 w-auto" />
         <span className="text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Easy Building &amp; Construction Pty Ltd
+          Easy Building &amp; Construction Pty Ltd.
         </span>
-      </div>
+      </Link>
       <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
         Privacy Policy
       </h1>
@@ -30,8 +31,11 @@ export default function Privacy() {
           any time by contacting us directly.
         </p>
         <p>
-          This policy may be updated from time to time. Last updated: {new Date().toLocaleDateString('en-AU')}.
+          This policy may be updated from time to time. Last updated: 12 September 2026.
         </p>
+      </div>
+      <div className="mt-10">
+        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
       </div>
     </main>
   )

@@ -1,6 +1,7 @@
 ﻿'use client'
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
 const QUOTE_STATUSES = ['Draft', 'Sent', 'Accepted', 'Rejected', 'Expired']
@@ -26,17 +27,33 @@ function LeadDetailContent() {
   const [messages, setMessages] = useState([])
   const [messageInput, setMessageInput] = useState('')
   const [sendingMessage, setSendingMessage] = useState(false)
+  const [sendMessageError, setSendMessageError] = useState('')
 
   const loadMessages = () => {
     fetch('/api/admin/messages?customerId=' + customerId)
-      .then((res) => res.json())
-      .then((r) => setMessages(r.messages || []))
+      .then((res) => {
+        // The 6-second poll hit this same endpoint silently on a 401 and
+        // just reset the thread to empty — the page looked "stuck" not
+        // updating, and only re-logging in (which happened to land on
+        // `load()`'s own 401 check) ever surfaced that the session had
+        // actually expired.
+        if (res.status === 401) { setAuthExpired(true); return null }
+        return res.json()
+      })
+      .then((r) => { if (r) setMessages(r.messages || []) })
   }
+
+  const router = useRouter()
+  const [authExpired, setAuthExpired] = useState(false)
 
   const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) { setAuthExpired(true); return null }
+        return res.json()
+      })
       .then((result) => {
+        if (!result) return
         setData(result)
         setLoading(false)
         if (result.customer?.project_type) {
@@ -55,6 +72,18 @@ function LeadDetailContent() {
   }
 
   useEffect(() => { load() }, [customerId]) // eslint-disable-line
+
+  // Polls for new messages every few seconds so staff don't have to
+  // manually refresh the page to see a customer's reply come in.
+  useEffect(() => {
+    if (!customerId) return
+    const interval = setInterval(loadMessages, 6000)
+    return () => clearInterval(interval)
+  }, [customerId]) // eslint-disable-line
+
+  useEffect(() => {
+    if (authExpired) router.push('/login')
+  }, [authExpired, router])
 
   const changeStatus = async (newStatus) => {
     setStatusSaving(true)
@@ -137,17 +166,34 @@ function LeadDetailContent() {
   const sendMessage = async () => {
     if (!messageInput.trim()) return
     setSendingMessage(true)
-    await fetch('/api/admin/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customerId, body: messageInput }),
-    })
-    setMessageInput('')
-    loadMessages()
-    setSendingMessage(false)
+    setSendMessageError('')
+    const textToSend = messageInput
+    try {
+      const res = await fetch('/api/admin/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerId, body: textToSend }),
+      })
+      if (res.status === 401) { setAuthExpired(true); return }
+      if (!res.ok) {
+        const r = await res.json().catch(() => null)
+        // Leave the typed reply in the box rather than clearing it — a
+        // silently-dropped send looked to the customer/staff like the
+        // message had just vanished.
+        setSendMessageError((r && r.error) || 'Message failed to send — please try again.')
+        return
+      }
+      setMessageInput('')
+      loadMessages()
+    } catch {
+      setSendMessageError('Message failed to send — check your connection and try again.')
+    } finally {
+      setSendingMessage(false)
+    }
   }
 
   if (!customerId) return <p className="text-[#A23B2E]">Missing customer reference.</p>
+  if (authExpired) return <p className="text-[#5A5E66]">Your session expired — redirecting to login...</p>
   if (loading) return <p className="text-[#5A5E66]">Loading...</p>
   if (!data?.customer) return <p className="text-[#A23B2E]">Lead not found.</p>
 
@@ -155,6 +201,14 @@ function LeadDetailContent() {
 
   return (
     <div className="max-w-2xl w-full">
+      <div className="flex items-center justify-between mb-4">
+        <Link href="/leads" className="inline-flex items-center gap-1 text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">
+          ← Back to Leads
+        </Link>
+        <Link href={'/admin/audit?customerId=' + customerId} className="text-sm text-[#1B2A4A] underline decoration-[#1B2A4A]/40 hover:decoration-[#1B2A4A] transition">
+          Export Audit Report
+        </Link>
+      </div>
       <div className="flex justify-between items-start flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -240,12 +294,14 @@ function LeadDetailContent() {
         </div>
         <div className="flex gap-2 mt-4">
           <input value={messageInput} onChange={(e) => setMessageInput(e.target.value)} placeholder="Reply to customer..."
+            onKeyDown={(e) => { if (e.key === 'Enter' && !sendingMessage) sendMessage() }}
             className="flex-1 border border-[#D9D6CD] rounded px-3 py-2 text-sm" />
           <button onClick={sendMessage} disabled={sendingMessage}
             className="bg-[#E1601F] text-white rounded px-4 py-2 text-sm disabled:opacity-50">
-            Send
+            {sendingMessage ? 'Sending...' : 'Send'}
           </button>
         </div>
+        {sendMessageError && <p className="text-xs text-[#A23B2E] mt-2">{sendMessageError}</p>}
       </div>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
@@ -360,7 +416,7 @@ function LeadDetailContent() {
 
 export default function LeadDetailPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center px-6 py-16">
+    <main className="min-h-screen flex flex-col items-center px-6 py-16 bg-[#F6F5F1]">
       <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
         <LeadDetailContent />
       </Suspense>

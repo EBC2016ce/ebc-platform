@@ -2,6 +2,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { STEPS_BY_TYPE } from '@/lib/designSteps'
 import PlanUploads from '@/components/PlanUploads'
 import AddressAutocompleteFields from '@/components/AddressAutocompleteFields'
@@ -89,7 +90,7 @@ function DesignPageContent() {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
     const [largeFilesLink, setLargeFilesLink] = useState('')
-    const [registeredAddress, setRegisteredAddress] = useState('')
+  const [customerAddress, setCustomerAddress] = useState('')
 
     useEffect(() => {
     if (!customerId) return
@@ -103,7 +104,7 @@ function DesignPageContent() {
       .then((res) => res.json())
       .then((result) => {
         if (result.customer?.large_files_link) setLargeFilesLink(result.customer.large_files_link)
-        if (result.customer?.address) setRegisteredAddress(result.customer.address)
+        if (result.customer?.address) setCustomerAddress(result.customer.address)
       })
   }, [customerId])
 
@@ -123,6 +124,33 @@ function DesignPageContent() {
   }, [formData]) // eslint-disable-line
 
   const setField = (key, value) => setFormData((prev) => ({ ...prev, [key]: value }))
+
+  const handleSameAddress = (same) => {
+    setField('sameAsRegisteredAddress', same)
+    if (same && customerAddress) {
+      // Registered addresses are composed as "No Street, Suburb STATE Postcode".
+      // Try that shape first, then fall back to the older "No Street, STATE
+      // Postcode" shape (no suburb) for addresses saved before suburb was
+      // collected, so those customers don't just dump the whole string into
+      // the street name field.
+      const withSuburb = customerAddress.match(/^(.+?)\s+(.+),\s*(.+?)\s+([A-Za-z]{2,3})\s+(\d{3,4})$/)
+      const withoutSuburb = customerAddress.match(/^(.+?)\s+(.+),\s*([A-Za-z]{2,3})\s+(\d{3,4})$/)
+      if (withSuburb) {
+        setField('streetNo', withSuburb[1])
+        setField('streetName', withSuburb[2])
+        setField('suburb', withSuburb[3])
+        setField('state', withSuburb[4].toUpperCase())
+        setField('postalCode', withSuburb[5])
+      } else if (withoutSuburb) {
+        setField('streetNo', withoutSuburb[1])
+        setField('streetName', withoutSuburb[2])
+        setField('state', withoutSuburb[3].toUpperCase())
+        setField('postalCode', withoutSuburb[4])
+      } else {
+        setField('streetName', customerAddress)
+      }
+    }
+  }
 
     const submitDesign = async () => {
     setSubmitting(true)
@@ -196,42 +224,35 @@ function DesignPageContent() {
       <p className="text-sm text-[#5A5E66] mt-1">Answer the questions below, then upload any related files.</p>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-8">
-                {steps.map((step) => {
-          const isAddressStep = step.id === 'address'
-          const hasRegisteredAddress = isAddressStep && !!registeredAddress
-          const sameAsRegistered = hasRegisteredAddress && formData.addressSameAsRegistered === 'Yes'
-          const showManualAddress = isAddressStep && (!hasRegisteredAddress || formData.addressSameAsRegistered === 'No')
-
-          return (
-            <div key={step.id}>
-              <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
-              <div className="flex flex-col gap-4">
-                {hasRegisteredAddress && (
-                  <div>
-                    <label className="block text-sm font-medium text-[#4A4E56] mb-1.5">
-                      Is the project address the same as the address you registered with?
-                    </label>
-                    <p className="text-sm text-[#5A5E66] mb-2">{registeredAddress}</p>
-                    <div className="flex gap-2 flex-wrap">
-                      {['Yes', 'No'].map((o) => (
-                        <button key={o} type="button" onClick={() => setField('addressSameAsRegistered', o)}
-                          className={`px-3 py-1.5 rounded border text-sm ${formData.addressSameAsRegistered === o ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD]'}`}>
-                          {o}
-                        </button>
-                      ))}
-                    </div>
+                {steps.map((step) => (
+          <div key={step.id}>
+            <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
+            <div className="flex flex-col gap-4">
+              {step.id === 'address' && customerAddress && (
+                <div className="bg-[#F6F5F1] border border-[#D9D6CD] rounded-md p-4">
+                  <p className="text-sm font-medium text-[#1B2A4A] mb-1">Is the project address the same as your registered address?</p>
+                  <p className="text-sm text-[#5A5E66] mb-3">{customerAddress}</p>
+                  <div className="flex gap-2 flex-wrap">
+                    <button type="button" onClick={() => handleSameAddress(true)}
+                      className={`px-4 py-2 rounded border text-sm font-medium transition ${formData.sameAsRegisteredAddress === true ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD] text-[#1B2A4A]'}`}>
+                      Yes, same address
+                    </button>
+                    <button type="button" onClick={() => handleSameAddress(false)}
+                      className={`px-4 py-2 rounded border text-sm font-medium transition ${formData.sameAsRegisteredAddress === false ? 'bg-[#1B2A4A] text-white border-[#1B2A4A]' : 'bg-white border-[#D9D6CD] text-[#1B2A4A]'}`}>
+                      No, different address
+                    </button>
                   </div>
-                )}
-                {showManualAddress && (
-                  <AddressAutocompleteFields formData={formData} onFieldChange={setField} />
-                )}
-                {!sameAsRegistered && step.fields.map((field) => (
-                  <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
-                ))}
-              </div>
+                </div>
+              )}
+              {step.id === 'address' && formData.sameAsRegisteredAddress !== true && (
+                <AddressAutocompleteFields formData={formData} onFieldChange={setField} />
+              )}
+              {(step.id !== 'address' || formData.sameAsRegisteredAddress !== true) && step.fields.map((field) => (
+                <Field key={field.key} field={field} value={formData[field.key]} onChange={(v) => setField(field.key, v)} />
+              ))}
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
 
                   <div className="mt-8 bg-[#FFF6F0] border border-[#E1601F] rounded-md p-5">
@@ -258,7 +279,7 @@ function DesignPageContent() {
       )}
 
       <button type="button" onClick={submitDesign} disabled={submitting}
-        className="w-full mt-6 bg-[#E1601F] text-white font-medium rounded py-2.5 hover:opacity-90 disabled:opacity-50 transition"
+        className="w-full mt-6 bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
         style={{ fontFamily: 'var(--font-heading)' }}>
         {submitting ? 'Submitting...' : 'Submit'}
       </button>
@@ -269,15 +290,18 @@ function DesignPageContent() {
 export default function DesignPage() {
   return (
     <main className="min-h-screen flex flex-col items-center px-6 py-16">
-      <div className="flex flex-col items-center mb-8">
+      <Link href="/" className="flex flex-col items-center mb-8">
         <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
         <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Easy Building &amp; Construction Pty Ltd
+          Easy Building &amp; Construction Pty Ltd.
         </span>
-      </div>
+      </Link>
       <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
         <DesignPageContent />
       </Suspense>
+      <div className="text-center mt-8">
+        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+      </div>
     </main>
   )
 }
