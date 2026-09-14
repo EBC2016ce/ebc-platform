@@ -216,6 +216,10 @@ export default function Leads() {
               className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
               Reports
             </Link>
+            <Link href="/admin/ad-performance"
+              className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
+              Ad Performance
+            </Link>
             <button onClick={() => setShowReportBox((v) => !v)}
               className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
               {reportSent ? 'Report sent ✓' : 'Email this report'}
