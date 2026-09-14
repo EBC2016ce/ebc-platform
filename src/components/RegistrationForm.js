@@ -14,10 +14,10 @@ const CATEGORIES = {
 
 const AUSTRALIAN_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'WA', 'TAS', 'NT', 'ACT']
 
-export default function RegistrationForm({ lockedCategory, title, subtitle, hideLogo }) {
+export default function RegistrationForm({ lockedCategory, lockedProjectType, title, subtitle, hideLogo }) {
   const initialCategory = lockedCategory || ''
   const initialOptions = lockedCategory ? CATEGORIES[lockedCategory] : []
-  const initialType = initialOptions.length === 1 ? initialOptions[0] : ''
+  const initialType = lockedProjectType || (initialOptions.length === 1 ? initialOptions[0] : '')
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', mobile: '',
@@ -307,7 +307,7 @@ export default function RegistrationForm({ lockedCategory, title, subtitle, hide
           </div>
         )}
 
-        {form.category && CATEGORIES[form.category].length > 1 && (
+        {!lockedProjectType && form.category && CATEGORIES[form.category].length > 1 && (
           <div>
             <label htmlFor="projectType" className="block text-sm font-medium text-[#4A4E56] mb-1.5">Which type?</label>
             <select id="projectType" value={form.projectType} onChange={(e) => field('projectType', e.target.value)}

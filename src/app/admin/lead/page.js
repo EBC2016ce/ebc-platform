@@ -1,6 +1,6 @@
 ﻿'use client'
 import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const STATUSES = ['New', 'Contacted', 'Qualified', 'Quoted', 'Negotiation', 'Won', 'Lost']
@@ -34,10 +34,17 @@ function LeadDetailContent() {
       .then((r) => setMessages(r.messages || []))
   }
 
+  const router = useRouter()
+  const [authExpired, setAuthExpired] = useState(false)
+
   const load = () => {
     fetch('/api/admin/lead?customerId=' + customerId)
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) { setAuthExpired(true); return null }
+        return res.json()
+      })
       .then((result) => {
+        if (!result) return
         setData(result)
         setLoading(false)
         if (result.customer?.project_type) {
@@ -56,6 +63,18 @@ function LeadDetailContent() {
   }
 
   useEffect(() => { load() }, [customerId]) // eslint-disable-line
+
+  // Polls for new messages every few seconds so staff don't have to
+  // manually refresh the page to see a customer's reply come in.
+  useEffect(() => {
+    if (!customerId) return
+    const interval = setInterval(loadMessages, 6000)
+    return () => clearInterval(interval)
+  }, [customerId]) // eslint-disable-line
+
+  useEffect(() => {
+    if (authExpired) router.push('/login')
+  }, [authExpired, router])
 
   const changeStatus = async (newStatus) => {
     setStatusSaving(true)
@@ -149,6 +168,7 @@ function LeadDetailContent() {
   }
 
   if (!customerId) return <p className="text-[#A23B2E]">Missing customer reference.</p>
+  if (authExpired) return <p className="text-[#5A5E66]">Your session expired — redirecting to login...</p>
   if (loading) return <p className="text-[#5A5E66]">Loading...</p>
   if (!data?.customer) return <p className="text-[#A23B2E]">Lead not found.</p>
 

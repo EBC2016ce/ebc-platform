@@ -378,29 +378,36 @@ export default function Home() {
             Watch How We Build
           </h2>
         </div>
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
-            <video
-              src="/projects/new-home/new-home-waffle-work.mp4"
-              poster="/projects/new-home/new-home-hero.jpg"
-              controls
-              preload="metadata"
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </div>
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
-            <video
-              src="/projects/renovation/renovation-bathroom-after.mp4"
-              controls
-              preload="metadata"
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {[
+            { src: '/projects/new-home/new-home-waffle-work.mp4', poster: '/projects/new-home/new-home-hero.jpg', caption: 'New home slab pour' },
+            { src: '/projects/renovation/renovation-bathroom-before.mp4', caption: 'Bathroom — before' },
+            { src: '/projects/renovation/renovation-bathroom-after.mp4', caption: 'Bathroom — after' },
+            { src: '/projects/extension/extension-ad-final.mp4', caption: 'Extension project' },
+            { src: '/projects/extension/extension-highlight-vertical.mp4', caption: 'Extension walkthrough' },
+          ].map((v, i) => (
+            <div key={i} className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
+              <video
+                src={v.src}
+                poster={v.poster}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
+                onContextMenu={(e) => e.preventDefault()}
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              />
+              <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white/90 bg-black/40 rounded px-2 py-0.5">
+                {v.caption}
+              </span>
+            </div>
+          ))}
         </div>
         <p className="text-xs text-[#8A8D94] text-center mt-4">
-          Real footage from our own projects — a new home slab pour, and a completed bathroom renovation.
+          Real footage from our own projects, on loop — no sound, just a look at the work.
         </p>
       </section>
 

@@ -12,18 +12,44 @@ export default function Portal() {
   const [sending, setSending] = useState(false)
   const router = useRouter()
 
-    const loadMessages = () => {
+  const loadMessages = () => {
     fetch('/api/portal-messages')
-      .then((res) => res.json())
-      .then((r) => setMessages(r.messages || []))
+      .then((res) => {
+        if (res.status === 401) { router.push('/portal/login'); return null }
+        return res.json()
+      })
+      .then((r) => { if (r) setMessages(r.messages || []) })
   }
 
   useEffect(() => {
     fetch('/api/portal')
-      .then((res) => res.json())
-      .then(setData)
+      .then((res) => {
+        if (res.status === 401) { router.push('/portal/login'); return null }
+        return res.json()
+      })
+      .then((result) => { if (result) setData(result) })
     loadMessages()
-  }, [])
+  }, []) // eslint-disable-line
+
+  // Live updates: as soon as a staff reply is inserted, it appears here
+  // without the customer needing to refresh the page.
+  useEffect(() => {
+    if (!data?.customer?.id) return
+    const supabase = createClient()
+    const channel = supabase
+      .channel('portal-messages-' + data.customer.id)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: 'customer_id=eq.' + data.customer.id,
+      }, () => loadMessages())
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [data?.customer?.id]) // eslint-disable-line
 
   const sendMessage = async () => {
     if (!messageInput.trim()) return
@@ -68,6 +94,11 @@ export default function Portal() {
         </h1>
         <p className="mt-3 text-base font-semibold text-[#1B2A4A]">{customer.project_type}</p>
         <p className="text-sm text-[#5A5E66]">{customer.address}</p>
+        <div className="mt-3 pt-3 border-t border-[#EEE] flex flex-col sm:flex-row sm:justify-center gap-1 sm:gap-4 text-xs text-[#8A8D94]">
+          <span>{customer.email}</span>
+          <span className="hidden sm:inline">·</span>
+          <span>{customer.mobile}</span>
+        </div>
       </div>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-6">
@@ -98,6 +129,14 @@ export default function Portal() {
           <p className="font-semibold text-[#1B2A4A] group-hover:text-[#E1601F] transition-colors">Message Your Builder</p>
           <p className="text-xs text-[#8A8D94] mt-1">Have a question? Send it straight to the EBC team.</p>
         </a>
+        <Link href="/portal/builder"
+          className="bg-white border border-[#D9D6CD] rounded-md p-5 hover:border-[#E1601F] transition group sm:col-span-2">
+          <div className="w-10 h-10 rounded-full bg-[#2E7D4F]/10 text-[#2E7D4F] flex items-center justify-center mb-3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21v-1a8 8 0 0 1 16 0v1" /></svg>
+          </div>
+          <p className="font-semibold text-[#1B2A4A] group-hover:text-[#E1601F] transition-colors">Meet Your Builder</p>
+          <p className="text-xs text-[#8A8D94] mt-1">See who from EBC will be meeting you onsite.</p>
+        </Link>
       </div>
 
       {project && (

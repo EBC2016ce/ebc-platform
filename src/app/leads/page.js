@@ -27,7 +27,7 @@ const STATUS_COLORS = {
   Lost: 'bg-[#A23B2E]/10 text-[#A23B2E]',
 }
 
-function LeadsTable({ title, leads }) {
+function LeadsTable({ title, leads, canManageLeads, onArchive, onDelete }) {
   if (leads.length === 0) return null
   return (
     <div className="bg-white border border-[#D9D6CD] rounded-md overflow-hidden mb-6">
@@ -44,6 +44,7 @@ function LeadsTable({ title, leads }) {
               <th className="px-5 py-2 font-medium">Mobile</th>
               <th className="px-5 py-2 font-medium">Project</th>
               <th className="px-5 py-2 font-medium">Status</th>
+              <th className="px-5 py-2 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -66,6 +67,24 @@ function LeadsTable({ title, leads }) {
                     {c.lead_status || 'New'}
                   </span>
                 </td>
+                <td className="px-5 py-3">
+                  <div className="flex items-center gap-3 whitespace-nowrap">
+                    <Link href={'/admin/audit?customerId=' + c.id} target="_blank"
+                      className="text-xs text-[#1B2A4A] underline decoration-[#1B2A4A]/40 hover:decoration-[#1B2A4A] transition">
+                      Report
+                    </Link>
+                    {canManageLeads && (
+                      <>
+                        <button onClick={() => onArchive(c.id)} className="text-xs text-[#8A8D94] hover:text-[#1B2A4A] transition">
+                          Archive
+                        </button>
+                        <button onClick={() => onDelete(c.id, `${c.first_name} ${c.last_name}`)} className="text-xs text-[#A23B2E] hover:opacity-70 transition">
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -84,9 +103,10 @@ export default function Leads() {
   const [showReportBox, setShowReportBox] = useState(false)
   const [reportError, setReportError] = useState('')
   const [activeCategory, setActiveCategory] = useState('New Building')
+  const [canManageLeads, setCanManageLeads] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
+  const load = () => {
     fetch('/api/admin/leads')
       .then((res) => {
         if (res.status === 401) { router.push('/login'); return null }
@@ -95,9 +115,39 @@ export default function Leads() {
       .then((result) => {
         if (!result) return
         if (result.error) setError(result.error)
-        else setLeads(result.leads || [])
+        else {
+          setLeads(result.leads || [])
+          setCanManageLeads(!!result.canManageLeads)
+        }
       })
-  }, [router])
+  }
+
+  useEffect(() => {
+    load()
+    // Live-ish refresh so new leads / new messages show up (as an unread
+    // dot) without staff having to manually reload the page.
+    const interval = setInterval(load, 15000)
+    return () => clearInterval(interval)
+  }, [router]) // eslint-disable-line
+
+  const archiveLead = async (customerId) => {
+    await fetch('/api/admin/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId, action: 'archive' }),
+    })
+    load()
+  }
+
+  const deleteLead = async (customerId, name) => {
+    if (!window.confirm(`Permanently delete ${name}? This cannot be undone.`)) return
+    await fetch('/api/admin/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId, action: 'delete' }),
+    })
+    load()
+  }
 
   const grouped = useMemo(() => {
     const g = { 'New Building': [], Renovation: [], Extension: [], Other: [] }
@@ -158,6 +208,10 @@ export default function Leads() {
             <p className="text-sm text-[#5A5E66] mt-1">All registered projects, grouped by type.</p>
           </div>
           <div className="flex items-center gap-3 relative">
+            <Link href="/admin/blog"
+              className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
+              Blog
+            </Link>
             <Link href="/admin/reports"
               className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
               Reports
@@ -226,7 +280,7 @@ export default function Leads() {
               </div>
             )}
 
-            <LeadsTable title={activeCategory} leads={grouped[activeCategory] || []} />
+            <LeadsTable title={activeCategory} leads={grouped[activeCategory] || []} canManageLeads={canManageLeads} onArchive={archiveLead} onDelete={deleteLead} />
 
             {leads.length > 0 && grouped[activeCategory].length === 0 && (
               <p className="text-sm text-[#8A8D94]">No {activeCategory.toLowerCase()} leads yet.</p>

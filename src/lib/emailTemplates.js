@@ -219,6 +219,63 @@ export function reminderEmailHtml({ firstName, message, ctaText, ctaUrl }) {
   `
 }
 
+// A branded "new blog post" announcement email, sent to clients when a
+// staff member publishes an article from /admin/blog.
+export function blogPostEmailHtml({ title, excerpt, url, unsubscribeUrl }) {
+  return `
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:#F6F5F1; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F5F1; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:4px; overflow:hidden;">
+
+          <tr>
+            <td style="background-color:#ffffff; padding: 28px 40px 20px 40px; text-align:center; border-bottom:1px solid #EAE7E0;">
+              <img src="https://easybcon.com.au/logo-icon.png" alt="EBC" width="110" height="54" style="display:block; margin: 0 auto;" />
+              <div style="color:#1B2A4A; font-size:19px; font-weight:bold; margin-top:14px; font-family: Arial, Helvetica, sans-serif;">
+                Easy Building &amp; Construction Pty Ltd
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 36px 40px 24px 40px;">
+              <p style="font-size:12px; color:#8A8D94; text-transform:uppercase; letter-spacing:0.5px; margin:0 0 8px 0;">New from the EBC blog</p>
+              <h1 style="font-size:21px; color:#1B2A4A; margin:0 0 14px 0; font-family: Arial, Helvetica, sans-serif;">${title}</h1>
+              <p style="font-size:15px; color:#333333; line-height:1.6; margin:0 0 24px 0;">${excerpt || ''}</p>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 6px;">
+                    <a href="${url}" style="display:inline-block; background-color:#0068D8; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 28px; border-radius:4px; font-size:14px;">
+                      Read the full article
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#F6F5F1; padding: 20px 40px; text-align:center; border-top:1px solid #D9D6CD;">
+              <p style="font-size:12px; color:#8B8D89; margin:0;">
+                Melbourne, Victoria — you're receiving this because you've registered a project with EBC.
+                ${unsubscribeUrl ? `<br/><a href="${unsubscribeUrl}" style="color:#8B8D89;">Unsubscribe from these emails</a>` : ''}
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `
+}
+
 function statCard(label, value, color) {
   return `
     <td width="25%" valign="top" style="padding:4px;">

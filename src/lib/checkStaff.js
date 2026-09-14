@@ -9,5 +9,5 @@ export async function requireStaff() {
   const { data: staffRecord } = await supabaseAdmin.from('staff_users').select('*').eq('id', user.id).maybeSingle()
   if (!staffRecord) return { authorized: false, error: 'Not authorized' }
 
-  return { authorized: true, user, staffRecord }
+  return { authorized: true, user, staffRecord, canManageLeads: !!staffRecord.can_manage_leads }
 }
