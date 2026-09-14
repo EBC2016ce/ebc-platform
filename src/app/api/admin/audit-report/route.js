@@ -4,6 +4,11 @@ import { requireStaff } from '@/lib/checkStaff'
 // Compiles a full, chronological audit trail for one customer/lead — every
 // registration detail, message, booking, quote, note and project update —
 // for legal/record-keeping purposes. Read-only; nothing here is editable.
+// Must never be cached — a cached response could leak one customer's full
+// history to a staff member requesting a different customerId.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request) {
   const { authorized, user } = await requireStaff()
   if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })

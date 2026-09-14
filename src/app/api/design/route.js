@@ -1,5 +1,10 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
 
+// Must never be cached — a cached response could serve one customer's
+// design brief to a request for a different customerId.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const customerId = searchParams.get('customerId')

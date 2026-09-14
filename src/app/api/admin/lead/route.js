@@ -1,6 +1,11 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
 import { requireStaff } from '@/lib/checkStaff'
 
+// Must never be cached — a cached response could serve one lead's data to a
+// staff member requesting a different customerId.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request) {
   const { authorized } = await requireStaff()
   if (!authorized) {

@@ -1,6 +1,12 @@
 ﻿import { supabaseAdmin } from '@/lib/supabase-admin'
 import { requireStaff } from '@/lib/checkStaff'
 
+// Must never be cached — this is the route the admin lead-detail page polls
+// for new customer messages, so a cached/stale response is exactly what
+// causes "messaging does not get updated" for staff.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request) {
   const { authorized } = await requireStaff()
   if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })

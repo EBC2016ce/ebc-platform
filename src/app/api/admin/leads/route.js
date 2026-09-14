@@ -1,6 +1,13 @@
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { requireStaff } from '@/lib/checkStaff'
 
+// GET has no distinguishing query string by default and returns the
+// per-viewer canManageLeads permission flag, so it must never be cached —
+// a cached response could leak archive/delete permission to the wrong staff
+// member, or leads data to a stale caller.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request) {
   const { authorized, canManageLeads } = await requireStaff()
   if (!authorized) return Response.json({ error: 'Not authorized' }, { status: 401 })
