@@ -153,7 +153,7 @@ function IntroStep({ onNext }) {
         {[
           ['1', "Answer 3 quick questions", "Your details, your project, and roughly where you're based."],
           ['2', 'Pick a time that suits you', 'Choose a day and time straight away — no waiting on a callback.'],
-          ['3', "We'll email you a confirmation", 'Your booking details and a one-tap link to activate your account.'],
+          ['3', "You'll get a confirmation email", "It'll have your booking details and a link to log into your customer portal, where you can message your builder directly."],
         ].map(([n, title, sub]) => (
           <div key={n} className="flex gap-3">
             <span className="shrink-0 w-7 h-7 rounded-full bg-[#1B2A4A] text-white text-sm font-semibold flex items-center justify-center">{n}</span>
@@ -449,16 +449,22 @@ function BookingStep({ customerId, form }) {
   )
 }
 
-// Shown right after booking. Since the customer is still on the page and
-// engaged, we let them activate their account immediately with the code
-// (rather than only relying on them going back to a separate email) —
-// the email is still sent as a fallback with a one-tap activation link,
-// for whenever they do check it.
+// Shown right after booking. Testing this flow surfaced a real problem:
+// putting a bare "enter your code" field straight in front of someone who
+// just booked a renovation consult is jarring — they have no idea a code
+// was even coming, since nothing before this point mentioned one. That's
+// the same "confusing mid-flow email step" complaint this whole rebuild
+// was meant to fix, just moved one screen later. So this screen now does
+// what the AOB reference screenshots did: state plainly what happens next
+// and stop there. No action is required here — activation happens with a
+// single tap in the email. A manual code entry is still available, but
+// tucked behind an explicit "I'd rather not wait for the email" toggle
+// instead of presented as something the visitor has to deal with right now.
 function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
+  const [showCodeEntry, setShowCodeEntry] = useState(false)
   const [code, setCode] = useState('')
   const [verifyBusy, setVerifyBusy] = useState(false)
   const [verifyError, setVerifyError] = useState('')
-  const [verified, setVerified] = useState(false)
 
   const dateLabel = new Date(selectedDay.dateKey).toLocaleDateString('en-AU', { weekday: 'long', month: 'long', day: 'numeric' })
 
@@ -478,7 +484,6 @@ function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
       } else {
         const supabase = createClient()
         await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
-        setVerified(true)
         window.location.href = '/design?customerId=' + customerId + '&projectType=' + encodeURIComponent(form.projectType)
       }
     } catch (err) {
@@ -492,23 +497,42 @@ function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
       <div className="w-12 h-12 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center mx-auto text-xl">✓</div>
       <h1 className="mt-6 text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>You're booked in</h1>
       <p className="mt-3 text-[#5A5E66]">
-        {dateLabel} at {selectedTime}. We've also emailed {form.email} your confirmation and a one-tap link to activate your account.
+        {dateLabel} at {selectedTime}. We'll see you then.
       </p>
 
-      <form onSubmit={handleVerify} className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-5 text-left flex flex-col gap-3">
-        <p className="text-sm font-semibold text-[#1B2A4A]">Activate your account now</p>
-        <p className="text-xs text-[#5A5E66] -mt-1">Enter the code from your email, or just tap the link in it whenever suits.</p>
-        <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="6-digit code" maxLength={6}
-          className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
-        {verifyError && (
-          <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">{verifyError}</div>
-        )}
-        <button type="submit" disabled={verifyBusy || code.length < 6}
-          className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
-          style={{ fontFamily: 'var(--font-heading)' }}>
-          {verifyBusy ? 'Activating...' : 'Activate & view my plan'}
+      <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-5 text-left">
+        <p className="text-sm text-[#333333] leading-relaxed">
+          We've sent a confirmation email to <strong className="text-[#1B2A4A]">{form.email}</strong> with your booking details
+          and a link to log into your customer portal — that's where you can message your builder directly and track your project.
+        </p>
+        <p className="text-sm text-[#5A5E66] mt-3">
+          Just open the email and tap the button in it whenever suits — nothing else to do right now.
+        </p>
+      </div>
+
+      {!showCodeEntry ? (
+        <button
+          type="button"
+          onClick={() => setShowCodeEntry(true)}
+          className="mt-4 text-sm text-[#8A8D94] hover:text-[#1B2A4A] underline transition"
+        >
+          Rather not wait for the email? Activate now instead
         </button>
-      </form>
+      ) : (
+        <form onSubmit={handleVerify} className="mt-4 bg-white border border-[#D9D6CD] rounded-md p-5 text-left flex flex-col gap-3">
+          <p className="text-sm font-semibold text-[#1B2A4A]">Enter the code from your email</p>
+          <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="6-digit code" maxLength={6}
+            className="w-full border border-[#D9D6CD] rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+          {verifyError && (
+            <div className="text-sm text-[#A23B2E] bg-[#FBEAE6] border border-[#EFCFC5] rounded px-3 py-2">{verifyError}</div>
+          )}
+          <button type="submit" disabled={verifyBusy || code.length < 6}
+            className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
+            style={{ fontFamily: 'var(--font-heading)' }}>
+            {verifyBusy ? 'Activating...' : 'Activate & view my plan'}
+          </button>
+        </form>
+      )}
 
       <Link href="/" className="block mt-5 text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
     </div>
