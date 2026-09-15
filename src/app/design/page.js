@@ -125,6 +125,15 @@ function DesignPageContent() {
 
   const setField = (key, value) => setFormData((prev) => ({ ...prev, [key]: value }))
 
+  // Ad-consult customers only ever have a suburb + state + postcode on file
+  // (no street), so their customerAddress string can't satisfy either "full
+  // address" shape below. Reuse the same two regexes to decide whether the
+  // "same as registered address" question even makes sense to ask — if it
+  // doesn't match, the visitor is shown the manual address form directly.
+  const withSuburbMatch = customerAddress && customerAddress.match(/^(.+?)\s+(.+),\s*(.+?)\s+([A-Za-z]{2,3})\s+(\d{3,4})$/)
+  const withoutSuburbMatch = customerAddress && customerAddress.match(/^(.+?)\s+(.+),\s*([A-Za-z]{2,3})\s+(\d{3,4})$/)
+  const customerHasFullAddress = Boolean(withSuburbMatch || withoutSuburbMatch)
+
   const handleSameAddress = (same) => {
     setField('sameAsRegisteredAddress', same)
     if (same && customerAddress) {
@@ -133,8 +142,8 @@ function DesignPageContent() {
       // Postcode" shape (no suburb) for addresses saved before suburb was
       // collected, so those customers don't just dump the whole string into
       // the street name field.
-      const withSuburb = customerAddress.match(/^(.+?)\s+(.+),\s*(.+?)\s+([A-Za-z]{2,3})\s+(\d{3,4})$/)
-      const withoutSuburb = customerAddress.match(/^(.+?)\s+(.+),\s*([A-Za-z]{2,3})\s+(\d{3,4})$/)
+      const withSuburb = withSuburbMatch
+      const withoutSuburb = withoutSuburbMatch
       if (withSuburb) {
         setField('streetNo', withSuburb[1])
         setField('streetName', withSuburb[2])
@@ -228,7 +237,7 @@ function DesignPageContent() {
           <div key={step.id}>
             <h2 className="text-sm font-semibold text-[#1B2A4A] uppercase tracking-wide mb-3">{step.title}</h2>
             <div className="flex flex-col gap-4">
-              {step.id === 'address' && customerAddress && (
+              {step.id === 'address' && customerAddress && customerHasFullAddress && (
                 <div className="bg-[#F6F5F1] border border-[#D9D6CD] rounded-md p-4">
                   <p className="text-sm font-medium text-[#1B2A4A] mb-1">Is the project address the same as your registered address?</p>
                   <p className="text-sm text-[#5A5E66] mb-3">{customerAddress}</p>
