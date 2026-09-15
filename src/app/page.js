@@ -89,13 +89,10 @@ const projects = [
   { img: '/projects/extension/extension-slab.jpg', category: 'Home Extension', title: 'Slab Down, Build Underway' },
 ]
 
-// TODO: swap these three img paths for the AI-generated blog photos once
-// they're saved into /public/blog/ (see chat — generated in Moda, pending
-// download since this sandbox can't pull from Moda's CDN directly).
 const blogPosts = [
-  { img: '/projects/renovation/renovation-kitchen-during.jpg', slug: 'design-build-vs-hiring-separately', title: 'Design & Build vs. Hiring Separately: What Actually Matters', excerpt: 'A straight-talking look at the two approaches to planning your renovation or new build.' },
-  { img: '/projects/renovation/renovation-kitchen-before.jpg', slug: 'renovating-in-melbourne-questions', title: 'Renovating in Melbourne: The Questions Every Homeowner Asks First', excerpt: 'Permits, timelines, and costs — what to know before your first conversation with a builder.' },
-  { img: '/projects/extension/extension-slab.jpg', slug: 'extension-costs-timelines-guide', title: 'Extension Costs & Timelines: A Practical Guide', excerpt: 'What actually drives the cost and schedule of a home extension in Victoria.' },
+  { img: '/blog/design-build-vs-hiring.jpg', slug: 'design-build-vs-hiring-separately', title: 'Design & Build vs. Hiring Separately: What Actually Matters', excerpt: 'A straight-talking look at the two approaches to planning your renovation or new build.' },
+  { img: '/blog/renovating-melbourne-questions.jpg', slug: 'renovating-in-melbourne-questions', title: 'Renovating in Melbourne: The Questions Every Homeowner Asks First', excerpt: 'Permits, timelines, and costs — what to know before your first conversation with a builder.' },
+  { img: '/blog/extension-costs-timelines.jpg', slug: 'extension-costs-timelines-guide', title: 'Extension Costs & Timelines: A Practical Guide', excerpt: 'What actually drives the cost and schedule of a home extension in Victoria.' },
 ]
 
 function QuickIcon({ name }) {
