@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase-browser'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
+import AdCreatePassword from '@/components/AdCreatePassword'
 
 // A separate, ad-traffic-only version of the registration + booking flow.
 // This deliberately does NOT touch src/components/RegistrationForm.js or
@@ -17,7 +17,7 @@ import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
 // screens, then straight into picking a slot — with the confirmation email
 // (booking + account activation) sent only once a slot is actually booked.
 
-const STEPS = ['intro', 'contact', 'project', 'location', 'booking']
+const STEPS = ['intro', 'contact', 'project', 'location', 'review', 'booking']
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const CATEGORIES = {
   Renovation: ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
@@ -55,7 +55,7 @@ function StepShell({ step, onBack, children }) {
 export default function AdConsultPage() {
   const [step, setStep] = useState('intro')
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', mobile: '', password: '',
+    firstName: '', lastName: '', email: '', mobile: '',
     category: '', projectType: '', suburb: '', state: '', postalCode: '', consent: false,
   })
   const [customerId, setCustomerId] = useState(null)
@@ -121,7 +121,13 @@ export default function AdConsultPage() {
 
       {step === 'location' && (
         <StepShell step={step} onBack={goBack}>
-          <LocationStep
+          <LocationStep form={form} field={field} onNext={() => setStep('review')} />
+        </StepShell>
+      )}
+
+      {step === 'review' && (
+        <StepShell step={step} onBack={goBack}>
+          <ReviewStep
             form={form}
             field={field}
             onNext={finishQuestionsAndRegister}
@@ -178,7 +184,7 @@ function IntroStep({ onNext }) {
 }
 
 function ContactStep({ form, field, onNext }) {
-  const valid = form.firstName && form.lastName && form.email && form.mobile && form.password.length >= 8
+  const valid = form.firstName && form.lastName && form.email && form.mobile
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onNext() }} className="flex flex-col gap-4">
@@ -194,9 +200,6 @@ function ContactStep({ form, field, onNext }) {
       <input type="email" value={form.email} onChange={(e) => field('email', e.target.value)} required placeholder="Email"
         className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
       <input value={form.mobile} onChange={(e) => field('mobile', e.target.value)} required placeholder="Mobile — 04xx xxx xxx"
-        className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
-      <input type="password" value={form.password} onChange={(e) => field('password', e.target.value)} required minLength={8}
-        placeholder="Create a password (8+ characters)"
         className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
 
       <button type="submit" disabled={!valid}
@@ -266,8 +269,8 @@ function ProjectStep({ form, field, onNext }) {
   )
 }
 
-function LocationStep({ form, field, onNext, submitting, error }) {
-  const valid = form.suburb && form.state && form.postalCode && form.consent
+function LocationStep({ form, field, onNext }) {
+  const valid = form.suburb && form.state && form.postalCode
 
   return (
     <div className="flex flex-col gap-4">
@@ -284,6 +287,48 @@ function LocationStep({ form, field, onNext, submitting, error }) {
         </select>
         <input value={form.postalCode} onChange={(e) => field('postalCode', e.target.value)} required placeholder="Postcode"
           className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+      </div>
+
+      <button type="button" onClick={onNext} disabled={!valid}
+        className="w-full mt-2 bg-[#0068D8] text-white font-medium rounded py-3 hover:bg-[#0050B0] disabled:opacity-50 transition"
+        style={{ fontFamily: 'var(--font-heading)' }}>
+        Continue
+      </button>
+    </div>
+  )
+}
+
+// Matches the AOB reference screenshots' "Contact information" step: a
+// final read-only review of everything just entered (name, email, mobile,
+// etc.), each with a green checkmark, before the visitor commits. Consent
+// lives here too, right next to what they're actually consenting to share,
+// instead of being buried under the address fields on the previous screen.
+function ReviewField({ label, value }) {
+  return (
+    <div className="border border-[#D9D6CD] rounded-md px-4 py-3 flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        <p className="text-xs text-[#8A8D94] uppercase tracking-wide">{label}</p>
+        <p className="text-sm font-medium text-[#1B2A4A] truncate">{value}</p>
+      </div>
+      <span className="shrink-0 w-5 h-5 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center text-xs">✓</span>
+    </div>
+  )
+}
+
+function ReviewStep({ form, field, onNext, submitting, error }) {
+  const valid = form.consent
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Review your details</h2>
+      <p className="text-sm text-[#5A5E66] -mt-2">Quick check before we move on to booking a time.</p>
+
+      <div className="flex flex-col gap-2">
+        <ReviewField label="Name" value={`${form.firstName} ${form.lastName}`} />
+        <ReviewField label="Email" value={form.email} />
+        <ReviewField label="Mobile" value={form.mobile} />
+        <ReviewField label="Project" value={form.projectType || form.category} />
+        <ReviewField label="Location" value={`${form.suburb}, ${form.state} ${form.postalCode}`} />
       </div>
 
       <label className="flex items-start gap-2 text-sm text-[#5A5E66] mt-1">
@@ -465,6 +510,7 @@ function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
   const [code, setCode] = useState('')
   const [verifyBusy, setVerifyBusy] = useState(false)
   const [verifyError, setVerifyError] = useState('')
+  const [verified, setVerified] = useState(false)
 
   const dateLabel = new Date(selectedDay.dateKey).toLocaleDateString('en-AU', { weekday: 'long', month: 'long', day: 'numeric' })
 
@@ -482,14 +528,20 @@ function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
       if (!res.ok) {
         setVerifyError(result.error || 'Unknown error')
       } else {
-        const supabase = createClient()
-        await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
-        window.location.href = '/design?customerId=' + customerId + '&projectType=' + encodeURIComponent(form.projectType)
+        // Verified, but there's no password to sign in with yet — this flow
+        // never asked for one during the quick questions. Now's the moment
+        // it actually makes sense to ask, so hand off to CreatePassword
+        // instead of trying to sign in here.
+        setVerified(true)
       }
     } catch (err) {
       setVerifyError('Could not reach the server: ' + err.message)
     }
     setVerifyBusy(false)
+  }
+
+  if (verified) {
+    return <AdCreatePassword customerId={customerId} email={form.email} projectType={form.projectType} />
   }
 
   return (
@@ -529,7 +581,7 @@ function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
           <button type="submit" disabled={verifyBusy || code.length < 6}
             className="w-full bg-[#0068D8] text-white font-medium rounded py-2.5 hover:bg-[#0050B0] disabled:opacity-50 transition"
             style={{ fontFamily: 'var(--font-heading)' }}>
-            {verifyBusy ? 'Activating...' : 'Activate & view my plan'}
+            {verifyBusy ? 'Activating...' : 'Continue'}
           </button>
         </form>
       )}

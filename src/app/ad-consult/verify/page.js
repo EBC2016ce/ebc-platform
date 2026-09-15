@@ -3,19 +3,24 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import AdCreatePassword from '@/components/AdCreatePassword'
 
 // The landing target for the "Activate my account" button in the ad-flow
 // booking confirmation email (see adConfirmationEmailHtml in
 // src/lib/emailTemplates.js). Auto-verifies using the customerId + code in
-// the link so there's nothing to type — if that fails (code already used,
-// expired, or the link opened twice) it falls back to a plain message
-// pointing them at the portal login instead of leaving them stuck.
+// the link so there's nothing to type, then hands off to AdCreatePassword —
+// this flow never asked for a password earlier (see /api/ad-register), so
+// this is the first real chance to set one. If verification fails (code
+// already used, expired, or something odd with the link) it falls back to
+// a plain message pointing them at the portal login instead of leaving
+// them stuck.
 function VerifyContent() {
   const searchParams = useSearchParams()
   const customerId = searchParams.get('customerId')
   const code = searchParams.get('code')
-  const [status, setStatus] = useState('checking') // checking | done | error
+  const [status, setStatus] = useState('checking') // checking | done | already | error
   const [errorMessage, setErrorMessage] = useState('')
+  const [customerInfo, setCustomerInfo] = useState(null) // { email, projectType }
 
   useEffect(() => {
     if (!customerId || !code) {
@@ -34,6 +39,7 @@ function VerifyContent() {
           setStatus('error')
           setErrorMessage(result.error || 'This link may have already been used.')
         } else {
+          setCustomerInfo({ email: result.email, projectType: result.projectType })
           setStatus('done')
         }
       })
@@ -48,17 +54,7 @@ function VerifyContent() {
       {status === 'checking' && <p className="text-[#5A5E66]">Activating your account...</p>}
 
       {status === 'done' && (
-        <>
-          <div className="w-12 h-12 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center mx-auto text-xl">✓</div>
-          <h1 className="mt-6 text-2xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Your account is active</h1>
-          <p className="mt-3 text-[#5A5E66]">
-            Log in with the email and password you created to view your project plan.
-          </p>
-          <Link href="/portal/login" className="inline-block mt-6 bg-[#0068D8] text-white font-medium rounded px-6 py-2.5 hover:bg-[#0050B0] transition"
-            style={{ fontFamily: 'var(--font-heading)' }}>
-            Go to login
-          </Link>
-        </>
+        <AdCreatePassword customerId={customerId} email={customerInfo?.email} projectType={customerInfo?.projectType} />
       )}
 
       {status === 'error' && (

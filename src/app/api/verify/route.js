@@ -7,7 +7,7 @@ export async function POST(request) {
 
     const { data: customer, error: fetchError } = await supabaseAdmin
       .from('customers')
-      .select('verification_code, verification_expires, email_verified')
+      .select('verification_code, verification_expires, email_verified, email, project_type')
       .eq('id', customerId)
       .single()
 
@@ -15,8 +15,12 @@ export async function POST(request) {
       return Response.json({ error: 'Could not find your registration. Please try again.' }, { status: 400 })
     }
 
+    // Someone can legitimately hit this twice — e.g. clicking the ad flow's
+    // activation email link a second time (see /api/ad-book and
+    // src/app/ad-consult/verify/page.js), which then still needs email +
+    // projectType to carry on into password setup / the design redirect.
     if (customer.email_verified) {
-      return Response.json({ success: true })
+      return Response.json({ success: true, email: customer.email, projectType: customer.project_type })
     }
 
     if (new Date(customer.verification_expires) < new Date()) {
@@ -38,7 +42,7 @@ export async function POST(request) {
 
     const { data: fullCustomer } = await supabaseAdmin
       .from('customers')
-      .select('email, mobile, first_name, last_name')
+      .select('email, mobile, first_name, last_name, project_type')
       .eq('id', customerId)
       .single()
     const { data: session } = await supabaseAdmin.auth.admin.generateLink({
@@ -69,7 +73,12 @@ export async function POST(request) {
       }).catch((err) => console.error('Meta CAPI CompleteRegistration event failed:', err))
     }
 
-    return Response.json({ success: true, actionLink: session?.properties?.action_link })
+    return Response.json({
+      success: true,
+      actionLink: session?.properties?.action_link,
+      email: fullCustomer?.email,
+      projectType: fullCustomer?.project_type,
+    })
   } catch (err) {
     return Response.json({ error: 'Server error: ' + err.message }, { status: 500 })
   }

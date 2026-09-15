@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { resend } from '@/lib/resend'
 import { sendSms } from '@/lib/sms'
@@ -22,9 +23,19 @@ export async function POST(request) {
     const code = generateCode()
     const expires = new Date(Date.now() + 60 * 60 * 1000).toISOString() // 1 hour — enough to finish picking a slot
 
+    // Unlike /api/register, this flow never asks the visitor to invent a
+    // password during the quick questions — being asked to create a login
+    // before you've even booked a time is exactly the kind of pointless
+    // friction this rebuild was meant to remove. Supabase's admin API still
+    // needs *some* password to create the account, so a random one is
+    // generated here and thrown away; the customer sets their own real
+    // password later, in /api/ad-set-password, once their email is verified
+    // and it's obvious why they need one (to open their portal).
+    const placeholderPassword = crypto.randomBytes(24).toString('base64url')
+
     const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email: body.email,
-      password: body.password,
+      password: placeholderPassword,
       email_confirm: true,
     })
 
