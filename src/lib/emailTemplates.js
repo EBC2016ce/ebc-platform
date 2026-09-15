@@ -164,6 +164,106 @@ export function bookingConfirmationEmailHtml({ firstName, appointmentType, dateL
   `
 }
 
+// Sent once — right after an ad-funnel visitor books their slot — combining
+// the booking confirmation with account activation into a single email, so
+// there is no separate "check your email for a code" step earlier in the
+// flow that leaves the visitor unsure what happens next. Used only by the
+// /ad-consult flow (src/app/ad-consult/page.js, src/app/api/ad-book/route.js);
+// the on-site /register flow keeps its existing separate verification email.
+export function adConfirmationEmailHtml({ firstName, email, code, appointmentType, dateLabel, time, calendarLink, activateUrl }) {
+  return `
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:#F6F5F1; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#F6F5F1; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        <table width="480" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #D9D6CD; border-radius:4px; overflow:hidden;">
+
+          <tr>
+            <td style="background-color:#ffffff; padding: 28px 40px 20px 40px; text-align:center; border-bottom:1px solid #EAE7E0;">
+              <img src="https://easybcon.com.au/logo-icon.png" alt="EBC" width="110" height="54" style="display:block; margin: 0 auto;" />
+              <div style="color:#1B2A4A; font-size:19px; font-weight:bold; margin-top:14px; font-family: Arial, Helvetica, sans-serif;">
+                Easy Building &amp; Construction Pty Ltd
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 36px 40px 24px 40px;">
+              <p style="font-size:16px; color:#171A1F; margin:0 0 16px 0;">Hi ${firstName},</p>
+              <p style="font-size:15px; color:#333333; line-height:1.6; margin:0 0 24px 0;">
+                Thanks for booking your free ${(appointmentType || 'consultation').toLowerCase()} with EBC. You're confirmed for:
+              </p>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding: 8px 0 20px 0;">
+                    <div style="display:inline-block; border:2px solid #1B2A4A; border-radius:6px; padding: 16px 32px; text-align:center;">
+                      <span style="font-size:18px; font-weight:bold; color:#1B2A4A;">${dateLabel}</span><br/>
+                      <span style="font-size:16px; color:#E1601F;">${time}</span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 24px;">
+                    <a href="${calendarLink}" style="display:inline-block; background-color:#0068D8; color:#ffffff; text-decoration:none; font-weight:bold; padding:12px 24px; border-radius:4px; font-size:14px;">
+                      Add to Google Calendar
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                <tr>
+                  <td style="background-color:#FFF6F0; border:1px solid #E1601F33; border-radius:6px; padding:18px 20px;">
+                    <p style="font-size:14px; color:#1B2A4A; font-weight:bold; margin:0 0 8px 0;">One last step — activate your account</p>
+                    <p style="font-size:13px; color:#5A5E66; line-height:1.6; margin:0 0 14px 0;">
+                      This lets you log in at ${email} (with the password you just created) to see your project plan and message our team directly.
+                      Tap the button below to activate it now — no code to type.
+                    </p>
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding-bottom:12px;">
+                          <a href="${activateUrl}" style="display:inline-block; background-color:#1B2A4A; color:#ffffff; text-decoration:none; font-weight:bold; padding:11px 22px; border-radius:4px; font-size:14px;">
+                            Activate my account
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="font-size:12px; color:#8B8D89; text-align:center; margin:0;">
+                      Or enter this code where you left off: <strong style="letter-spacing:2px; color:#E1601F;">${code}</strong> (expires in 15 minutes — just ask our team for a new one if it lapses)
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="font-size:14px; color:#5A5E66; line-height:1.6; margin:0;">
+                An EBC team member will be in touch ahead of time, and you'll get a text reminder closer to the date.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#F6F5F1; padding: 20px 40px; text-align:center; border-top:1px solid #D9D6CD;">
+              <p style="font-size:12px; color:#8B8D89; margin:0;">
+                This is a transactional email regarding your booking and account.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `
+}
+
 // Sent ~2 hours before an appointment, by the cron job at
 // /api/cron/appointment-reminders — the "text message reminder closer to
 // the date" the booking confirmation email already promises.
