@@ -1,9 +1,11 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
 import AdCreatePassword from '@/components/AdCreatePassword'
+import { CATEGORIES } from '@/lib/adCategories'
 
 // A separate, ad-traffic-only version of the registration + booking flow.
 // This deliberately does NOT touch src/components/RegistrationForm.js or
@@ -19,11 +21,6 @@ import AdCreatePassword from '@/components/AdCreatePassword'
 
 const STEPS = ['intro', 'contact', 'project', 'location', 'review', 'booking']
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const CATEGORIES = {
-  Renovation: ['Kitchen renovation', 'Bathroom renovation', 'Laundry renovation', 'Powder room', 'Full renovation'],
-  'New Building': ['New home'],
-  Extension: ['Extension'],
-}
 const AUSTRALIAN_STATES = ['VIC', 'NSW', 'QLD', 'SA', 'WA', 'TAS', 'NT', 'ACT']
 
 function ProgressBar({ step }) {
@@ -52,8 +49,11 @@ function StepShell({ step, onBack, children }) {
   )
 }
 
-export default function AdConsultPage() {
-  const [step, setStep] = useState('intro')
+function AdConsultContent() {
+  const searchParams = useSearchParams()
+  const leadgenId = searchParams.get('leadgenId')
+
+  const [step, setStep] = useState(leadgenId ? 'resolving' : 'intro')
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', mobile: '',
     category: '', projectType: '', suburb: '', state: '', postalCode: '', consent: false,
@@ -64,17 +64,67 @@ export default function AdConsultPage() {
 
   useEffect(() => { saveUtmFromUrl() }, [])
 
+  // A visitor arriving with ?leadgenId=... just tapped through from a Meta
+  // Instant Form ad — Facebook already has their name, mobile, email, and
+  // an answer to our "what's your project" custom question, so asking for
+  // any of that again would be exactly the redundant step this whole
+  // rebuild was meant to avoid. /api/ad-consult/resolve-lead turns that
+  // leadgen_id into a real customer record (creating one the first time,
+  // just looking it up on a re-visit) and hands back everything needed to
+  // jump straight to the location step.
+  useEffect(() => {
+    if (!leadgenId) return
+    let cancelled = false
+    fetch('/api/ad-consult/resolve-lead?leadgenId=' + encodeURIComponent(leadgenId))
+      .then((res) => res.json())
+      .then((result) => {
+        if (cancelled) return
+        if (result.found) {
+          setForm((prev) => ({
+            ...prev,
+            firstName: result.firstName || '',
+            lastName: result.lastName || '',
+            email: result.email || '',
+            mobile: result.mobile || '',
+            category: result.category || '',
+            projectType: result.projectType || '',
+          }))
+          setCustomerId(result.customerId)
+          setStep('location')
+        } else {
+          // Couldn't retrieve or create the record (token issue, Meta's API
+          // hiccuped, or the submission is missing something we need) —
+          // rather than leave the visitor stuck on a loading screen, fall
+          // back to the normal flow and just ask them directly.
+          setStep('intro')
+        }
+      })
+      .catch(() => { if (!cancelled) setStep('intro') })
+    return () => { cancelled = true }
+  }, [leadgenId])
+
   const field = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
+  // A lead-resolved visitor enters at 'location', having skipped intro,
+  // contact and project — "Back" shouldn't be able to walk them into steps
+  // that were never shown and whose fields are already filled from Meta.
+  const entryIdx = STEPS.indexOf(leadgenId ? 'location' : 'intro')
   const goBack = () => {
     const idx = STEPS.indexOf(step)
-    if (idx > 0) setStep(STEPS[idx - 1])
+    if (idx > entryIdx) setStep(STEPS[idx - 1])
   }
 
   // Contact + project + location are all collected client-side across three
   // quick screens, then sent to the server together in one call — the
   // account only actually needs to be created once, right before booking.
+  // A lead-resolved visitor already has a customerId (created by
+  // resolve-lead), so there's nothing left to register — just move on to
+  // booking.
   const finishQuestionsAndRegister = async () => {
+    if (customerId) {
+      setStep('booking')
+      return
+    }
     setSubmitting(true)
     setRegisterError('')
     try {
@@ -105,6 +155,13 @@ export default function AdConsultPage() {
 
   return (
     <main className="min-h-screen bg-[#F6F5F1] flex flex-col items-center px-6 py-10">
+      {step === 'resolving' && (
+        <div className="max-w-md w-full text-center">
+          <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto mx-auto" />
+          <p className="mt-8 text-[#5A5E66]">Setting up your details...</p>
+        </div>
+      )}
+
       {step === 'intro' && <IntroStep onNext={() => setStep('contact')} />}
 
       {step === 'contact' && (
@@ -143,6 +200,18 @@ export default function AdConsultPage() {
         </StepShell>
       )}
     </main>
+  )
+}
+
+export default function AdConsultPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-[#F6F5F1] flex flex-col items-center px-6 py-10">
+        <p className="text-[#5A5E66]">Loading...</p>
+      </main>
+    }>
+      <AdConsultContent />
+    </Suspense>
   )
 }
 
