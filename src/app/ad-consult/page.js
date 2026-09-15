@@ -568,7 +568,7 @@ function BookedSuccess({ customerId, form, selectedDay, selectedTime }) {
           onClick={() => setShowCodeEntry(true)}
           className="mt-4 text-sm text-[#8A8D94] hover:text-[#1B2A4A] underline transition"
         >
-          Rather not wait for the email? Activate now instead
+          Didn't get the email? Enter your code manually
         </button>
       ) : (
         <form onSubmit={handleVerify} className="mt-4 bg-white border border-[#D9D6CD] rounded-md p-5 text-left flex flex-col gap-3">
