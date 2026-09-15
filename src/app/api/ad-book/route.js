@@ -57,7 +57,19 @@ export async function POST(request) {
         timeLabel: bookingTime,
         description: 'Appointment with Easy Building & Construction.',
       })
-      const activateUrl = `https://easybcon.com.au/ad-consult/verify?customerId=${customerId}&code=${customer.verification_code}`
+      // Built from the visitor's own page URL rather than a hardcoded
+      // domain — this flow currently only exists on staging (ebc33.com.au),
+      // and a hardcoded easybcon.com.au link 404s there. This also means
+      // the link is automatically correct once /ad-consult is live on
+      // production too, with no code change needed.
+      let activateUrl = `https://easybcon.com.au/ad-consult/verify?customerId=${customerId}&code=${customer.verification_code}`
+      try {
+        const origin = new URL(pageUrl).origin
+        activateUrl = `${origin}/ad-consult/verify?customerId=${customerId}&code=${customer.verification_code}`
+      } catch {
+        // pageUrl missing or unparseable — fall back to the hardcoded
+        // production URL above rather than fail the whole booking.
+      }
 
       try {
         await resend.emails.send({
