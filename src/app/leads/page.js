@@ -223,10 +223,10 @@ export default function Leads() {
               Ad Performance
             </Link>
             {canViewSubscriptions && (
-              <a href="https://claude.ai/code/artifact/74f108e4-e9c5-4f48-ab44-805b0e4ca87c" target="_blank" rel="noopener noreferrer"
+              <Link href="/admin/subscriptions"
                 className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
                 Subscriptions
-              </a>
+              </Link>
             )}
             <button onClick={() => setShowReportBox((v) => !v)}
               className="bg-white border border-[#D9D6CD] text-[#1B2A4A] font-medium rounded px-4 py-2 text-sm hover:border-[#E1601F] transition">
