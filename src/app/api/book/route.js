@@ -4,6 +4,37 @@ import { resend } from '@/lib/resend'
 import { bookingConfirmationEmailHtml, buildGoogleCalendarLink } from '@/lib/emailTemplates'
 import { sendSms } from '@/lib/sms'
 
+// Lets /book (and /design's redirect into it) check for an existing
+// confirmed booking before showing the calendar — a customer who already
+// booked through /ad-consult shouldn't be steered back into picking another
+// time. Returns the most recent confirmed booking, or null.
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const customerId = searchParams.get('customerId')
+    if (!customerId) {
+      return Response.json({ error: 'Missing customerId' }, { status: 400 })
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('bookings')
+      .select('booking_date, booking_time, appointment_type')
+      .eq('customer_id', customerId)
+      .eq('status', 'Confirmed')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (error) {
+      return Response.json({ error: error.message }, { status: 400 })
+    }
+
+    return Response.json({ booking: data || null })
+  } catch (err) {
+    return Response.json({ error: 'Server error: ' + err.message }, { status: 500 })
+  }
+}
+
 export async function POST(request) {
   try {
     const { customerId, bookingDate, bookingTime, appointmentType } = await request.json()

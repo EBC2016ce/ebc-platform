@@ -19,8 +19,21 @@ function BookPageContent() {
   const [selectedTime, setSelectedTime] = useState(null)
   const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [existingBooking, setExistingBooking] = useState(undefined) // undefined = still checking, null = none
 
   const isCurrentMonth = viewYear === today.getFullYear() && viewMonth === today.getMonth() + 1
+
+  // A customer who booked through /ad-consult (or a repeat visit here)
+  // already has a confirmed slot — landing them back on the picker risked
+  // a second, conflicting booking. Check first and show the existing one
+  // instead, same as the post-booking success view below.
+  useEffect(() => {
+    if (!customerId) return
+    fetch('/api/book?customerId=' + customerId)
+      .then((res) => res.json())
+      .then((result) => setExistingBooking(result.booking || null))
+      .catch(() => setExistingBooking(null))
+  }, [customerId])
 
   useEffect(() => {
     setCalendarLoading(true)
@@ -74,8 +87,14 @@ function BookPageContent() {
     return <p className="text-[#A23B2E]">Missing customer reference. Please use the link from your verification email.</p>
   }
 
-  if (status === 'success') {
-    const dateLabel = new Date(selectedDay.dateKey).toLocaleDateString('en-AU', { weekday: 'long', month: 'long', day: 'numeric' })
+  if (existingBooking === undefined) {
+    return <p className="text-[#5A5E66]">Checking your booking...</p>
+  }
+
+  if (status === 'success' || existingBooking) {
+    const dateKey = status === 'success' ? selectedDay.dateKey : existingBooking.booking_date
+    const time = status === 'success' ? selectedTime : existingBooking.booking_time
+    const dateLabel = new Date(dateKey).toLocaleDateString('en-AU', { weekday: 'long', month: 'long', day: 'numeric' })
     return (
       <div className="max-w-md w-full text-center">
         <div className="w-12 h-12 rounded-full bg-[#2E7D4F] text-white flex items-center justify-center mx-auto text-xl">✓</div>
@@ -83,7 +102,7 @@ function BookPageContent() {
           You&apos;re booked in
         </h1>
         <p className="mt-3 text-[#5A5E66]">
-          {dateLabel} at {selectedTime}. We&apos;ll see you then — a confirmation email and SMS have been sent to you.
+          {dateLabel} at {time}. We&apos;ll see you then — a confirmation email and SMS have been sent to you.
         </p>
         <div className="mt-6 bg-[#FFF6F0] border border-[#E1601F]/30 rounded-md p-4 text-sm text-[#5A5E66] text-left">
           Need to change this? Just reply to your confirmation email or call us at least <strong className="text-[#1B2A4A]">24 hours</strong> before your appointment and we&apos;ll happily reschedule.
