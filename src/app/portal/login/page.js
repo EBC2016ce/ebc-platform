@@ -136,7 +136,7 @@ export default function PortalLogin() {
         )}
 
         <div className="text-center mt-5">
-          <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+          <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
         </div>
       </div>
     </main>

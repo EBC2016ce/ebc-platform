@@ -205,7 +205,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
           </button>
         </form>
         <div className="text-center mt-5">
-          <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+          <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
         </div>
       </div>
     )
@@ -355,7 +355,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
         </button>
       </form>
       <div className="text-center mt-5">
-        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+        <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
       </div>
     </div>
   )

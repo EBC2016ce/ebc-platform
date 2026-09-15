@@ -13,9 +13,10 @@ export const metadata = {
   },
 }
 
-// Randomizes the order of the "Watch How We Build" video tiles so the same
-// clip isn't always first — a plain Fisher-Yates shuffle, no fixed seed.
-function shuffleBuildVideos(videos) {
+// Randomizes tile order (the "Watch How We Build" videos and the "Our
+// Projects" photos) so the same item isn't always first — a plain
+// Fisher-Yates shuffle, no fixed seed.
+function shuffleItems(videos) {
   const shuffled = [...videos]
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -76,18 +77,25 @@ const reviews = [
 ]
 
 const projects = [
-  { img: '/projects/renovation/renovation-kitchen-after.jpg', category: 'Melbourne Home Renovation', title: 'The Kitchen Transformation' },
-  { img: '/projects/renovation/renovation-wallremoval-after.jpg', category: 'Melbourne Home Renovation', title: 'The Complete Refresh' },
-  { img: '/projects/renovation/renovation-kitchen-during.jpg', category: 'Melbourne Home Renovation', title: 'Mid-Build Progress' },
-  { img: '/projects/renovation/renovation-kitchen-before.jpg', category: 'Melbourne Home Renovation', title: 'Where It Started' },
-  { img: '/projects/renovation/renovation-deck-m-framing.jpg', category: 'Melbourne Home Renovation', title: 'Frame & Fitout' },
-  { img: '/projects/renovation/renovation-bathroom-hero.jpg', category: 'Melbourne Home Renovation', title: 'Finished & Handed Over' },
+  { img: '/projects/renovation/renovation-kitchen-after.jpg', category: 'Home Renovation', title: 'The Kitchen Transformation' },
+  { img: '/projects/renovation/renovation-wallremoval-after.jpg', category: 'Home Renovation', title: 'The Complete Refresh' },
+  { img: '/projects/renovation/renovation-kitchen-during.jpg', category: 'Home Renovation', title: 'Mid-Build Progress' },
+  { img: '/projects/renovation/renovation-kitchen-before.jpg', category: 'Home Renovation', title: 'Where It Started' },
+  { img: '/projects/renovation/renovation-deck-m-framing.jpg', category: 'Home Renovation', title: 'Frame & Fitout' },
+  { img: '/projects/renovation/renovation-bathroom-hero.jpg', category: 'Home Renovation', title: 'Finished & Handed Over' },
+  { img: '/projects/new-home/new-home-build-001.jpg', category: 'New Building', title: 'Custom New Build' },
+  { img: '/projects/new-home/new-home-build-002.jpg', category: 'New Building', title: 'Ready for Handover' },
+  { img: '/projects/extension/extension-before.jpg', category: 'Home Extension', title: 'Where the Extension Began' },
+  { img: '/projects/extension/extension-slab.jpg', category: 'Home Extension', title: 'Slab Down, Build Underway' },
 ]
 
+// TODO: swap these three img paths for the AI-generated blog photos once
+// they're saved into /public/blog/ (see chat — generated in Moda, pending
+// download since this sandbox can't pull from Moda's CDN directly).
 const blogPosts = [
-  { img: '/project-kitchen-after.jpg', date: 'Coming soon', title: 'Design & Build vs. Hiring Separately: What Actually Matters', excerpt: 'A straight-talking look at the two approaches to planning your renovation or new build.' },
-  { img: '/renovation-before.jpg', date: 'Coming soon', title: 'Renovating in Melbourne: The Questions Every Homeowner Asks First', excerpt: 'Permits, timelines, and costs — what to know before your first conversation with a builder.' },
-  { img: '/renovation-after.jpg', date: 'Coming soon', title: 'Extension Costs & Timelines: A Practical Guide', excerpt: 'What actually drives the cost and schedule of a home extension in Victoria.' },
+  { img: '/projects/renovation/renovation-kitchen-during.jpg', slug: 'design-build-vs-hiring-separately', title: 'Design & Build vs. Hiring Separately: What Actually Matters', excerpt: 'A straight-talking look at the two approaches to planning your renovation or new build.' },
+  { img: '/projects/renovation/renovation-kitchen-before.jpg', slug: 'renovating-in-melbourne-questions', title: 'Renovating in Melbourne: The Questions Every Homeowner Asks First', excerpt: 'Permits, timelines, and costs — what to know before your first conversation with a builder.' },
+  { img: '/projects/extension/extension-slab.jpg', slug: 'extension-costs-timelines-guide', title: 'Extension Costs & Timelines: A Practical Guide', excerpt: 'What actually drives the cost and schedule of a home extension in Victoria.' },
 ]
 
 function QuickIcon({ name }) {
@@ -183,18 +191,18 @@ export default function Home() {
             </p>
             <div className="mt-6 flex flex-col items-center gap-4">
               <div className="flex items-center gap-8 flex-wrap justify-center">
-                <Link href="/portal/login" className="inline-flex items-center gap-1.5 text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                <Link href="/portal/login" className="inline-flex items-center gap-1.5 text-lg md:text-xl text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
                   Customer Portal
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                 </Link>
-                <Link href="/login" className="inline-flex items-center gap-1.5 text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                <Link href="/login" className="inline-flex items-center gap-1.5 text-lg md:text-xl text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
                   Admin Portal
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                 </Link>
               </div>
-              <Link href="/register" className="inline-flex items-center gap-1.5 text-[#E1601F] font-semibold border-b-2 border-[#E1601F]/40 pb-1 hover:border-[#E1601F] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+              <Link href="/register" className="inline-flex items-center gap-1.5 text-lg md:text-xl text-[#E1601F] font-semibold border-b-2 border-[#E1601F]/40 pb-1 hover:border-[#E1601F] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
                 Get a Free Quote
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </Link>
             </div>
           </div>
@@ -402,15 +410,19 @@ export default function Home() {
           </h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {shuffleBuildVideos([
+          {shuffleItems([
             { src: '/projects/new-home/new-home-waffle-work.mp4', poster: '/projects/new-home/new-home-hero.jpg', caption: 'New home slab pour' },
             { src: '/projects/renovation/renovation-bathroom-before.mp4', caption: 'Bathroom — before' },
             { src: '/projects/renovation/renovation-bathroom-after.mp4', caption: 'Bathroom — after' },
             { src: '/projects/extension/extension-ad-final.mp4', caption: 'Extension project' },
             { src: '/projects/extension/extension-highlight-vertical.mp4', caption: 'Extension walkthrough' },
+            { src: '/projects/extension/extension-site-progress.mp4', caption: 'Extension — site progress' },
             { src: '/projects/new-home/new-home-build-02.mp4', caption: 'New home — framing' },
             { src: '/projects/new-home/new-home-build-03.mp4', caption: 'New home — slab pour' },
             { src: '/projects/new-home/new-home-build-04.mp4', caption: 'New home — site setup' },
+            { src: '/projects/new-home/new-home-build-05.mp4', caption: 'New home — build progress' },
+            { src: '/projects/new-home/new-home-build-06.mp4', caption: 'New home — under construction' },
+            { src: '/projects/new-home/new-home-drone-flyover.mp4', caption: 'New home — drone flyover' },
           ]).map((v, i) => (
             <div key={i} className="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg bg-[#0F1930]">
               {/*
@@ -451,14 +463,14 @@ export default function Home() {
             <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">OUR PROJECTS</p>
             <h2 className="text-3xl md:text-4xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>See the Projects We&apos;ve Built</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-5">
-            {projects.map((p, i) => (
-              <div key={i} className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg group cursor-pointer">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {shuffleItems(projects).map((p, i) => (
+              <div key={i} className="relative w-full h-40 md:h-48 rounded-xl overflow-hidden shadow-lg group cursor-pointer">
                 <Image src={p.img} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <p className="text-[#FFB088] text-xs font-semibold mb-1">{p.category}</p>
-                  <p className="text-white font-semibold" style={{ fontFamily: 'var(--font-heading)' }}>{p.title}</p>
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <p className="text-[#FFB088] text-[10px] font-semibold mb-0.5">{p.category}</p>
+                  <p className="text-white text-sm font-semibold leading-snug" style={{ fontFamily: 'var(--font-heading)' }}>{p.title}</p>
                 </div>
               </div>
             ))}
@@ -492,20 +504,21 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {blogPosts.map((post) => (
-              <div key={post.title} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow group cursor-pointer">
+              <a key={post.slug} href={'/blog/' + post.slug} target="_blank" rel="noopener noreferrer"
+                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow group cursor-pointer">
                 <div className="relative w-full h-44 overflow-hidden">
                   <Image src={post.img} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-6">
-                  <p className="text-xs text-[#8A8D94] mb-2">{post.date}</p>
                   <h3 className="font-semibold text-[#1B2A4A] mb-2 leading-snug" style={{ fontFamily: 'var(--font-heading)' }}>{post.title}</h3>
                   <p className="text-sm text-[#5A5E66] leading-relaxed">{post.excerpt}</p>
+                  <span className="inline-block mt-3 text-sm text-[#E1601F] font-medium">Read more →</span>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
           <p className="text-xs text-[#8A8D94] text-center mt-6">
-            New articles are on the way — check back soon.
+            <Link href="/blog" className="hover:text-[#1B2A4A] transition">See all articles →</Link>
           </p>
         </div>
       </section>

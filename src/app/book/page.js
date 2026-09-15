@@ -209,7 +209,7 @@ export default function BookPage() {
         <BookPageContent />
       </Suspense>
       <div className="text-center mt-8">
-        <Link href="/" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to home</Link>
+        <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
       </div>
     </main>
   )
