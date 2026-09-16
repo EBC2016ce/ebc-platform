@@ -101,7 +101,7 @@ export default function AdLandingPage({
                   </div>
                 )}
                 {item.type === 'video' && (
-                  <div className={`relative rounded-xl overflow-hidden shadow-md mx-auto ${item.orientation === 'vertical' ? 'aspect-[9/16] max-w-[280px]' : 'aspect-video w-full'}`}>
+                  <div className={`relative rounded-xl overflow-hidden shadow-md mx-auto ${item.orientation === 'vertical' ? 'aspect-[9/16] max-w-[220px]' : 'aspect-video w-full max-w-[380px]'}`}>
                     <video
                       src={item.src}
                       poster={item.poster}
