@@ -67,13 +67,24 @@ export default function AdLandingPage({
             </div>
           </div>
 
-          <div className="bg-white border border-[#EAE7E0] rounded-2xl shadow-xl p-6 md:p-8 lg:sticky lg:top-24">
-            <RegistrationForm
-              lockedCategory={lockedCategory}
-              title={formTitle}
-              subtitle={formSubtitle}
-              hideLogo
-            />
+          <div className="lg:sticky lg:top-24">
+            <div className="bg-white border border-[#EAE7E0] rounded-2xl shadow-xl p-6 md:p-8">
+              <RegistrationForm
+                lockedCategory={lockedCategory}
+                title={formTitle}
+                subtitle={formSubtitle}
+                hideLogo
+              />
+            </div>
+
+            <div className="mt-5 flex items-center gap-3 bg-[#F6F5F1] border border-[#EAE7E0] rounded-xl p-3">
+              <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
+                <Image src="/register-hero-couple.jpg" alt="Homeowners booking their free EBC consultation from home" fill className="object-cover" />
+              </div>
+              <p className="text-xs text-[#5A5E66] leading-snug">
+                No site visit needed to get started — book your free consultation from your couch, we&apos;ll take it from there.
+              </p>
+            </div>
           </div>
         </div>
       </section>
