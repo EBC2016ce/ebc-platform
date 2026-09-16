@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import Footer from './components/Footer'
 
 export const metadata = {
   title: 'Easy Building & Construction Pty Ltd | Melbourne Builder',
@@ -553,53 +554,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white px-6 py-12 border-t border-[#EAE7E0]">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-10 text-sm">
-          <div>
-            <div className="font-semibold text-[#1B2A4A] mb-3" style={{ fontFamily: 'var(--font-heading)' }}>Easy Building &amp; Construction Pty Ltd.</div>
-            <p className="text-[#8A8D94] leading-relaxed">New homes, renovations, and extensions across Melbourne — one team from first conversation to final handover.</p>
-            <div className="flex items-center gap-3 mt-4 text-[#1B2A4A]">
-              <a href="https://www.instagram.com/easybcon.com.au/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-[#E1601F] transition"><SocialIcon name="instagram" /></a>
-              <a href="https://www.linkedin.com/company/easybcon" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-[#E1601F] transition"><SocialIcon name="linkedin" /></a>
-              <a href="https://www.facebook.com/easybcon.com.au" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-[#E1601F] transition"><SocialIcon name="facebook" /></a>
-              <a href="https://www.youtube.com/@EBC2010AUS" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-[#E1601F] transition"><SocialIcon name="youtube" /></a>
-              <a href="https://x.com/easybcon" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:text-[#E1601F] transition"><SocialIcon name="x" /></a>
-            </div>
-          </div>
-          <div>
-            <div className="font-semibold text-[#1B2A4A] mb-3">Company</div>
-            <div className="flex flex-col gap-2 text-[#5A5E66]">
-              <Link href="/" className="hover:text-[#E1601F] transition">Home</Link>
-              <Link href="/register" className="hover:text-[#E1601F] transition">Register</Link>
-              <Link href="/register" className="hover:text-[#E1601F] transition">Contact</Link>
-              <Link href="/portal/login" className="hover:text-[#E1601F] transition">Client Login</Link>
-              <Link href="/blog" className="hover:text-[#E1601F] transition">Blog</Link>
-              <Link href="/privacy" className="hover:text-[#E1601F] transition">Privacy Policy</Link>
-            </div>
-          </div>
-          <div>
-            <div className="font-semibold text-[#1B2A4A] mb-3">Services</div>
-            <div className="flex flex-col gap-2 text-[#5A5E66]">
-              <Link href="/new-home" className="hover:text-[#E1601F] transition">New Home</Link>
-              <Link href="/renovation" className="hover:text-[#E1601F] transition">Renovation</Link>
-              <Link href="/extension" className="hover:text-[#E1601F] transition">Extension</Link>
-            </div>
-          </div>
-          <div>
-            <div className="font-semibold text-[#1B2A4A] mb-3">Contact</div>
-            <div className="flex flex-col gap-2 text-[#5A5E66]">
-              <a href="tel:1300715840" className="hover:text-[#E1601F] transition">1300 715 840</a>
-              <a href="mailto:info@easybcon.com.au" className="hover:text-[#E1601F] transition">info@easybcon.com.au</a>
-              <span>P.O. Box 2014</span>
-              <span>Forest Hill VIC 3131</span>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-6xl mx-auto mt-10 pt-6 border-t border-[#EAE7E0] text-xs text-[#8A8D94]">
-          © 2026 Easy Building &amp; Construction Pty Ltd.
-        </div>
-      </footer>
+      <Footer />
     </main>
   )
 }

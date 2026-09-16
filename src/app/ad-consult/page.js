@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
 import AdCreatePassword from '@/components/AdCreatePassword'
 import { CATEGORIES } from '@/lib/adCategories'
+import Footer from '../components/Footer'
 
 // A separate, ad-traffic-only version of the registration + booking flow.
 // This deliberately does NOT touch src/components/RegistrationForm.js or
@@ -154,51 +155,54 @@ function AdConsultContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F6F5F1] flex flex-col items-center px-6 py-10">
-      {step === 'resolving' && (
-        <div className="max-w-md w-full text-center">
-          <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto mx-auto" />
-          <p className="mt-8 text-[#5A5E66]">Setting up your details...</p>
-        </div>
-      )}
+    <main className="min-h-screen bg-[#F6F5F1] flex flex-col">
+      <div className="flex-1 flex flex-col items-center px-6 py-10">
+        {step === 'resolving' && (
+          <div className="max-w-md w-full text-center">
+            <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto mx-auto" />
+            <p className="mt-8 text-[#5A5E66]">Setting up your details...</p>
+          </div>
+        )}
 
-      {step === 'intro' && <IntroStep onNext={() => setStep('contact')} />}
+        {step === 'intro' && <IntroStep onNext={() => setStep('contact')} />}
 
-      {step === 'contact' && (
-        <StepShell step={step} onBack={goBack}>
-          <ContactStep form={form} field={field} onNext={() => setStep('project')} />
-        </StepShell>
-      )}
+        {step === 'contact' && (
+          <StepShell step={step} onBack={goBack}>
+            <ContactStep form={form} field={field} onNext={() => setStep('project')} />
+          </StepShell>
+        )}
 
-      {step === 'project' && (
-        <StepShell step={step} onBack={goBack}>
-          <ProjectStep form={form} field={field} onNext={() => setStep('location')} />
-        </StepShell>
-      )}
+        {step === 'project' && (
+          <StepShell step={step} onBack={goBack}>
+            <ProjectStep form={form} field={field} onNext={() => setStep('location')} />
+          </StepShell>
+        )}
 
-      {step === 'location' && (
-        <StepShell step={step} onBack={goBack}>
-          <LocationStep form={form} field={field} onNext={() => setStep('review')} />
-        </StepShell>
-      )}
+        {step === 'location' && (
+          <StepShell step={step} onBack={goBack}>
+            <LocationStep form={form} field={field} onNext={() => setStep('review')} />
+          </StepShell>
+        )}
 
-      {step === 'review' && (
-        <StepShell step={step} onBack={goBack}>
-          <ReviewStep
-            form={form}
-            field={field}
-            onNext={finishQuestionsAndRegister}
-            submitting={submitting}
-            error={registerError}
-          />
-        </StepShell>
-      )}
+        {step === 'review' && (
+          <StepShell step={step} onBack={goBack}>
+            <ReviewStep
+              form={form}
+              field={field}
+              onNext={finishQuestionsAndRegister}
+              submitting={submitting}
+              error={registerError}
+            />
+          </StepShell>
+        )}
 
-      {step === 'booking' && (
-        <StepShell step={step}>
-          <BookingStep customerId={customerId} form={form} />
-        </StepShell>
-      )}
+        {step === 'booking' && (
+          <StepShell step={step}>
+            <BookingStep customerId={customerId} form={form} />
+          </StepShell>
+        )}
+      </div>
+      <Footer />
     </main>
   )
 }

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { STEPS_BY_TYPE } from '@/lib/designSteps'
 import PlanUploads from '@/components/PlanUploads'
 import AddressAutocompleteFields from '@/components/AddressAutocompleteFields'
+import Footer from '../components/Footer'
 
 function Field({ field, value, onChange }) {
   if (field.type === 'select') {
@@ -298,19 +299,22 @@ function DesignPageContent() {
 
 export default function DesignPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center px-6 py-16">
-      <Link href="/" className="flex flex-col items-center mb-8">
-        <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
-        <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Easy Building &amp; Construction Pty Ltd.
-        </span>
-      </Link>
-      <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
-        <DesignPageContent />
-      </Suspense>
-      <div className="text-center mt-8">
-        <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
+    <main className="min-h-screen flex flex-col">
+      <div className="flex-1 flex flex-col items-center px-6 py-16">
+        <Link href="/" className="flex flex-col items-center mb-8">
+          <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-16 w-auto" />
+          <span className="mt-2 text-base font-bold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
+            Easy Building &amp; Construction Pty Ltd.
+          </span>
+        </Link>
+        <Suspense fallback={<p className="text-[#5A5E66]">Loading...</p>}>
+          <DesignPageContent />
+        </Suspense>
+        <div className="text-center mt-8">
+          <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
+        </div>
       </div>
+      <Footer />
     </main>
   )
 }

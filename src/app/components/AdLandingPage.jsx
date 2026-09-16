@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import RegistrationForm from '@/components/RegistrationForm'
 import BeforeAfterSlider from './BeforeAfterSlider'
+import Footer from './Footer'
 
 function PhoneIcon() {
   return (
@@ -137,6 +138,8 @@ export default function AdLandingPage({
           </span>
         </div>
       </section>
+
+      <Footer />
     </main>
   )
 }
