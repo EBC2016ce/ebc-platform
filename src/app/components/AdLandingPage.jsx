@@ -107,6 +107,9 @@ export default function AdLandingPage({
                       controls
                       preload="metadata"
                       playsInline
+                      disablePictureInPicture
+                      controlsList="nodownload nofullscreen noremoteplayback"
+                      onContextMenu={(e) => e.preventDefault()}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
                   </div>
