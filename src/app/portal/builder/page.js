@@ -1,12 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { builderProfile } from '@/lib/builderProfile'
+import Footer from '../../components/Footer'
 
 export default function MeetYourBuilder() {
   const { name, title, photo, bio, credentials } = builderProfile
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-16">
+    <main className="min-h-screen flex flex-col">
+    <div className="flex-1 max-w-2xl w-full mx-auto px-6 py-16">
       <Link href="/portal" className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">← Back to your portal</Link>
 
       <div className="mt-6 bg-white border border-[#D9D6CD] rounded-md p-8 text-center">
@@ -42,6 +44,8 @@ export default function MeetYourBuilder() {
           Message Your Builder
         </Link>
       </div>
+    </div>
+      <Footer />
     </main>
   )
 }

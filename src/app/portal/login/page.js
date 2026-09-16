@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
+import Footer from '../../components/Footer'
 
 export default function PortalLogin() {
   const [email, setEmail] = useState('')
@@ -51,7 +52,8 @@ export default function PortalLogin() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6 py-16">
+    <main className="min-h-screen flex flex-col">
+    <div className="flex-1 flex items-center justify-center px-6 py-16">
       <div className="max-w-sm w-full">
         <Link href="/" className="flex flex-col items-center mb-6">
           <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" />
@@ -139,6 +141,8 @@ export default function PortalLogin() {
           <Link href="/" className="text-sm font-semibold text-[#1B2A4A] hover:text-[#E1601F] transition">← Back to home</Link>
         </div>
       </div>
+    </div>
+      <Footer />
     </main>
   )
 }

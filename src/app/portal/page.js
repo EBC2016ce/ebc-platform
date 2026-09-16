@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
+import Footer from '../components/Footer'
 
 export default function Portal() {
   const [data, setData] = useState(null)
@@ -96,7 +97,8 @@ export default function Portal() {
   const activeBooking = (bookings || []).find((b) => b.status !== 'Cancelled')
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-16">
+    <main className="min-h-screen flex flex-col">
+    <div className="flex-1 max-w-2xl w-full mx-auto px-6 py-16">
       <div className="flex flex-col items-center text-center mb-8">
         <Link href="/" className="flex flex-col items-center">
           <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" />
@@ -239,6 +241,8 @@ export default function Portal() {
       <div className="text-center mt-8">
         <button onClick={logOut} className="text-sm text-[#8A8D94] hover:text-[#1B2A4A] transition">Log out</button>
       </div>
+    </div>
+      <Footer />
     </main>
   )
 }
