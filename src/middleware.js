@@ -52,8 +52,15 @@ export async function middleware(request) {
     await supabase.auth.getUser()
   }
 
-  await refresh('sb-staff-auth')
+    await refresh('sb-staff-auth')
   await refresh('sb-portal-auth')
+
+  // Keep the backup/staging copies (ebc33.com.au and *.vercel.app) out of
+  // Google so they can never compete with, or duplicate, the real site.
+  const host = (request.headers.get('host') || '').toLowerCase().split(':')[0]
+  if (host.endsWith('ebc33.com.au') || host.endsWith('.vercel.app')) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+  }
 
   return response
 }
