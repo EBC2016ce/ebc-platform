@@ -4,11 +4,9 @@ import Footer from '../components/Footer'
 import JsonLd from '../components/JsonLd'
 import { SERVICE_AREAS, breadcrumbSchema } from '@/lib/site'
 
-const description = 'Easy Building & Construction builds, extends and renovates homes in Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham, Rowville and across Melbourne’s Eastern Suburbs.'
+const description = 'Easy Building & Construction builds, extends and renovates homes across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville, and nearby areas.'
 
 export const metadata = {
-  title: 'Areas We Serve | Eastern Suburbs Melbourne Builder',
-  export const metadata = {
   robots: { index: false, follow: false },
   title: 'Areas We Serve | Eastern Suburbs Melbourne Builder',
   description,
@@ -47,7 +45,7 @@ export default function Areas() {
             Builders across Melbourne&apos;s <span className="text-[#3C6FB0]">Eastern Suburbs</span>
           </h1>
           <p className="mt-5 text-lg text-[#3A3F4A] leading-relaxed">
-            Easy Building &amp; Construction is a registered Melbourne builder. We renovate, extend and build new homes in the suburbs below, from Glen Waverley and Blackburn through to Ringwood, Croydon, Boronia and Rowville.
+            Easy Building &amp; Construction is a registered Melbourne builder. We renovate, extend and build new homes across the Eastern Suburbs. The suburbs below are where we regularly work, from Glen Waverley and Blackburn through to Ringwood, Croydon, Boronia and Rowville. We also take on projects in surrounding areas.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <Link href="/register" data-cta="areas-hero-quote" className="inline-block bg-[#E1601F] text-white font-semibold rounded-md px-7 py-3.5 hover:bg-[#C9541A] transition-colors">
@@ -59,7 +57,7 @@ export default function Areas() {
 
         <section className="bg-[#F6F5F1] border-y border-[#EAE7E0] px-6 py-12 md:py-16">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Suburbs we work in</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Suburbs where we regularly work</h2>
             <ul className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3">
               {SERVICE_AREAS.map((a) => (
                 <li key={a.name} className="bg-white border border-[#EAE7E0] rounded-lg px-4 py-3 flex items-baseline justify-between gap-2">
@@ -69,13 +67,13 @@ export default function Areas() {
               ))}
             </ul>
             <p className="mt-6 text-sm text-[#5A5E66] leading-relaxed">
-              Don&apos;t see your suburb? Nearby areas are often possible. Register your project with your address and we&apos;ll confirm whether we can help.
+              This list isn&apos;t a boundary. If your home is in or near these suburbs, or somewhere else in Melbourne&apos;s east, we&apos;d still like to hear about your project. Register with your address and we&apos;ll confirm we can help.
             </p>
           </div>
         </section>
 
         <section className="max-w-4xl mx-auto px-6 py-12 md:py-16">
-          <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>What we build in these suburbs</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>What we build across the Eastern Suburbs</h2>
           <div className="mt-6 grid md:grid-cols-3 gap-4">
             {services.map((s) => (
               <Link key={s.href} href={s.href} className="block border border-[#EAE7E0] rounded-xl p-5 hover:border-[#E1601F]/40 hover:shadow-lg transition">
@@ -97,7 +95,7 @@ export default function Areas() {
           </div>
 
           <div className="mt-10 bg-[#1B2A4A] rounded-xl p-8 text-center">
-            <p className="text-xl font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>Planning a project in one of these suburbs?</p>
+            <p className="text-xl font-semibold text-white" style={{ fontFamily: 'var(--font-heading)' }}>Planning a project in the Eastern Suburbs?</p>
             <p className="text-sm text-[#C9D2E3] mt-2">Free consultation, no obligation.</p>
             <Link href="/register" data-cta="areas-bottom-quote" className="inline-block mt-5 bg-[#8FC2FF] text-[#0F1930] font-semibold rounded-md px-8 py-3">
               Register Your Project
