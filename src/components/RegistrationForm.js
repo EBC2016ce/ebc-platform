@@ -1,9 +1,10 @@
 ﻿'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
+import { trackEvent, trackLead } from '@/lib/analytics'
 import AddressAutocompleteFields from './AddressAutocompleteFields'
 
 const CATEGORIES = {
@@ -32,6 +33,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
   const [verifyError, setVerifyError] = useState('')
   const [resendStatus, setResendStatus] = useState('idle') // idle | sending | sent
   const [resendCooldown, setResendCooldown] = useState(0)
+  const formStarted = useRef(false)
 
   useEffect(() => {
     saveUtmFromUrl()
@@ -83,6 +85,13 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
         if (typeof window !== 'undefined' && window.fbq) {
           window.fbq('track', 'Lead', {}, { eventID: fbEventId })
         }
+        // Google Analytics 4 / Google Ads: the main conversion (enquiry submitted).
+        trackLead({
+          project_type: form.projectType,
+          project_category: form.category,
+          form_location: window.location.pathname,
+          lead_source: utm.utmSource || 'direct',
+        })
         setCustomerId(result.customerId)
         setStatus('verifying')
       }
@@ -113,6 +122,7 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
         if (typeof window !== 'undefined' && window.fbq) {
           window.fbq('track', 'CompleteRegistration', {}, { eventID: fbEventId })
         }
+        trackEvent('sign_up', { method: 'email_code', project_type: form.projectType })
         const supabase = createClient()
         await supabase.auth.signInWithPassword({ email: form.email, password: form.password })
         window.location.href = '/design?customerId=' + customerId + '&projectType=' + encodeURIComponent(form.projectType)
@@ -232,7 +242,14 @@ export default function RegistrationForm({ lockedCategory, lockedProjectType, ti
         {subtitle || "Takes about a minute. We'll follow up personally once you submit."}
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-5">
+      <form onSubmit={handleSubmit}
+        onFocus={() => {
+          if (!formStarted.current) {
+            formStarted.current = true
+            trackEvent('form_start', { form_location: window.location.pathname, project_category: form.category })
+          }
+        }}
+        className="mt-8 bg-white border border-[#D9D6CD] rounded-md p-6 flex flex-col gap-5">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-[#4A4E56] mb-1.5">First name</label>

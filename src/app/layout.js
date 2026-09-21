@@ -1,6 +1,9 @@
 import { Geologica, Hanken_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import Analytics from "./components/Analytics";
+import JsonLd from "./components/JsonLd";
+import { siteGraph } from "@/lib/site";
 
 const geologica = Geologica({
   subsets: ["latin"],
@@ -17,14 +20,20 @@ const hankenGrotesk = Hanken_Grotesk({
 export const metadata = {
   metadataBase: new URL("https://easybcon.com.au"),
   title: {
-    default: "Easy Building & Construction Pty Ltd | Melbourne Builder",
+    default: "Melbourne Home Builder | Renovations, Extensions & New Homes | EBC",
     template: "%s | Easy Building & Construction",
   },
-  description: "Melbourne residential builder for new homes, renovations and extensions. Register your project for a free consultation with a registered, insured builder.",
+  description: "Registered Melbourne builder for home renovations, extensions and new homes in the Eastern Suburbs. Free consultation - register online or call 1300 715 840.",
+  applicationName: "Easy Building & Construction",
   openGraph: {
     siteName: "Easy Building & Construction Pty Ltd",
     locale: "en_AU",
     type: "website",
+    images: [{ url: "/hero-melbourne-home-build.jpg", width: 1200, height: 630, alt: "Modern home built by Easy Building & Construction in Melbourne" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/hero-melbourne-home-build.jpg"],
   },
   icons: {
     icon: [
@@ -38,7 +47,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en-AU">
       <body className={`${geologica.variable} ${hankenGrotesk.variable} antialiased`}>
         <Script id="meta-pixel" strategy="afterInteractive">
           {`
@@ -63,6 +72,8 @@ export default function RootLayout({ children }) {
             alt=""
           />
         </noscript>
+        <JsonLd data={siteGraph()} />
+        <Analytics />
         {children}
       </body>
     </html>

@@ -25,6 +25,7 @@ export default function AdLandingPage({
   formTitle,
   formSubtitle,
   gallery,
+  children,
 }) {
   return (
     <main className="min-h-screen bg-white">
@@ -32,7 +33,7 @@ export default function AdLandingPage({
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-[#EAE7E0] shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-11 w-auto" priority />
+            <Image src="/logo-icon.png" alt="Easy Building & Construction logo" width={202} height={100} className="h-11 w-auto" priority />
             <span className="hidden sm:block font-bold text-[#1B2A4A] text-sm leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
               Easy Building &amp; Construction Pty Ltd.
             </span>
@@ -67,7 +68,7 @@ export default function AdLandingPage({
             </div>
           </div>
 
-          <div className="lg:sticky lg:top-24">
+          <div id="quote" className="lg:sticky lg:top-24 scroll-mt-24">
             <div className="bg-white border border-[#EAE7E0] rounded-2xl shadow-xl p-6 md:p-8">
               <RegistrationForm
                 lockedCategory={lockedCategory}
@@ -134,6 +135,9 @@ export default function AdLandingPage({
           </div>
         </section>
       )}
+
+      {/* Search-friendly service content (passed in by each service page) */}
+      {children}
 
       {/* Trust strip */}
       <section className="bg-[#F6F5F1] border-y border-[#EAE7E0] px-6 py-10">

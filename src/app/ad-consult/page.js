@@ -4,7 +4,9 @@ import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { saveUtmFromUrl, getStoredUtm } from '@/lib/utm'
+import { trackEvent, trackLead } from '@/lib/analytics'
 import AdCreatePassword from '@/components/AdCreatePassword'
+import AddressAutocompleteFields from '@/components/AddressAutocompleteFields'
 import { CATEGORIES } from '@/lib/adCategories'
 import Footer from '../components/Footer'
 
@@ -57,7 +59,8 @@ function AdConsultContent() {
   const [step, setStep] = useState(leadgenId ? 'resolving' : 'intro')
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', mobile: '',
-    category: '', projectType: '', suburb: '', state: '', postalCode: '', consent: false,
+    category: '', projectType: '',
+    streetNo: '', streetName: '', suburb: '', state: '', postalCode: '', consent: false,
   })
   const [customerId, setCustomerId] = useState(null)
   const [registerError, setRegisterError] = useState('')
@@ -130,7 +133,7 @@ function AdConsultContent() {
     setRegisterError('')
     try {
       const utm = getStoredUtm()
-      const address = `${form.suburb} ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
+      const address = `${form.streetNo} ${form.streetName}, ${form.suburb} ${form.state} ${form.postalCode}`.replace(/\s+/g, ' ').trim()
       const fbEventId = crypto.randomUUID()
       const res = await fetch('/api/ad-register', {
         method: 'POST',
@@ -146,6 +149,7 @@ function AdConsultContent() {
       if (typeof window !== 'undefined' && window.fbq) {
         window.fbq('track', 'Lead', {}, { eventID: fbEventId })
       }
+      trackLead({ form_location: window.location.pathname, lead_source: utm.utmSource || 'direct', lead_flow: 'ad_consult' })
       setCustomerId(result.customerId)
       setStep('booking')
     } catch (err) {
@@ -343,13 +347,27 @@ function ProjectStep({ form, field, onNext }) {
 }
 
 function LocationStep({ form, field, onNext }) {
-  const valid = form.suburb && form.state && form.postalCode
+  const valid = form.streetNo && form.streetName && form.suburb && form.state && form.postalCode
+
+  // Same address-lookup pattern used on the general /register form: search
+  // an address and have street number, street name, suburb, state and
+  // postcode filled in automatically, with the fields still there to edit
+  // or fill in by hand if the search doesn't find the right result.
+  const handleAddressField = (key, value) => field(key, value)
 
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>Where's the property?</h2>
-      <p className="text-sm text-[#5A5E66] -mt-2">Just the suburb and postcode — enough to know if we cover your area.</p>
+      <p className="text-sm text-[#5A5E66] -mt-2">Search your address, or fill it in manually below.</p>
 
+      <AddressAutocompleteFields formData={form} onFieldChange={handleAddressField} label="Search your address" />
+
+      <div className="grid grid-cols-2 gap-3">
+        <input value={form.streetNo} onChange={(e) => field('streetNo', e.target.value)} required placeholder="Street number"
+          className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+        <input value={form.streetName} onChange={(e) => field('streetName', e.target.value)} required placeholder="Street name"
+          className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
+      </div>
       <input value={form.suburb} onChange={(e) => field('suburb', e.target.value)} required placeholder="Suburb"
         className="w-full border border-[#D9D6CD] rounded px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B2A4A]" />
       <div className="grid grid-cols-2 gap-3">
@@ -401,7 +419,7 @@ function ReviewStep({ form, field, onNext, submitting, error }) {
         <ReviewField label="Email" value={form.email} />
         <ReviewField label="Mobile" value={form.mobile} />
         <ReviewField label="Project" value={form.projectType || form.category} />
-        <ReviewField label="Location" value={`${form.suburb}, ${form.state} ${form.postalCode}`} />
+        <ReviewField label="Location" value={`${form.streetNo} ${form.streetName}, ${form.suburb} ${form.state} ${form.postalCode}`} />
       </div>
 
       <label className="flex items-start gap-2 text-sm text-[#5A5E66] mt-1">
@@ -481,6 +499,7 @@ function BookingStep({ customerId, form }) {
         if (typeof window !== 'undefined' && window.fbq) {
           window.fbq('track', 'Schedule', {}, { eventID: fbEventId })
         }
+        trackEvent('schedule_consultation', { form_location: window.location.pathname })
         setStatus('success')
       }
     } catch (err) {

@@ -54,6 +54,7 @@ export default function Footer() {
             <Link href="/new-home" className="hover:text-[#E1601F] transition">New Home</Link>
             <Link href="/renovation" className="hover:text-[#E1601F] transition">Renovation</Link>
             <Link href="/extension" className="hover:text-[#E1601F] transition">Extension</Link>
+            <Link href="/areas" className="hover:text-[#E1601F] transition">Areas We Serve</Link>
           </div>
         </div>
         <div>

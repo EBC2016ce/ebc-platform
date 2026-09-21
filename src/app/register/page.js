@@ -4,9 +4,14 @@ import RegistrationForm from '@/components/RegistrationForm'
 import Footer from '../components/Footer'
 
 export const metadata = {
-  title: 'Register Your Project',
-  description: 'Tell us about your new build, renovation or extension project and get started with Easy Building & Construction.',
+  title: 'Get a Free Quote | Register Your Building Project',
+  description: 'Tell us about your new home, renovation or extension in Melbourne and get a free, no-obligation consultation with Easy Building & Construction.',
   alternates: { canonical: '/register' },
+  openGraph: {
+    title: 'Get a Free Quote | Easy Building & Construction',
+    description: 'Tell us about your new home, renovation or extension in Melbourne and get a free, no-obligation consultation.',
+    url: '/register',
+  },
 }
 
 const bullets = [
@@ -23,7 +28,7 @@ export default function Register() {
           <div className="grid lg:grid-cols-2 gap-10 items-start">
             <div>
               <Link href="/" className="inline-flex items-center gap-3 mb-8">
-                <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-11 w-auto" priority />
+                <Image src="/logo-icon.png" alt="Easy Building & Construction logo" width={202} height={100} className="h-11 w-auto" priority />
                 <span className="font-bold text-[#1B2A4A] text-sm leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                   Easy Building &amp; Construction Pty Ltd.
                 </span>
