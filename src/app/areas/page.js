@@ -8,6 +8,9 @@ const description = 'Easy Building & Construction builds, extends and renovates 
 
 export const metadata = {
   title: 'Areas We Serve | Eastern Suburbs Melbourne Builder',
+  export const metadata = {
+  robots: { index: false, follow: false },
+  title: 'Areas We Serve | Eastern Suburbs Melbourne Builder',
   description,
   alternates: { canonical: '/areas' },
   openGraph: {
