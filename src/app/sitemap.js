@@ -16,7 +16,6 @@ export default async function sitemap() {
     { url: `${base}/renovation`, lastModified: CONTENT_UPDATED, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/extension`, lastModified: CONTENT_UPDATED, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${base}/new-home`, lastModified: CONTENT_UPDATED, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${base}/areas`, lastModified: CONTENT_UPDATED, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/register`, lastModified: CONTENT_UPDATED, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${base}/blog`, lastModified: CONTENT_UPDATED, changeFrequency: 'weekly', priority: 0.6 },
     { url: `${base}/privacy`, lastModified: '2026-09-12', changeFrequency: 'yearly', priority: 0.2 },

@@ -66,13 +66,12 @@ export const RENOVATION = {
     },
     {
       q: 'Which areas do you renovate in?',
-      a: 'We work across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville. See our areas page for the full list, or register your project with your address and we will confirm we can help.',
+      a: 'We work across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville. If you are nearby, register your project with your address and we will confirm we can help.',
     },
   ],
   related: [
     { href: '/extension', label: 'Home extensions' },
     { href: '/new-home', label: 'New home builds' },
-    { href: '/areas', label: 'Areas we serve' },
     { href: '/blog/renovating-in-melbourne-questions', label: 'Renovating in Melbourne: the questions every homeowner asks first' },
     { href: '/blog/design-build-vs-hiring-separately', label: 'Design & build vs hiring separately' },
   ],
@@ -135,13 +134,12 @@ export const EXTENSION = {
     },
     {
       q: 'Which areas do you build extensions in?',
-      a: 'We work across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville. See our areas page for the full list, or register your project with your address and we will confirm we can help.',
+      a: 'We work across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville. If you are nearby, register your project with your address and we will confirm we can help.',
     },
   ],
   related: [
     { href: '/renovation', label: 'Home renovations' },
     { href: '/new-home', label: 'New home builds' },
-    { href: '/areas', label: 'Areas we serve' },
     { href: '/blog/extension-costs-timelines-guide', label: 'Extension costs & timelines: a practical guide' },
     { href: '/blog/design-build-vs-hiring-separately', label: 'Design & build vs hiring separately' },
   ],
@@ -204,14 +202,13 @@ export const NEW_HOME = {
     },
     {
       q: 'Which areas do you build in?',
-      a: 'We work across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville. See our areas page for the full list, or register your project with your address and we will confirm we can help.',
+      a: 'We work across Melbourne’s Eastern Suburbs, including Ringwood, Croydon, Boronia, Blackburn, Glen Waverley, Mitcham and Rowville. If you are nearby, register your project with your address and we will confirm we can help.',
     },
   ],
   related: [
     { href: '/renovation', label: 'Home renovations' },
     { href: '/extension', label: 'Home extensions' },
     { href: '/blog/design-build-vs-hiring-separately', label: 'Design & build vs hiring separately' },
-    { href: '/areas', label: 'Areas we serve' },
     { href: '/blog', label: 'All building advice' },
   ],
 }
