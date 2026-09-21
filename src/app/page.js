@@ -1,15 +1,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Footer from './components/Footer'
-import LazyVideo from './components/LazyVideo'
 
 export const metadata = {
-  title: { absolute: 'Melbourne Home Builder | Renovations, Extensions & New Homes | EBC' },
-  description: 'Registered Melbourne builder for home renovations, extensions and new homes in the Eastern Suburbs. Free consultation - register online or call 1300 715 840.',
+  title: 'Easy Building & Construction Pty Ltd | Melbourne Builder',
+  description: 'Melbourne residential builder — new homes, renovations and extensions. Register your project for a free consultation with a registered, insured builder.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'Melbourne Home Builder | Renovations, Extensions & New Homes',
-    description: 'Registered Melbourne builder for home renovations, extensions and new homes in the Eastern Suburbs.',
+    title: 'Easy Building & Construction Pty Ltd | Melbourne Builder',
+    description: 'Melbourne residential builder — new homes, renovations and extensions.',
     url: '/',
     images: ['/hero-melbourne-home-build.jpg'],
   },
@@ -147,7 +146,7 @@ export default function Home() {
       <header className="sticky top-0 bg-white/95 backdrop-blur-sm z-40 border-b border-[#EAE7E0] shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 md:gap-6">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo-icon.png" alt="Easy Building & Construction logo" width={202} height={100} className="h-14 w-auto" priority />
+            <Image src="/logo-icon.png" alt="EBC logo" width={202} height={100} className="h-14 w-auto" priority />
             <span className="text-center md:text-left">
               <span className="block font-bold text-[#1B2A4A] text-base sm:text-lg leading-tight" style={{ fontFamily: 'var(--font-heading)' }}>
                 Easy Building &amp; Construction Pty Ltd.
@@ -172,7 +171,7 @@ export default function Home() {
 
       {/* Hero: single full-bleed photo, light overlay for readability */}
       <section className="relative h-[560px] md:h-[640px] overflow-hidden">
-        <Image src="/hero-melbourne-home-build.jpg" alt="Modern new home built by Easy Building & Construction in Melbourne" fill sizes="100vw" className="object-cover" priority />
+        <Image src="/hero-melbourne-home-build.jpg" alt="Modern EBC home build in Melbourne" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/5" />
         <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex items-center">
           <div className="max-w-2xl [filter:drop-shadow(0_2px_10px_rgba(0,0,0,0.45))]">
@@ -188,18 +187,20 @@ export default function Home() {
             <p className="mt-5 text-lg text-white/90 leading-relaxed">
               From new builds to renovations and extensions, EBC delivers high-quality workmanship with a commitment to finish on time.
             </p>
-            <div className="mt-7 flex flex-col items-start gap-4">
-              <div className="flex items-center gap-4 flex-wrap">
-                <Link href="/register" data-cta="hero-free-quote" className="inline-flex items-center gap-2 bg-[#E1601F] text-white text-lg font-semibold rounded-md px-8 py-4 shadow-lg hover:bg-[#C9541A] transition-colors" style={{ fontFamily: 'var(--font-heading)' }}>
-                  Get a Free Quote
+            <div className="mt-6 flex flex-col items-center gap-4">
+              <div className="flex items-center gap-8 flex-wrap justify-center">
+                <Link href="/portal/login" className="inline-flex items-center gap-1.5 text-lg md:text-xl text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                  Customer Portal
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                 </Link>
-                <a href="tel:1300715840" className="inline-flex items-center gap-2 text-white text-lg font-semibold border-b-2 border-white/40 pb-1 hover:border-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
-                  <PhoneIcon /> Call 1300 715 840
-                </a>
+                <Link href="/login" className="inline-flex items-center gap-1.5 text-lg md:text-xl text-[#8FC2FF] font-semibold border-b-2 border-[#8FC2FF]/40 pb-1 hover:border-[#8FC2FF] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                  Admin Portal
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                </Link>
               </div>
-              <Link href="/portal/login" className="text-sm text-[#8FC2FF] hover:text-white underline underline-offset-4 transition">
-                Existing customer? Log in to your portal
+              <Link href="/register" className="inline-flex items-center gap-1.5 text-lg md:text-xl text-[#E1601F] font-semibold border-b-2 border-[#E1601F]/40 pb-1 hover:border-[#E1601F] hover:text-white transition-all" style={{ fontFamily: 'var(--font-heading)' }}>
+                Get a Free Quote
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </Link>
             </div>
           </div>
@@ -212,7 +213,7 @@ export default function Home() {
           {quickLinks.map((q) => (
             <Link key={q.title} href={q.href} className="group text-center">
               <div className="relative rounded-xl overflow-hidden shadow-md h-40">
-                <Image src={q.img} alt={q.title} fill sizes="(min-width: 768px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <Image src={q.img} alt={q.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
               </div>
               <div className="relative -mt-6 flex justify-center">
                 <span className="w-12 h-12 rounded-full bg-white shadow-md border border-[#EAE7E0] flex items-center justify-center text-[#1B2A4A] group-hover:bg-[#E1601F] group-hover:text-white group-hover:border-[#E1601F] transition-colors">
@@ -286,9 +287,6 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-semibold text-[#1B2A4A]" style={{ fontFamily: 'var(--font-heading)' }}>
             Expert Solutions for Every Construction Need
           </h2>
-          <p className="mt-3 text-sm text-[#5A5E66] leading-relaxed">
-            Registered Melbourne builder for <Link href="/renovation" className="underline hover:text-[#E1601F]">home renovations</Link>, <Link href="/extension" className="underline hover:text-[#E1601F]">home extensions</Link> and <Link href="/new-home" className="underline hover:text-[#E1601F]">new homes</Link> across the Eastern Suburbs.
-          </p>
         </div>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
           {services.map((s) => (
@@ -325,7 +323,7 @@ export default function Home() {
       {/* Promo banner strip */}
       <section className="relative overflow-hidden">
         <div className="relative h-64">
-          <Image src="/projects/renovation/renovation-wallremoval-before.jpg" alt="Home renovation in progress by EBC" fill className="object-cover" />
+          <Image src="/projects/renovation/renovation-wallremoval-before.jpg" alt="Renovation in progress" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#1B2A4A]/85" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-center md:text-left">
@@ -393,10 +391,10 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg group">
-            <Image src="/projects/renovation/renovation-wallremoval-before.jpg" alt="Room before renovation with existing wall in place" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src="/projects/renovation/renovation-wallremoval-before.jpg" alt="Before renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
           <div className="relative w-full h-64 rounded-xl overflow-hidden shadow-lg mt-8 group">
-            <Image src="/projects/renovation/renovation-wallremoval-after.jpg" alt="Same room after renovation with the wall removed for open-plan living" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Image src="/projects/renovation/renovation-wallremoval-after.jpg" alt="After renovation" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           </div>
         </div>
       </section>
@@ -433,11 +431,16 @@ export default function Home() {
                 letterboxes them instead so the full frame, watermark
                 included, always stays visible.
               */}
-              <LazyVideo
+              <video
                 src={v.src}
                 poster={v.poster}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                disablePictureInPicture
                 controlsList="nodownload nofullscreen noremoteplayback"
-                aria-label={v.caption}
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none"
               />
               <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white/90 bg-black/40 rounded px-2 py-0.5">
@@ -461,7 +464,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {shuffleItems(projects).map((p, i) => (
               <div key={i} className="relative w-full h-40 md:h-48 rounded-xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image src={p.img} alt={`${p.category}: ${p.title} - EBC Melbourne`} fill sizes="(min-width: 768px) 25vw, 50vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <Image src={p.img} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-3">
                   <p className="text-[#FFB088] text-[10px] font-semibold mb-0.5">{p.category}</p>
@@ -499,17 +502,17 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {blogPosts.map((post) => (
-              <Link key={post.slug} href={'/blog/' + post.slug}
+              <a key={post.slug} href={'/blog/' + post.slug} target="_blank" rel="noopener noreferrer"
                 className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow group cursor-pointer">
                 <div className="relative w-full h-44 overflow-hidden">
-                  <Image src={post.img} alt={post.title} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <Image src={post.img} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-6">
                   <h3 className="font-semibold text-[#1B2A4A] mb-2 leading-snug" style={{ fontFamily: 'var(--font-heading)' }}>{post.title}</h3>
                   <p className="text-sm text-[#5A5E66] leading-relaxed">{post.excerpt}</p>
                   <span className="inline-block mt-3 text-sm text-[#E1601F] font-medium">Read more →</span>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
           <p className="text-xs text-[#8A8D94] text-center mt-6">
@@ -539,7 +542,7 @@ export default function Home() {
       {/* Final CTA banner */}
       <section className="relative overflow-hidden">
         <div className="relative h-80">
-          <Image src="/projects/renovation/renovation-bathroom-hero.jpg" alt="Completed bathroom renovation by EBC" fill className="object-cover" />
+          <Image src="/projects/renovation/renovation-bathroom-hero.jpg" alt="Completed home" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0F1930]/85" />
           <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col items-center justify-center text-center">
             <p className="text-sm font-semibold text-[#E1601F] mb-2 tracking-wide">GET IN TOUCH</p>
